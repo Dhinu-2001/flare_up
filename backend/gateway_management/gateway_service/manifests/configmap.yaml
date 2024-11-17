@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gateway-configmap
+data:
+  DEBUG: "True"
+  ALLOWED_HOSTS: "meetmingle.com"
+  DATABASE_HOST: "host.docker.internal"
+  DATABASE_PORT: "5432"
+  CSRF_COOKIE_DOMAIN: ".yourdomain.com"
+  USER_SVC_ADDRESS: "user:8081"
+  # USER_SVC_ADDRESS: "localhost:8081" FOR LOCALHOST USE

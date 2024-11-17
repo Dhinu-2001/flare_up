@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-configmap
+data:
+  DEBUG: "True"
+  ALLOWED_HOSTS: "gateway:8080"
+  DATABASE_HOST: "host.docker.internal"
+  DATABASE_PORT: "5432"
+  CSRF_COOKIE_DOMAIN: ".yourdomain.com"
