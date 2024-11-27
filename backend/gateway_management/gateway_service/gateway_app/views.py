@@ -113,3 +113,30 @@ class UpdateUserProfileAPI(APIView):
         except requests.exceptions.RequestException:
             return Response({'error':'User service is unavailable'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
  
+
+class setPasswordAPI(APIView):
+    def post(self, request, user_id):
+        try:
+            auth_header = request.headers.get("Authorization")
+            csrf_token = request.headers.get("csrftoken")
+            headers = {"Content-Type": "application/json"}
+
+            # If the token exists, add it to the outgoing request
+            if auth_header:
+                headers["Authorization"] = auth_header
+                headers["x-csrftoken"] = csrf_token
+            print(headers)
+            
+            response = requests.post(f"http://localhost:8081/user/{user_id}/set_password/",
+                                     json=request.data,
+                                     headers=headers
+
+                                     )
+            gateway_response = Response(response.json(), status=response.status_code)
+
+            if response.status_code == 200:
+                return gateway_response
+            return Response(response.json(),status=response.status_code)
+        except requests.exceptions.RequestException:
+            return Response({'error':'User service is unavailable'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+ 

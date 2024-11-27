@@ -56,7 +56,8 @@ class Event(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     # Status
-    status = models.CharField(max_length=50, choices=[('Active', 'Active'), ('Cancelled', 'Cancelled'), ('Draft', 'Draft')], default='Draft')
+    status = models.CharField(max_length=50, choices=[('Active', 'Active'), ('Cancelled', 'Cancelled'), ('Cancelled by Admin', 'Cancelled by Admin'), ('Draft', 'Draft')], default='Draft')
+    status_request  = models.BooleanField(default=False)
     
     # Admin approval
     approval_status = models.CharField(max_length=50, choices=[('Approved', 'Approved'), ('Rejected', 'Rejected'), ('Waiting for approval', 'Waiting for approval')], default='Waiting for approval')

@@ -3,7 +3,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 import environ
-import json
 env = environ.Env()
 environ.Env.read_env()
 
@@ -49,6 +48,37 @@ class EventAPI(APIView):
         except requests.exceptions.RequestException:
             return Response({'error': 'Event service is unavailable'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
         
+    def put(self, request, event_id):
+        try:
+            print('reached api gateway', event_id)
+            data = request.data
+            print(data)
+            response = requests.put(
+                f"http://{env('EVENT_SVC_ADDRESS')}/events/event/{event_id}/",
+                json=data,
+                headers={"Content-Type": 'application/json'},
+            )
+            if response.status_code == 201:
+                return Response(response.json(), status=status.HTTP_200_OK)
+            return Response(response.json(), status=response.status_code)
+        except requests.exceptions.RequestException:
+            return Response({'error': 'Event service is unavailable'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        
+class EventsByHosterAPI(APIView):
+    def get(self, request, hoster_id):
+        try:
+            print('reached api gateway', hoster_id)
+            response = requests.get(
+                f"http://{env('EVENT_SVC_ADDRESS')}/events/events/hoster/{hoster_id}/",
+                
+            )
+            if response.status_code == 201:
+                return Response(response.json(), status=status.HTTP_200_OK)
+            return Response(response.json(), status=response.status_code)
+        except requests.exceptions.RequestException:
+            return Response({'error': 'Event service is unavailable'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+
 class UpdateEventStatusAPI(APIView):
     def post(self, request, event_id):
         try:
@@ -82,6 +112,24 @@ class UpdateApprovalStatusAPI(APIView):
             return Response(response.json(), status=response.status_code)
         except requests.exceptions.RequestException:
             return Response({'error': 'Event service is unavailable'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        
+class KeyParticipantsAPI(APIView):
+    def post(self, request, event_id):
+        try:
+            print('reached approval update')
+            data = request.data
+            print(data)
+            response = requests.post(
+                f"http://{env('EVENT_SVC_ADDRESS')}/events/event/{event_id}/key_participants/",
+                json=data,
+                headers={"Content-Type": 'application/json'},
+            )
+            if response.status_code == 200:
+                return Response(response.json(), status=status.HTTP_201_CREATED)
+            return Response(response.json(), status=response.status_code)
+        except requests.exceptions.RequestException:
+            return Response({'error': 'Event service is unavailable'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        
                     
 class EventsByCategoryAPI(APIView):
     def get(self, request, category_name):

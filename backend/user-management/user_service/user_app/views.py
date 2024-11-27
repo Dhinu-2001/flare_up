@@ -48,8 +48,6 @@ class register(APIView):
 
         if serializer.is_valid():
             email = serializer.data["email"]
-            print(email)
-            print(type(email))
             otp = send_otp(email)
 
             print(email, otp)
@@ -57,13 +55,7 @@ class register(APIView):
             cache.set(f"{email}",[email, otp, serializer.validated_data], timeout=120)
             
             cache_data=cache.get(f"{email}")
-            print('value setted in cache', cache_data)
-
-            # cache.set("otp", otp, timeout=60)  # Stored for 2 minute
-            # cache.set("email", email, timeout=60)  # Stored for 2 minute
-            # cache.set(
-            #     "user_data", serializer.validated_data, timeout=120
-            # )  
+            print('value setted in cache', cache_data) 
             print("after cache")
             # request.session['otp'] = otp
             # request.session['email'] = email
@@ -87,7 +79,7 @@ class register(APIView):
                     else:
                         error_messages.append(f"{field.capitalize()}: {error}")
 
-            content = {"message": error_messages}
+            content = {"error": error_messages}
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -326,7 +318,7 @@ class login(APIView):
                 )
         else:
             return Response(
-                {"Invalid": "Invalid username or password"},
+                {"error": "Invalid username or password"},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 
@@ -419,17 +411,51 @@ class UpdateUserProfile(APIView):
         try:
             print('request data',request.data)
             if request.data:
-                    updated_data = request.data
-                    user_object = CustomUser.objects.get(id=user_id)
+                updated_data = request.data
+                user_object = CustomUser.objects.get(id=user_id)
+                if 'profile_publicId' in updated_data:
+                    user_object.profile_picture = updated_data['profile_publicId']
+                else:
                     user_object.fullname = updated_data['fullname']
                     user_object.username = updated_data['username']
                     user_object.email = updated_data['email']
                     user_object.phone_number = updated_data['phone_number']
-                    user_object.save()
+                user_object.save()
                     
-                    return Response({'message':'User id updated successfully'}, status=status.HTTP_202_ACCEPTED)
+                return Response({'message':'User data updated successfully'}, status=status.HTTP_202_ACCEPTED)
 
             else:
                 return Response({'error':'Please input the data'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+                return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+# if len(new_password) < 8:  # Example validation
+#         return Response({'error': 'Password must be at least 8 characters long'}, status=400)
+from django.contrib.auth.hashers import check_password  
+
+class setPassword(APIView):
+    def post(self, request, user_id):
+        try:
+            user_email = request.user
+            user_object = CustomUser.objects.get(email = user_email)
+            new_password = request.data.get('new_password')
+            confirm_password = request.data.get('confirm_password')
+            if new_password != confirm_password:
+                    return Response({'error':'New password and confirm password must be same to confirm.'}, status=status.HTTP_400_BAD_REQUEST)
+            if not user_object.password:
+                
+                user_object.set_password(new_password)
+                user_object.save()
+                return Response({'message':'User password updated successfully'}, status=status.HTTP_202_ACCEPTED)
+            else:
+                current_password = request.data.get('current_password')
+                print('beore checking')
+                if not check_password(current_password, user_object.password):
+                    return Response({'error': 'Current password is incorrect.'}, status=status.HTTP_400_BAD_REQUEST)
+                print('after checking')
+                user_object.set_password(new_password)
+                user_object.save()
+                return Response({'message':'User password updated successfully'}, status=status.HTTP_202_ACCEPTED)
+
         except Exception as e:
                 return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)

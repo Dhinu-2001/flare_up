@@ -48,7 +48,7 @@ class CustomAuthentication(JWTAuthentication):
 
             #     raise AuthenticationFailed('Invalid token type')
                     
-            enforce_csrf(request)
+            # enforce_csrf(request)
             return self.get_user(validated_token), validated_token
             
         except AuthenticationFailed as e:

@@ -11,7 +11,6 @@ import { useDispatch } from "react-redux"
 import { setAuthData, setLoading, setError } from "@/redux/auth/authSlice"
 import { useNavigate, Link } from "react-router-dom"
 import { GoogleLogin } from "@react-oauth/google"
-import { jwtDecode } from "jwt-decode";
 import { encryptToken } from "@/utils/tokenUtil"
 import { toast } from "sonner"
 
@@ -38,11 +37,9 @@ export default function Login() {
 
   const onSubmit = async (data) => {
     const { username, password } = data;
-    console.log(username, password)
     try {
       dispatch(setLoading(true))
       const { data } = await axiosInstance.post('/login/', { username, password });
-      console.log(data)
 
       const encryptedData = {
         ...data,
@@ -69,10 +66,10 @@ export default function Login() {
       }
 
     } catch (error) {
-      console.log('Login Failed: ', error.response.data)
-      const errorMessage = error.response?.data?.message || 'Login failed'
+      const errorMessage = error.response?.data?.error || 'Login failed'
+      toast.error(errorMessage)
+      
       dispatch(setError(errorMessage))
-      toast.error('Login failed')
     } finally {
       dispatch(setLoading(false))
     }
@@ -94,7 +91,6 @@ export default function Login() {
       // const decoded = jwtDecode(Gtoken)
 
       const { data } = await axiosInstance.post('/GoogleAuth/', { gToken });
-      console.log(data)
 
       const encryptedData = {
         ...data,
@@ -121,8 +117,8 @@ export default function Login() {
       }
 
     } catch (error) {
-      console.log('Register Failed', error.response)
-      toast.error('Login failed')
+      const errorMessage = error.response?.data?.error || 'Login failed'
+      toast.error(errorMessage)
     }
   }
 
@@ -167,14 +163,14 @@ export default function Login() {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="username">Username</Label>
-                  <Input {...register("username")} id="username" placeholder="Enter your username" />
+                  <Input {...register("username")} id="username" placeholder="Enter your username" autoComplete="username" />
                   {errors.username && (
                     <div className="text-red-500">{errors.username.message}</div>
                   )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="password">Password</Label>
-                  <Input {...register("password")} id="password" type="password" placeholder="Enter your password" />
+                  <Input {...register("password")} id="password" type="password" placeholder="Enter your password" autoComplete="current-password" />
                   {errors.password && (
                     <div className="text-red-500">{errors.password.message}</div>
                   )}
@@ -209,11 +205,11 @@ export default function Login() {
                   prompt='consent'
                   scope="https://www.googleapis.com/auth/yt-analytics.readonly"
                   onSuccess={codeResponse => {
-                    console.log('credential response', codeResponse);
                     GoogleAuthLogin(codeResponse?.credential);
                   }}
-                  onError={() => {
-                    console.log('Login Failed', errorMessage);
+                  onError={(error) => {
+                    console.log('Login Failed', error);
+                    toast.error('Google login failed')
                   }}
                 />
               </div>
@@ -225,5 +221,3 @@ export default function Login() {
   )
 }
 
-// adminusername = jarvis123
-// password= Jarvis123

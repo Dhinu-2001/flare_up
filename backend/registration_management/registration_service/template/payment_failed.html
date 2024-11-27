@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Success</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #c22f2f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #af2c2c;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Payment Failed!</h1>
+    <p>Thank you for your purchase. Your payment was  failed.</p>
+    <button id="redirectButton" onclick="redirectToFrontend()">Back to Site</button>
+
+    <script>
+        function redirectToFrontend() {
+            const queryParams = new URLSearchParams({
+                transaction_id: "{{ payment_details.transaction_id }}",
+                amount_received: "{{ payment_details.amount_received }}",
+                event_id: "{{ payment_details.event_id }}",
+                user_id: "{{ payment_details.user_id }}",
+                quantity: "{{ payment_details.ticket_quantity }}",
+            })
+            window.location.href = `http://localhost:5173/payment-success?${queryParams.toString()}`;
+        }
+    </script>
+</body>
+
+</html>

@@ -9,9 +9,8 @@ import { useEffect } from "react";
 import axiosInstance from "@/axiosconfig"
 import { useNavigate } from "react-router-dom"
 import { GoogleLogin } from "@react-oauth/google"
-import { jwtDecode } from "jwt-decode";
 import { encryptToken } from "@/utils/tokenUtil"
-import { setAuthData, setLoading, setError } from "@/redux/auth/authSlice"
+import { setAuthData } from "@/redux/auth/authSlice"
 import { useDispatch } from "react-redux"
 import { toast } from "sonner"
 
@@ -44,7 +43,7 @@ export default function Register() {
   const dispatch = useDispatch()
 
 
-  const { register, handleSubmit, setError, formState: { errors, isSubmitting }, clearErrors } = useForm({
+  const { register, handleSubmit, formState: { errors, isSubmitting }, clearErrors } = useForm({
     resolver: zodResolver(schema),
   });
 
@@ -53,35 +52,23 @@ export default function Register() {
     const { username, fullname, email, phone_number, password } = data;
     const role = 'user'
     localStorage.setItem('registeredEmail', email)
-    localStorage.setItem('AuthType', 'NormalAuth')
-    console.log(username, fullname, phone_number, email, password, role)
     try {
-      const response = await axiosInstance.post('/register/', { username, fullname, email, phone_number, role, password });
-      console.log(response.data)
+      await axiosInstance.post('/register/', { username, fullname, email, phone_number, role, password });
       navigate('/otp_verification')
       toast.info('An OTP has sent to your registered email.')
 
     } catch (error) {
-      console.log('register Failed: ', error)
-      toast.error('registration failed')
+      const errorMessage = error.response?.data?.error || 'Registration failed'
+      toast.error(errorMessage)
     }
   }
 
   async function GoogleOauthRegisteration(credential) {
     try {
       const gToken = credential
-
-      const decoded = jwtDecode(gToken)
-      const username = decoded.name
-      const fullname = decoded.name
-      const email = decoded.email
       const role = 'user'
-      console.log(username, fullname, email, role)
-      localStorage.setItem('registeredEmail', email)
-      localStorage.setItem('AuthType', 'GoogleAuth')
 
       const {data} = await axiosInstance.post('/GoogleAuth/', { gToken, role });
-      console.log(data)
 
       const encryptedData = {
         ...data,
@@ -94,10 +81,10 @@ export default function Register() {
 
       switch (encryptedData.role) {
         case 'hoster':
-          navigate('/hoster');
+          navigate('/hoster/dashboard');
           break
         case 'admin':
-          navigate('/admin_dashboard')
+          navigate('/admin/dashboard')
           break;
         case 'user':
           navigate('/')
@@ -107,8 +94,8 @@ export default function Register() {
       }
       
     } catch (error) {
-      console.log('Register Failed', error)
-      toast.error('Registration failed')
+      const errorMessage = error.response?.data?.error || 'Registration failed'
+      toast.error(errorMessage)
     }
 
   }
@@ -229,11 +216,11 @@ export default function Register() {
               <div className="flex justify-center">
                 <GoogleLogin className='w-[400px] '
                   onSuccess={codeResponse => {
-                    console.log('credential response', codeResponse);
                     GoogleOauthRegisteration(codeResponse?.credential);
                   }}
-                  onError={() => {
-                    console.log('Login Failed', errorMessage);
+                  onError={(error) => {
+                    console.log('Login Failed', error);
+                    toast.error('Google registration failed')
                   }}
                 />
               </div>

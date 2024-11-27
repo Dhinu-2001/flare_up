@@ -55,7 +55,7 @@ function AsideBar() {
                         onClick={() => setActiveNav('tables')}
                     >
                         <Package className="mr-2 h-4 w-4" />
-                        Tables
+                        Your Events
                     </Button>
                 </Link>
 

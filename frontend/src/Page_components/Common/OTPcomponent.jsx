@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import axiosInstance from '@/axiosconfig';
 import { useDispatch } from "react-redux"
 import { setAuthData } from "@/redux/auth/authSlice"
+import { toast } from 'sonner';
 
 const TIMER_DURATION = 60; // 60 seconds
 
@@ -88,30 +89,17 @@ export default function OTPInputPage() {
     console.log('submit otp')
     const email = localStorage.getItem('registeredEmail');
     const enteredOtp = otp.join('');
-    const authType = localStorage.getItem('AuthType')
 
     try {
-      const {data} = await axiosInstance.post('/otp_verification/', { email, enteredOtp, authType });
+      const {data} = await axiosInstance.post('/otp_verification/', { email, enteredOtp });
       console.log(data);
 
       toast.success('Registered successfully')
+      navigate('/login');
       
-      if(authType == 'NormalAuth'){
-        navigate('/login');
-      }else if (authType == 'GoogleAuth'){
-        dispatch(setAuthData(data))
-        if(data.role == 'hoster'){
-          navigate('/hoster')
-        }else if(data.role == 'admin'){
-          navigate('/admin_dashboard')
-        }else if(data.role == 'user'){
-          navigate('/')
-        }
-      }
     }catch(error) {
-      console.log('OTP verification failed:', error);
-      toast.error('OTP verification failed')
-      // Handle error (e.g., show error message to user)
+      const errorMessage = error.response?.data?.error || 'OTP verification failed'
+      toast.error(errorMessage)
     }
   };
 
@@ -125,11 +113,11 @@ export default function OTPInputPage() {
       setOtp(['', '', '', '', '', '']);
       console.log('OTP resent');
       toast.info('An new OTP has sent to your registered email.')
-      // Optionally, show a success message to the user
     } catch (error) {
       console.log('Resend OTP failed:', error);
-      toast.error('Resent OTP failed')
-      // Handle error (e.g., show error message to user)
+      const errorMessage = error.response?.data?.error || 'Resend OTP failed'
+      toast.error(errorMessage)
+      navigate('/register')
     }
   };
 

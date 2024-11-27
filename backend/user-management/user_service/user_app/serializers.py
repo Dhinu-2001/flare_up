@@ -93,20 +93,23 @@ class OrganizationSerializer(serializers.ModelSerializer):
     
 class UserRetrieveSerializer(serializers.ModelSerializer):
     organization = OrganizationSerializer(read_only=True)
+    has_password = serializers.SerializerMethodField()
+    
     class Meta:
         model = CustomUser
         fields = [
             'id', 'username', 'fullname', 'email', 'google_userid', 'phone_number',
             'profile_picture', 'date_joined', 'last_login', 'role', 'organization', 
-            'is_active', 'is_staff', 'is_admin', 'is_superadmin'
+            'is_active', 'is_staff', 'is_admin', 'is_superadmin', 'has_password'
         ]
         read_only_fields = ['id', 'date_joined', 'last_login', 'is_admin', 'is_superadmin']
-
+    
+    def get_has_password(self, obj):
+        return bool(obj.password)
 
 class VerifyOTPSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
     enteredOtp = serializers.CharField(max_length=6, min_length=6)
-    authType = serializers.CharField()
     
     def validate_enteredOtp(self, value):
         if not value.isdigit():

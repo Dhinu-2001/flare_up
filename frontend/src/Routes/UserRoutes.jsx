@@ -11,6 +11,10 @@ import EventList from '@/pages/UserPages/Outlets/EventList'
 import DataProvider from '@/ContextFiles/DataProvider'
 import EventDetails from '@/pages/UserPages/Outlets/EventDetails'
 import EventsDataProvider from '@/ContextFiles/EventsDataProvider'
+import TicketBooking from '@/pages/UserPages/Outlets/TicketBooking'
+import EventDetailsProvider from '@/ContextFiles/EventDetailsProvider'
+import SuccessBooking from '@/pages/UserPages/Outlets/SuccessBooking'
+
 
 function UserRoutes() {
   return (
@@ -36,6 +40,13 @@ function UserRoutes() {
         <Route path="/catgory/:category_name" element={<EventList />}></Route>
         <Route path="/catgory/:category_name/:type_name/:event_id/" element={<EventDetails />}></Route>
 
+        <Route path="/catgory/:category_name/:type_name/:event_id/ticket_registration" element={
+          <EventDetailsProvider>
+            <TicketBooking />
+          </EventDetailsProvider>}></Route>
+
+          
+          <Route path="/payment-success" element={<SuccessBooking />} />
       </Route>
     </Routes>
   )

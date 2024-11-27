@@ -21,6 +21,7 @@ import PromoVideoUploadCloudinary from '@/Page_components/CloudinaryComponents/P
 import { store } from "../../../redux/Store";
 import exceptions from '@mapbox/mapbox-gl-geocoder/lib/exceptions'
 import { setError, setLoading } from '@/redux/auth/authSlice'
+import { toast } from 'sonner'
 // Define the date-time format you expect: "PPP HH:mm:ss"
 const dateTimeFormat = "yyyy-MM-dd HH:mm:ss";
 
@@ -54,7 +55,7 @@ function CreateEvent() {
     resolver: zodResolver(schema)
   })
   const { data, loading, error } = useContext(DataContext)
-
+  const [availableTypes, setAvailableTypes] = useState(null)
   const [categoriesTypesData, setCategoriesTypesData] = useState(null);
   const [category, setCategory] = useState('');
   const [type, setType] = useState('');
@@ -145,6 +146,7 @@ function CreateEvent() {
       })
       console.log('Event creation successful:', response.data)
       reset();
+      toast.success('Event created successfully')
       setCategory('')
       setType('')
       setBannerPublicId('')
@@ -159,6 +161,7 @@ function CreateEvent() {
       setCountry('')
     } catch (error) {
       console.log('Event creation failed:', error)
+      toast.error('Event creation failed')
     }
   }
 
@@ -167,7 +170,7 @@ function CreateEvent() {
 
       <form onSubmit={handleSubmit(onSubmit)} >
         <div className="w-full  bg-stone-900 text-gray-100 p-8 pb-0 flex flex-wrap justify-center items-start gap-4 overflow-y-auto">
-          <Title createEvent={register} errors={errors} category={category} type={type} setCategory={setCategory} setType={setType} categoriesTypesData={data} />
+          <Title availableTypes={availableTypes} setAvailableTypes={setAvailableTypes} createEvent={register} errors={errors} category={category} type={type} setCategory={setCategory} setType={setType} categoriesTypesData={data} />
           <Card className="min-w-72 max-w-screen-md h-full flex-1 bg-gray-800 text-gray-100 ">
 
             <TicketInfo createEvent={register} errors={errors} regAmountChecked={regAmountChecked} handleRegistrationMode={handleRegistrationMode} registrationDeadline={registrationDeadline} setRegistrationDeadline={setRegistrationDeadline} enddatetime={enddatetime} />

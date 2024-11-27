@@ -5,11 +5,12 @@ import { Button } from "@/components/ui/button"
 import { ChevronDown, DollarSign } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Play, MapPin, Calendar, Timer, Users, Ticket, Clock, Image as ImageIcon, Locate } from 'lucide-react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import axiosInstance from '@/axiosconfig'
 import MapEvent from '@/Page_components/Common/MapEvent'
 import { Cloudinary } from "@cloudinary/url-gen";
 import { AdvancedVideo, responsive, placeholder } from "@cloudinary/react";
+import { ParticipantCarousel } from '@/Page_components/Common/ParticipantCarousel'
 
 export default function EventDetails() {
   const { event_id } = useParams()
@@ -39,7 +40,6 @@ export default function EventDetails() {
 
       console.log(response.data)
       setEventData(response.data)
-      console.log('event data', eventData?.event_data)
       setMyVideo(cld.image(eventData.event_data.promo_video))
 
     } catch (error) {
@@ -153,7 +153,6 @@ export default function EventDetails() {
         </div>
       </div>
 
-      {/* Video Section */}
       <div className="container mx-auto px-4 py-16">
         <h2 className="text-3xl font-bold mb-8">Featured Highlights</h2>
         <div className="grid md:grid-cols-2 gap-8">
@@ -223,12 +222,16 @@ export default function EventDetails() {
 
         </div>
       </div>
-      {/* Location & Tickets Section */}
+
+      <div className='my-5'>
+        <ParticipantCarousel participants={eventData?.event_data?.key_participants} />
+      </div>
+
       <div className="bg-zinc-900">
         <div className="container mx-auto px-4 py-20">
           <div className="grid md:grid-cols-2 gap-8">
             <div>
-              <h2 className="text-3xl font-bold mb-8">Event Location</h2>
+              <h2 className="text-3xl font-bold mb-8">Event Video</h2>
               {/* <AdvancedVideo
                 style={{ maxWidth: "100%" }}
                 cldVid={myVideo}
@@ -254,7 +257,7 @@ export default function EventDetails() {
                 <div className="grid gap-6">
                   <div className="flex justify-between items-center">
                     <div>
-                      
+
                     </div>
                     {/* <Badge className="bg-emerald-400 text-black">$199</Badge> */}
                   </div>
@@ -282,9 +285,11 @@ export default function EventDetails() {
                       </div>
                     </CardContent>
                   </Card>
-                  <Button className=" bg-blue-500 text-black hover:bg-blue-800">
-                    Register Now
-                  </Button>
+                  <Link to={`/catgory/${eventData.event_data.category}/${eventData.event_data.type}/${eventData.event_data.id}/ticket_registration`}>
+                    <Button className=" bg-blue-500 text-black hover:bg-blue-800 rounded-none">
+                      Register Now
+                    </Button>
+                  </Link>
                 </div>
               </Card>
             </div>

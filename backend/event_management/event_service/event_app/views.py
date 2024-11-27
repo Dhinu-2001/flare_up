@@ -8,8 +8,9 @@ from .serializers import (
     EventRetrieveSerializer,
     EventCategorySerializer,
     EventTypeSerializer,
+    KeyParticipantSerializer,
 )
-from .models import EventCategory, EventType, Event as Event_db
+from .models import EventCategory, EventType, Event as Event_db, KeyParticipant as KeyParticipant_db
 from django.core.exceptions import ObjectDoesNotExist
 import datetime
 
@@ -19,8 +20,6 @@ import datetime
 class Events(APIView):
     def post(self, request):
         print("event service reached")
-        data = request.data
-        print(data)
         serializer = EventCreateSerializer(data=request.data)
 
         if serializer.is_valid():
@@ -42,10 +41,13 @@ class Event(APIView):
     def get(self, request, event_id):
         print("reached", event_id)
         try:
-            event = Event_db.objects.get(id=event_id)
-            serializer = EventRetrieveSerializer(event)
+            event_object = Event_db.objects.get(id=event_id)
+            serializer = EventRetrieveSerializer(event_object)
             event_data = serializer.data
             print('event data', event_data)
+            
+            # key_participants = KeyParticipant_db.objects.prefetch_related("key_participants").get(event=event_object)
+            # print(key_participants)
 
             # Fetching hoster details
             try:
@@ -56,7 +58,7 @@ class Event(APIView):
                 print('user request data', user_data)
 
                 response_data = {
-                    "event_data": event_data,
+                    "event_data": event_data,  
                     "user_data": user_data if user_data else "Failed to retrieve user data"
                 }
 
@@ -75,6 +77,28 @@ class Event(APIView):
                 status=status.HTTP_404_NOT_FOUND
             )
             
+    def put(self, request,event_id):
+        print('reache patch', request.data)
+        try:
+            event = Event_db.objects.get(id=event_id)
+            serializer = EventCreateSerializer(event, data=request.data, partial=False)
+            
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"message": "Event updated successfully"},status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error':str(e)},status=status.HTTP_400_BAD_REQUEST)
+            
+class EventsByHoster(APIView):
+    def get(self, request, hoster_id):
+        try:
+            event_objects = Event_db.objects.filter(host_id=hoster_id)
+            serializer = EventRetrieveSerializer(event_objects, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error':str(e)},status=status.HTTP_400_BAD_REQUEST)
 
 class UpdateEventStatus(APIView):
     def post(self, request, event_id):
@@ -86,7 +110,7 @@ class UpdateEventStatus(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        if event_status not in ['Active', 'Cancelled']:
+        if event_status not in ['Active', 'Cancelled', 'Cancel status request']:
             return Response(
                 {'error': 'Invalid event status. Valid values are "Active" or "Cancelled".'},
                 status=status.HTTP_400_BAD_REQUEST
@@ -95,7 +119,16 @@ class UpdateEventStatus(APIView):
         try:
             print('event status',event_status)
             event = Event_db.objects.get(id=event_id)
-            event.status = event_status
+            if event.approval_status == 'Waiting for approval':
+                if event_status == 'Active':
+                    event.status = 'Draft'
+                else:
+                    event.status = event_status
+                event.status_request = False
+            elif event_status == 'Cancel status request':
+                event.status_request = False
+            else:
+                event.status_request = True
             # event.updated_at = datetime.datetime.now()
             event.save()
 
@@ -114,8 +147,6 @@ class UpdateEventStatus(APIView):
                 {'error': 'Event approval status update failed'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-    
-
 
 class UpdateApprovalStatus(APIView):
     def post(self, request, event_id):
@@ -127,7 +158,7 @@ class UpdateApprovalStatus(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        if approval_status not in ['Approved', 'Rejected']:
+        if approval_status not in ['Approved', 'Rejected', 'Allow request', 'Reject request', 'Cancelled by Admin']:
             return Response(
                 {'error': 'Invalid approval status. Valid values are "approved" or "rejected".'},
                 status=status.HTTP_400_BAD_REQUEST
@@ -135,9 +166,22 @@ class UpdateApprovalStatus(APIView):
 
         try:
             event = Event_db.objects.get(id=event_id)
-            event.approval_status = approval_status
-            if approval_status == 'Approved':
-                event.status = 'Active'
+            if approval_status in ['Allow request', 'Reject request']:
+                if approval_status == 'Allow request':
+                    if event.status ==  'Active':
+                        event.status = 'Cancelled'
+                        event.status_request = False
+                    else:
+                        event.status = 'Active'
+                        event.status_request = False
+                else:
+                    event.status_request = False
+            elif approval_status == 'Cancelled by Admin':
+                event.status = 'Cancelled by Admin'
+            else:
+                event.approval_status = approval_status
+                if approval_status == 'Approved':
+                    event.status = 'Active'
             event.approval_updated_at = datetime.datetime.now()
             event.save()
 
@@ -210,7 +254,34 @@ class EventsByCategory(APIView):
         except Exception as e:
             return Response({'error':str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
+class KeyParticipants(APIView):
+    def post(self, request, event_id):
+        try:
+            event_object = Event_db.objects.get(id=event_id)
+            key_participants = request.data.get('key_participants')
+            print('key participants', key_participants)
+            if not key_participants or len(key_participants) == 0:
+                return Response({'error':'Please provide details of key participants'})
+            
+            try:
+                KeyParticipant_db.objects.filter(event=event_object).delete()
+            except KeyParticipant_db.DoesNotExist:
+                return Response({'error':'Data does not found.'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            
+            for participant in key_participants:
+                serializer = KeyParticipantSerializer(data=participant)
+                if serializer.is_valid():
+                    serializer.save()
+                else:
+                    print(serializer.errors)
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message':'Key participants successfully updated'}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            print('EXCEPTION', str(e))
+            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            
+            
 
 class CreateCategory(APIView):
     def post(self, request):
@@ -256,3 +327,4 @@ class EventTypesAndCategories(APIView):
             )
 
         return Response(data, status=status.HTTP_200_OK)
+

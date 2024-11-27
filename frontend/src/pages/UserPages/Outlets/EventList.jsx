@@ -109,7 +109,7 @@ export default function CaseStudies() {
                     </div>
                 </div>
 
-                {/* Case Studies Grid */}
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {filteredAndSortedEvents.map((event) => (
                         <div key={event.id} className="relative group overflow-hidden rounded-lg">

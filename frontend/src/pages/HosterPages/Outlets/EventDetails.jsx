@@ -1,15 +1,16 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { MapPin, Calendar, Clock, Users, DollarSign, Video, Image as ImageIcon, CheckCircle, XCircle, Ticket, } from 'lucide-react'
+import { MapPin, Calendar, Clock, Users, DollarSign, Video, Image as ImageIcon, CheckCircle, XCircle, Ticket, Trash2, } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import axiosInstance from '@/axiosconfig'
 import MapEvent from '@/Page_components/Common/MapEvent'
 import { toast } from 'sonner'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 // Mock event data
 const event = {
@@ -30,6 +31,7 @@ export default function EventDetails() {
     const { event_id } = useParams();
     const numericEventId = Number(event_id);
     const [cateData, setCateData] = useState(null)
+    const [participants, setParticipants] = useState([])
     const fetchCategoryDetails = async () => {
         try {
             const response = await axiosInstance.get(`/events/event/${numericEventId}/`)
@@ -43,6 +45,21 @@ export default function EventDetails() {
             console.log(error)
         }
     }
+
+    useEffect(() => {
+        if (cateData) {
+            const key_participants_data = cateData?.event_data?.key_participants
+
+            const updatedParticipants = key_participants_data.map((participant) => ({
+                ...participant,
+                id: Date.now() + Math.random()
+            }));
+
+            setParticipants(updatedParticipants);
+
+            console.log("Participants updated:", updatedParticipants);
+        }
+    }, [cateData])
 
 
     useEffect(() => {
@@ -63,6 +80,7 @@ export default function EventDetails() {
 
     // if (!cateData) return <p>Error loading data</p>;
     console.log('cate event data', cateData)
+    console.log('status check', cateData.event_data.status)
 
 
     const handleEventStatus = async (status) => {
@@ -94,13 +112,14 @@ export default function EventDetails() {
         <div className="max-w-4xl mx-auto">
             <Card>
                 <CardContent className="p-6">
-                    <div className="relative h-6 mb-6 z">
-                        {/* <img
-                            src={`https://res.cloudinary.com/dzwjm8n8v/image/upload/v1731575754/${cateData.event_data.banner_image}.jpg`}
-                            alt={event.title}
-                            fill
-                            className="object-cover rounded-lg"
-                        /> */}
+                    <div className=" mb-6 ">
+                        <div className="w-full h-full aspect-w-16 aspect-h-9 flex items-center justify-center">
+                            <img
+                                src={`https://res.cloudinary.com/dzwjm8n8v/image/upload/v1731575754/${cateData.event_data.banner_image}.jpg`}
+                                alt={event.title}
+                                className="object-cover rounded-lg"
+                            />
+                        </div>
                     </div>
 
                     <div className="flex justify-between items-start mb-6">
@@ -117,14 +136,13 @@ export default function EventDetails() {
                                 <Badge variant="secondary">{cateData.event_data.type}</Badge>
                             </div>
                         </div>
-                        {/* <div className="text-right">
+                        <div className="text-right">
                             <div className="text-2xl font-bold mb-1">
-                                {event.payment_required ? `$${event.ticket_price.toFixed(2)}` : 'Free'}
+                                <Link to={`/hoster/event/${cateData.event_data.id}/edit_event`}>
+                                    <Button >Edit Event</Button>
+                                </Link>
                             </div>
-                            <div className="text-sm text-gray-600">
-                                {event.participant_capacity} spots available
-                            </div>
-                        </div> */}
+                        </div>
                     </div>
 
                     <Separator className="my-6" />
@@ -224,6 +242,43 @@ export default function EventDetails() {
                         </div>
 
 
+                        <Card  >
+                            <CardHeader >
+                                <CardTitle className='flex justify-between'>Key Participants
+                                    <div className=" text-sm text-gray-600">
+                                        <Link to={`/hoster/event/${cateData.event_data.id}/add_participants_sponsers`}>
+                                            <Button >Edit participants </Button>
+                                        </Link>
+                                    </div>
+                                </CardTitle>
+
+                            </CardHeader>
+                            <CardContent className='max-h-[400px] overflow-y-auto '>
+                                {participants.length === 0 ? (
+                                    <p className="text-center text-gray-500">No participants added yet.</p>
+                                ) : (
+                                    <ul className="space-y-4">
+                                        {participants.map((participant) => (
+                                            <li key={participant.id} className="flex items-center justify-between border bg-zinc-900 p-4 rounded-lg">
+                                                <div className='flex items-center justify-between gap-3'>
+                                                    <Avatar className="h-16 w-16">
+                                                        <AvatarImage className='object-cover' src={`https://res.cloudinary.com/dzwjm8n8v/image/upload/v1732125377/${participant.photo}.jpg`} />
+                                                        <AvatarFallback>Photo</AvatarFallback>
+                                                    </Avatar>
+                                                    <div>
+                                                        <h3 className="font-semibold">{participant.name}</h3>
+                                                        <p className="text-sm text-gray-600">{participant.role}</p>
+                                                    </div>
+                                                </div>
+
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </CardContent>
+                        </Card>
+
+
 
                         <Card>
                             <CardHeader>
@@ -242,10 +297,51 @@ export default function EventDetails() {
                                 <div className="text-sm text-gray-500 mt-2">
                                     Last updated: {new Date(cateData.event_data.updated_at).toLocaleString()}
                                 </div>
-                                <div className="mt-8 flex justify-center gap-2">
-                                    { cateData.event_data.status === 'Active' ?
-                                     (<Button onClick={() => handleEventStatus('Cancelled')}>Cancel</Button>):
-                                    (<Button onClick={() => handleEventStatus('Active')}>Active</Button>)}
+                                <div className="mt-8 gap-2">
+                                    {cateData.event_data.status != 'Cancelled by Admin' && (cateData.event_data.status_request ? (
+                                        <div className='flex items-center gap-2'>
+                                            <p>Waiting for the request -</p>
+                                            {/* <Button onClick={() => handleEventStatus('Cancelled')}>Cancel event</Button> */}
+                                            <Button onClick={() => handleEventStatus('Cancel status request')}>Cancel request</Button>
+                                        </div>) :
+                                        (
+                                            cateData.event_data.status != 'Cancelled' ?
+                                                (<div>
+                                                    <div className='flex items-center gap-2'>
+                                                        <p>Do you want to cancel this event?</p>
+                                                        <Button onClick={() => handleEventStatus('Cancelled')}>Cancel event</Button>
+                                                    </div>
+                                                    {cateData.event_data.approval_status === 'Waiting for approval' ?
+                                                        ('') : (<p className="text-sm text-gray-500 mt-2">The event will be cancelled on admin's active approval.</p>)
+                                                    }
+                                                </div>) :
+                                                (<div>
+                                                    <div className='flex items-center gap-2'>
+                                                        <p>Do you want to active this event?</p>
+                                                        <Button onClick={() => handleEventStatus('Active')}>Active event</Button>
+                                                    </div>
+                                                    {cateData.event_data.approval_status === 'Waiting for approval' ?
+                                                        ('') : (<p className="text-sm text-gray-500 mt-2">The event will be active on admin's active approval.</p>)
+                                                    }
+                                                </div>
+
+                                                )
+                                        )
+                                    )}
+
+
+
+                                    {/* {cateData.event_data.approval_status == 'Waiting for approval'|| cateData.event_data.status == 'Draft' ?
+                                        (<div>
+                                            <div className='flex items-center gap-2'>
+                                                <p>Do you want to cancel this event?</p>
+                                                <Button onClick={() => handleEventStatus('Cancelled')}>Cancel event</Button>
+                                            </div>
+                                            { cateData.event_data.approval_status === 'Approved' && 
+                                                <p className="text-sm text-gray-500 mt-2">The event will be cancelled on admin's cancel approval.</p>
+                                            }
+                                        </div>) :
+                                        (<Button onClick={() => handleEventStatus('Active')}>Active event</Button>)} */}
                                 </div>
                             </CardContent>
                         </Card>

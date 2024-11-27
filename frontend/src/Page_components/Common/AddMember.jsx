@@ -43,7 +43,7 @@ export default function AddMember(props) {
     },
   });
 
-  const myImage = cld.image(publicId);
+  const myImage = cld.image(props.publicId);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0]
@@ -75,8 +75,8 @@ export default function AddMember(props) {
   }
 
   return (
-    <Card className="bg-black text-gray-100 border-collapse grid lg:grid-cols-2 p-4 gap-8 w-full min-w-72 max-w-screen-md">
-      <div className="min-w-72">
+    <div className=" border-collapse grid md:grid-cols-2 p-4 gap-8 w-full h-full">
+      <Card className="bg-black text-gray-100 p-4 min-w-72">
         <CardHeader className="flex flex-col items-start justify-between">
           <div className="flex items-center">
             <User className="w-6 h-6 text-white mr-2" />
@@ -123,8 +123,9 @@ export default function AddMember(props) {
             className="mb-2"
           />)}
         <Button onClick={handleAdd}>Add</Button>
-      </div>
-      <div className="mt-4 h-96 min-w-72 max-w-fit overflow-y-auto border rounded-md p-1">
+      </Card>
+
+      <Card className="bg-black text-gray-100  h-full max-h-screen overflow-y-auto border rounded-md p-4">
         <h2 className="text-xl font-bold mb-4">{props.list_title}</h2>
         <div className="space-y-4">
           {props.list.map((employee, index) => (
@@ -147,7 +148,7 @@ export default function AddMember(props) {
             </Card>
           ))}
         </div>
-      </div>
-    </Card>
+      </Card>
+    </div>
   )
 }
