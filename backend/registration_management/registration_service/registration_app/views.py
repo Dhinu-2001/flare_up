@@ -12,8 +12,14 @@ from .models import Registration
 
 # Create your views here.
 import stripe
+import environ
 
-stripe.api_key = "sk_test_51QOwBVEoHTcQ6zGjYZRfLB0YO1wkbcJlx68RHvUe5dW1kytGPlEemeb00nFH3kO50MEsyAxGN0e69Hj3AEjKe59P00qhpAac1z"
+env = environ.Env()
+
+environ.Env.read_env()
+
+
+stripe.api_key = env('STRIPE_API_KEY')
 
 
 @csrf_exempt
