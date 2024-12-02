@@ -58,7 +58,6 @@ export function ParticipantCarousel({ participants }) {
                     <img
                       src={`https://res.cloudinary.com/dzwjm8n8v/image/upload/v1732125377/${participant.photo}.jpg`}
                       alt=""
-                      fill
                       className="object-cover w-full"
                       priority={index < 2}
                     />

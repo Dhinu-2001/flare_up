@@ -13,4 +13,8 @@ urlpatterns = [
     path('user/<int:user_id>/', views.UserAPI.as_view(), name='UserAPI'),
     path('user/<int:user_id>/update_user_profile/', views.UpdateUserProfileAPI.as_view(), name='UpdateUserProfileAPI'),
     path('user/<int:user_id>/set_password/', views.setPasswordAPI.as_view(), name='setPasswordAPI'),
+    path('forgot-password/', views.ForgotPasswordAPI.as_view(), name='ForgotPasswordAPI'),
+    path('verify-otp-forgot-password/', views.VerifyOTPForgotPasswordAPI.as_view(), name='VerifyOTPForgotPasswordAPI'),
+    path('set-new-password/', views.SetNewPasswordAPI.as_view(), name='SetNewPasswordAPI'),
+
 ]

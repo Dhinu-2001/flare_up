@@ -87,6 +87,7 @@ export default function Login() {
 
   async function GoogleAuthLogin(credential) {
     try {
+      console.log('credential', credential)
       const gToken = credential
       // const decoded = jwtDecode(Gtoken)
 
@@ -189,7 +190,9 @@ export default function Login() {
           </Card>
           <div className="flex justify-center">
             <div className="flex justify-between w-[450px] px-6 py-3">
+              <Link to='/forgot-password'>
               <h1 className="text-sm text-gray-400 hover:underline cursor-pointer">Forgot password?</h1>
+              </Link>
               <div className="flex gap-2 justify-center text-center ">
                 <p className="text-sm text-gray-400">New user?   </p>
                 <p className="cursor-pointer hover:underline text-sm font-medium" onClick={RegisterNavigation}>  register</p>

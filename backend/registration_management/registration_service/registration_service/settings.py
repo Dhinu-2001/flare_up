@@ -18,7 +18,7 @@ env = environ.Env()
 
 environ.Env.read_env()
 
-from pathlib import Path
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'registration_app',
     'rest_framework',
     'corsheaders',
+    'kafka_app',
 ]
 
 MIDDLEWARE = [
@@ -221,3 +222,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 APPEND_SLASH=False
+
+KAFKA_CONFIG = {
+    'bootstrap.servers': 'localhost:9092',  # Adjust as needed
+}

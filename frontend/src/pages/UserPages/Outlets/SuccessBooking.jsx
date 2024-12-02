@@ -93,7 +93,7 @@ export default function SuccessBooking() {
                     </CardContent>
                     <CardFooter className="flex justify-center">
                         <Link to="/">
-                            <Button onClick type="button" className="w-full sm:w-auto">
+                            <Button type="button" className="w-full sm:w-auto">
                                 <Home className="mr-2 h-4 w-4" />
                                 Return to Home
                             </Button>

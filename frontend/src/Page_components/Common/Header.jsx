@@ -15,6 +15,7 @@ import { useDispatch } from 'react-redux';
 import { clearAuthData } from '@/redux/auth/authSlice';
 import { Link, useNavigate } from 'react-router-dom';
 import axiosInstance from '@/axiosconfig';
+import NotificationMenu from '@/pages/UserPages/Outlets/NotificationMenu';
 
 function Header() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -101,6 +102,7 @@ function Header() {
         </div>
 
         <nav>
+          <NotificationMenu/>
 
 
 

@@ -84,6 +84,7 @@ export default function TicketBooking() {
       const payment_data = {
         'user_id': user_id,
         'event_id': data.event_data.id,
+        'hoster_id':data.user_data.id,
         'title': data.event_data.title,
         'banner': `https://res.cloudinary.com/dzwjm8n8v/image/upload/v1731575754/${data.event_data.banner_image}.jpg`,
         'price': parseInt(data.event_data.ticket_price),

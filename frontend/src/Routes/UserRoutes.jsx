@@ -14,6 +14,9 @@ import EventsDataProvider from '@/ContextFiles/EventsDataProvider'
 import TicketBooking from '@/pages/UserPages/Outlets/TicketBooking'
 import EventDetailsProvider from '@/ContextFiles/EventDetailsProvider'
 import SuccessBooking from '@/pages/UserPages/Outlets/SuccessBooking'
+import Chat from '@/pages/UserPages/Outlets/Chat'
+import ForgotPassword from '@/pages/ForgotPassword'
+import NewPassword from '@/pages/NewPassword'
 
 
 function UserRoutes() {
@@ -23,6 +26,8 @@ function UserRoutes() {
       <Route path="/hoster_register" element={<HosterRegister />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/otp_verification" element={<OTPPage />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/new-password" element={<NewPassword />} />
 
       <Route path="/" element={<UserHomeLayout />}>
         <Route path="/" element={
@@ -45,8 +50,9 @@ function UserRoutes() {
             <TicketBooking />
           </EventDetailsProvider>}></Route>
 
-          
-          <Route path="/payment-success" element={<SuccessBooking />} />
+
+        <Route path="/payment-success" element={<SuccessBooking />} />
+        <Route path="/chat/:reciever_id" element={<Chat />} />
       </Route>
     </Routes>
   )

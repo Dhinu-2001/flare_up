@@ -7,6 +7,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import RegistrationSerializer
+from kafka_app.kafka_utils.producer import KafkaProducerService
+from .models import Registration
 
 # Create your views here.
 import stripe
@@ -40,7 +42,9 @@ def create_checkout_session(request):
                 metadata={
                     "user_id": data["user_id"],
                     "event_id": data["event_id"],
+                    "event_title": data["title"],
                     "quantity": data["quantity"],
+                    "hoster_id": data["hoster_id"]
                 },
             )
             print("reacher regitration")
@@ -75,7 +79,9 @@ class HandleSuccessPayment(APIView):
                 "currency": payment_intent.currency,
                 "customer_email": session.customer_details.email,
                 "event_id": session.metadata.get("event_id", ""),
+                "event_title": session.metadata.get("event_title", ""),
                 "user_id": session.metadata.get("user_id", ""),
+                "hoster_id": session.metadata.get("hoster_id", ""),
                 "ticket_quantity": session.metadata.get("quantity", ""),
                 "status": payment_intent.status,
             }
@@ -84,6 +90,13 @@ class HandleSuccessPayment(APIView):
             serializer = RegistrationSerializer(data = payment_details)
             if serializer.is_valid():
                 serializer.save()
+                
+                kafka_data = serializer.data
+                kafka_data["event_title"] = payment_details["event_title"]               
+                print('kafka_data',kafka_data)
+                
+                kafka_producer = KafkaProducerService(config={}) 
+                kafka_producer.send_payment_notification_message(kafka_data)
                 
                 return render(request, "payment_success.html", {"payment_details": payment_details})
             else:
@@ -97,4 +110,17 @@ class HandleSuccessPayment(APIView):
                 {"message": "failed"}, status=status.HTTP_503_SERVICE_UNAVAILABLE
             )
 
-       
+class RegistrationsByHosterView(APIView):
+    def get(self, request, user_id):
+        # Query registrations based on hoster_id
+        registrations = Registration.objects.filter(hoster_id=user_id)
+        
+        if registrations.exists():
+            # Serialize the query result
+            serializer = RegistrationSerializer(registrations, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        return Response(
+            {"detail": "No registrations found for the given hoster_id."},
+            status=status.HTTP_404_NOT_FOUND
+        )

@@ -1,7 +1,16 @@
-import { AdminEventColumns } from "../../../components/DataTable/AdminEventColumns"
+import { PaymentColumns } from "@/components/DataTable/PaymentColumns";
 import { DataTable } from '../../../components/DataTable/Data-Table';
+import { PaymentsByHosterDataContext } from "@/ContextFiles/PaymentsByHosterDataProvider";
 
 function getData() {
+
+
+    const { data, error, loading } = useContext(PaymentsByHosterDataContext)
+
+    if (loading) return <p>Loading...</p>
+    if (error) return <p>Error loading data</p>
+    console.log('actual event data', data)
+
     // Mock data to simulate API data fetching
     return [
         {
@@ -44,7 +53,7 @@ function getData() {
 }
 
 export default function PaymentList() {
-    const data = getData();
+    const data_dummy = getData();
 
     return (
         <div>
@@ -52,7 +61,7 @@ export default function PaymentList() {
                 Payments
             </h3>
             <div className="container mx-auto pt-0 py-10">
-                <DataTable columns={AdminEventColumns} data={data} />
+                <DataTable columns={PaymentColumns} data={data_dummy} />
             </div>
         </div>
     );

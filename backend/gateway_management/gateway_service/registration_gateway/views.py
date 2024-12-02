@@ -32,3 +32,19 @@ class create_checkout_sessionAPI(APIView):
                 {"error": "Resgitration service is unavailable"},
                 status=status.HTTP_503_SERVICE_UNAVAILABLE,
             )
+
+      
+class RegistrationsByHosterViewAPI(APIView):
+    def get(self, request, user_id):
+        try:
+            print('reached api gateway', user_id)
+            response = requests.get(
+                f"http://{env('REGISTRATION_SVC_ADDRESS')}/registrations/{user_id}/",
+                
+            )
+            if response.status_code == 201:
+                return Response(response.json(), status=status.HTTP_200_OK)
+            return Response(response.json(), status=response.status_code)
+        except requests.exceptions.RequestException:
+            return Response({'error': 'Registration service is unavailable'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        

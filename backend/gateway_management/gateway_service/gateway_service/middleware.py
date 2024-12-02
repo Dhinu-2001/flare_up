@@ -11,7 +11,7 @@ class JWTAuthenticationMiddleware(JWTAuthentication):
     def __call__(self, request):
         public_paths = [
             '/login/', '/register/', '/token_refresh/', '/otp_verification/', 
-            '/resend_otp/', '/GoogleAuth/', '/GoogleAuthLogin/', '/logout/', '/events/'
+            '/resend_otp/', '/GoogleAuth/', '/GoogleAuthLogin/', '/logout/', '/events/','/forgot-password/', '/verify-otp-forgot-password/', '/set-new-password/'
         ]
         print('request path', request.path)
         # Skip authentication for public paths
@@ -46,6 +46,9 @@ class JWTAuthenticationMiddleware(JWTAuthentication):
             # Restframework Token validation 
             validated_token = self.get_validated_token(access_token)
             print('after validation in middleware-validated_token ', validated_token)
+            print('key printing')
+            print(dir(validated_token))
+
             user_id = validated_token.get('user_id')
             print('user id:', user_id)
            

@@ -15,6 +15,8 @@ import EventsByHosterDataProvider from '@/ContextFiles/EventsByHosterDataProvide
 import AddParticipantsSponsors from '@/pages/HosterPages/Outlets/AddParticipantsSponsors'
 import EventDetailsProvider from '@/ContextFiles/EventDetailsProvider'
 import EditEvent from '@/pages/HosterPages/Outlets/EditEvent'
+import Chat from '@/pages/UserPages/Outlets/Chat'
+import PaymentsByHosterDataProvider from '@/ContextFiles/PaymentsByHosterDataProvider'
 
 function HosterRoutes() {
   return (
@@ -60,7 +62,12 @@ function HosterRoutes() {
 
         <Route path="/events/event/:event_id" element={<EventDetails />} />
 
-        <Route path="payment_list" element={<PaymentList />} />
+        <Route path="payment_list" element={
+          <PaymentsByHosterDataProvider>
+            <PaymentList />
+          </PaymentsByHosterDataProvider>} />
+
+        <Route path="/chat/:reciever_id" element={<Chat />} />
       </Route>
     </Routes>
   )

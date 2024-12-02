@@ -34,7 +34,7 @@ export default function OTPInputPage() {
       setIsActive(remainingTime > 0);
     } else {
       startTimer();
-    }                                                                                                                                                                                                                                                                                                                                                                                                   
+    }
 
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
@@ -88,16 +88,24 @@ export default function OTPInputPage() {
     e.preventDefault();
     console.log('submit otp')
     const email = localStorage.getItem('registeredEmail');
+    const url = localStorage.getItem('OTP_url');
+    console.log('local', email, url)
     const enteredOtp = otp.join('');
 
     try {
-      const {data} = await axiosInstance.post('/otp_verification/', { email, enteredOtp });
-      console.log(data);
+      if (url === 'registration') {
+        const { data } = await axiosInstance.post('/otp_verification/', { email, enteredOtp });
+        console.log(data);
+        toast.success('Email verified.')
+        navigate('/login');
+      } else if (url === 'forgot-password') {
+        const { data } = await axiosInstance.post('/verify-otp-forgot-password/', { email, enteredOtp });
+        console.log(data);
+        toast.success('Email verified.')
+        navigate('/new-password');
+      }
 
-      toast.success('Registered successfully')
-      navigate('/login');
-      
-    }catch(error) {
+    } catch (error) {
       const errorMessage = error.response?.data?.error || 'OTP verification failed'
       toast.error(errorMessage)
     }
@@ -106,7 +114,7 @@ export default function OTPInputPage() {
   const handleResendOTP = async () => {
     const email = localStorage.getItem('registeredEmail');
     console.log('resend otp', email)
-    
+
     try {
       await axiosInstance.post('/resend_otp/', { email });
       startTimer();

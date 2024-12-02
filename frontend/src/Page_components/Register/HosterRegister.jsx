@@ -50,6 +50,7 @@ export default function HosterRegister() {
     const { username, fullname, email, phone_number, password } = data;
     const role = 'hoster'
     localStorage.setItem('registeredEmail', email)
+    localStorage.setItem('OTP_url', 'registration')
     try {
       const response = await axiosInstance.post('/register/', { username, fullname, email, phone_number, role, password });
       navigate('/otp_verification')

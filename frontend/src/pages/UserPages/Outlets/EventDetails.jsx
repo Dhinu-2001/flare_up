@@ -11,6 +11,7 @@ import MapEvent from '@/Page_components/Common/MapEvent'
 import { Cloudinary } from "@cloudinary/url-gen";
 import { AdvancedVideo, responsive, placeholder } from "@cloudinary/react";
 import { ParticipantCarousel } from '@/Page_components/Common/ParticipantCarousel'
+import { MessageCircle } from 'lucide-react'
 
 export default function EventDetails() {
   const { event_id } = useParams()
@@ -18,6 +19,7 @@ export default function EventDetails() {
   const [eventData, setEventData] = useState(null)
   const [myVideo, setMyVideo] = useState(null)
   const [cloudName] = useState("dzwjm8n8v");
+  const [isHovered, setIsHovered] = useState(false)
 
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
@@ -40,7 +42,7 @@ export default function EventDetails() {
 
       console.log(response.data)
       setEventData(response.data)
-      setMyVideo(cld.image(eventData.event_data.promo_video))
+      // setMyVideo(cld.image(eventData.event_data.promo_video))
 
     } catch (error) {
       console.log(error)
@@ -151,6 +153,20 @@ export default function EventDetails() {
             </div>
           </div>
         </div>
+        <Link to={`/chat/${eventData.user_data.id}/`}>
+          <Button
+            className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-sky-400 p-0 shadow-lg transition-all hover:scale-110 hover:bg-sky-200"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
+            <MessageCircle
+              className={`h-6 w-6 text-background transition-transform ${isHovered ? 'scale-110' : 'scale-100'
+                }`}
+            />
+            <span className="sr-only">Open messages</span>
+          </Button>
+        </Link>
+
       </div>
 
       <div className="container mx-auto px-4 py-16">
