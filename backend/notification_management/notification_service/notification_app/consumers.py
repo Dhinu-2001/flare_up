@@ -21,6 +21,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
 
             # Fetch historical notifications from Redis
             notifications = get_notifications_from_redis(self.user_id)
+            print('Notification', notifications)
 
             # Send historical notifications to the WebSocket
             for notification in notifications:
@@ -30,6 +31,11 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_discard(self.room_name, self.channel_name)
 
     async def send_notification(self, event):
-        message = event['message']
-        await self.send(text_data=json.dumps({'message': message}))
+        print('SENDING NOTIFICATION ', event['message'])
+        await self.send(text_data=json.dumps({
+            'message': event['message'],
+            'notification_type': event['notification_type'],
+            'timestamp': event['timestamp'],
+            'senderId': event['senderId'],
+            }))
 

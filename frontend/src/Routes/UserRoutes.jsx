@@ -14,9 +14,9 @@ import EventsDataProvider from '@/ContextFiles/EventsDataProvider'
 import TicketBooking from '@/pages/UserPages/Outlets/TicketBooking'
 import EventDetailsProvider from '@/ContextFiles/EventDetailsProvider'
 import SuccessBooking from '@/pages/UserPages/Outlets/SuccessBooking'
-import Chat from '@/pages/UserPages/Outlets/Chat'
 import ForgotPassword from '@/pages/ForgotPassword'
 import NewPassword from '@/pages/NewPassword'
+import Chat from '@/Page_components/Common/Chat'
 
 
 function UserRoutes() {
@@ -52,6 +52,7 @@ function UserRoutes() {
 
 
         <Route path="/payment-success" element={<SuccessBooking />} />
+        <Route path="/chat/" element={<Chat />} />
         <Route path="/chat/:reciever_id" element={<Chat />} />
       </Route>
     </Routes>

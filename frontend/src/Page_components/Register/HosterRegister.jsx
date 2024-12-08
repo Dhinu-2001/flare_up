@@ -61,8 +61,11 @@ export default function HosterRegister() {
     }
   }
 
-  async function GoogleOauthRegisteration(credential) {
+  async function GoogleOauthRegisteration(codeResponse) {
     try {
+      credential = codeResponse?.credential
+      console.log('codeRespon', codeResponse)
+      console.log('credential', credential)
       const gToken = credential
       // const decoded = jwtDecode(gToken)
       // const email = decoded.email
@@ -217,7 +220,7 @@ export default function HosterRegister() {
               <div className="flex justify-center">
                 <GoogleLogin className='w-[400px] '
                   onSuccess={codeResponse => {
-                    GoogleOauthRegisteration(codeResponse?.credential);
+                    GoogleOauthRegisteration(codeResponse);
                   }}
                   onError={(error) => {
                     console.log('Login Failed', error);
@@ -225,6 +228,17 @@ export default function HosterRegister() {
                   }}
                 />
               </div>
+              {/* <div className="flex justify-center">
+                <GoogleLogin className='w-[400px] '
+                  onSuccess={codeResponse => {
+                    GoogleOauthRegisteration(codeResponse?.credential);
+                  }}
+                  onError={(error) => {
+                    console.log('Login Failed', error);
+                    toast.error('Google registration failed')
+                  }}
+                />
+              </div> */}
             </div>
           </div>
         </div>

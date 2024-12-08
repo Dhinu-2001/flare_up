@@ -27,28 +27,28 @@ def store_notification_in_redis(user_id, message, type, senderId):
             'timestamp': str(datetime.now())
         }
     
-    print('notification', key, notification)
-    
+  
+    print('STORING NOTI IN REDIS ', notification)
     redis_client.rpush(key, json.dumps(notification))
 
     # Set TTL for the key (14 days in seconds)
     redis_client.expire(key, 14 * 24 * 60 * 60)
     
-    res = get_notifications_from_redis(user_id)
-    print('res',res)
+    # res = get_notifications_from_redis(user_id)
     
 
 def get_notifications_from_redis(user_id):
     # Key format: notifications:<user_id>
     key = f'notifications:{user_id}'
     notifications = redis_client.lrange(key, 0, -1)
-    print('notifications', notifications)
+    if len(notifications) > 19:
+        notifications = notifications[:-21:-1]
     return [json.loads(notification) for notification in notifications[::-1]]
 
 @sync_to_async
 def send_user_notification(user_id, message, type, senderId=None):
     # Store the notification in Redis
-    
+    print('mesage', message)
     store_notification_in_redis(user_id, message, type, senderId)
 
     # Send real-time notification via WebSocket
@@ -58,7 +58,9 @@ def send_user_notification(user_id, message, type, senderId=None):
         {
             'type': 'send_notification',
             'message': message,
-            'notification_type': type
+            'notification_type': type,
+            'timestamp': str(datetime.now()),
+            'senderId': senderId,
         }
     )
   

@@ -20,15 +20,15 @@ class KafkaProducerService:
         else:
             print(f"Record {msg.key()} successfully produced to {msg.topic()} [{msg.partition()}] at offset {msg.offset()}")
 
-    def send_payment_notification_message(self, payment_data):
+    def send_user_details_request(self, user_id):
         try:
             self.producer.produce(
-                'payment_notification',
-                key=str(payment_data['id']),
-                value=json.dumps(payment_data),
+                'get_user_details',
+                key=str(user_id),
+                value=json.dumps(str(user_id)),
                 on_delivery=self.delivery_report
             )
-            print('success payment_notification',payment_data)
+            print('success send_user_details_request',user_id)
             self.producer.flush()
         except Exception as e:
-            print(f"payment_notification - Failed to send message: {e}")
+            print(f"get_user_details - Failed to send message: {e}")

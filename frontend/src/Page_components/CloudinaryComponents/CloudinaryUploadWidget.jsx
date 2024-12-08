@@ -32,7 +32,7 @@ function CloudinaryUploadWidget({ uwConfig, setPublicId, idEle, buttonText }) {
   useEffect(() => {
     console.log(loaded)
 
-    if (loaded && window.cloudinary) {
+    if (loaded && window.cloudinary  ) {
       // Check if cloudinary is available
       const myWidget = window.cloudinary.createUploadWidget(
         uwConfig,

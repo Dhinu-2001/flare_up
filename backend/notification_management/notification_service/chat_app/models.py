@@ -2,6 +2,10 @@ from django.db import models
 
 class ChatRoom(models.Model):
     name = models.CharField(max_length=255, unique=True)
+    user1 = models.IntegerField(blank=True, null=True)
+    user2 = models.IntegerField(blank=True, null=True)
+    user1_name = models.CharField(max_length=50, blank=True, null=True)
+    user2_name = models.CharField(max_length=50, blank=True, null=True)
 
     def __str__(self):
         return self.name

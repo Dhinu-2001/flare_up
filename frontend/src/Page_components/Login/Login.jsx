@@ -36,6 +36,7 @@ export default function Login() {
   const dispatch = useDispatch()
 
   const onSubmit = async (data) => {
+    console.log(data)
     const { username, password } = data;
     try {
       dispatch(setLoading(true))

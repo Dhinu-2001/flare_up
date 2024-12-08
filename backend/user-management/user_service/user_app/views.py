@@ -278,7 +278,7 @@ class GoogleAuth(APIView):
         except Exception as e:
             print(e)
             return Response(
-                {"error": "Google Oauth Failed"}, status=status.HTTP_400_BAD_REQUEST
+                {"error": f"Google Oauth Failed: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST
             )
 
         # else:
@@ -533,7 +533,7 @@ class VerifyOTPForgotPassword(APIView):
                 {
                     "message": "Email verified."
                 },
-                status=status.HTTP_202_ACCEPTED,
+                status=status.HTTP_202_ACCEPTED
             )
             
         else:
