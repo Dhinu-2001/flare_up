@@ -56,7 +56,7 @@ export default function NotificationMenu() {
                     <DropdownMenuItem>No new notifications</DropdownMenuItem>
                 ) : (
                     messages.map((msg, index) => (
-                        <DropdownMenuItem key={index} className="flex flex-col items-start p-2">
+                        <DropdownMenuItem key={index} className="flex flex-col items-start p-2 border-2">
                             <div className="flex justify-between w-full">
                                 <span className="font-medium">{msg.notification_type}</span>
                                 <span className="text-xs text-muted-foreground">{new Date(msg.timestamp).toLocaleString()}</span>
@@ -70,18 +70,20 @@ export default function NotificationMenu() {
                                 onClick={() => handleMarkAsRead(index)}
                                 className="mt-1 p-0 h-auto"
                             >
-                                Open Chat{ typeof msg?.senderId}
+                                Open Chat
                             </Button>
                             </Link>
                             ):
-                             (<Button
+                             (
+                             <Button
                                 variant="link"
                                 size="sm"
                                 onClick={() => handleMarkAsRead(index)}
                                 className="mt-1 p-0 h-auto"
                             >
-                                Mark as read
-                            </Button>)}
+                                {/* Mark as read */}
+                            </Button>
+                        )}
                             
                         </DropdownMenuItem>
                     ))

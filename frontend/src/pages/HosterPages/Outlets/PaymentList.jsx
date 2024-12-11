@@ -1,6 +1,7 @@
 import { PaymentColumns } from "@/components/DataTable/PaymentColumns";
 import { DataTable } from '../../../components/DataTable/Data-Table';
 import { PaymentsByHosterDataContext } from "@/ContextFiles/PaymentsByHosterDataProvider";
+import { useContext } from "react";
 
 function getData() {
 

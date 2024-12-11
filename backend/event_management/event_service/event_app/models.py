@@ -43,6 +43,7 @@ class Event(models.Model):
     payment_required  = models.BooleanField(default=False)
     ticket_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     participant_capacity = models.IntegerField(blank=True, null=True)
+    current_participants_count = models.IntegerField(default=0)
 
     # Media
     banner_image = models.CharField(max_length=255, blank=True, null=True)

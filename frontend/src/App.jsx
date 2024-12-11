@@ -23,7 +23,7 @@ function App() {
             <Route path="/hoster/*" element={<HosterRoutes />} />
             <Route exact path="/admin/*" element={<AdminRoutes />} />
 
-            {/* <Route exact path="/map" element={<ConcertMap/>} /> */}
+           
           </Routes>
         </Router>
         <Toaster position="top-right" expand={true} closeButton richColors duration={5000} />

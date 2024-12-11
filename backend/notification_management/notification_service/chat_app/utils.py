@@ -6,14 +6,14 @@ from channels.db import database_sync_to_async
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
-
+ 
 @sync_to_async
 def handle_receive_message(
     room_name, username, user_id, message, receiverId, recieverName
 ):
     room = ChatRoom.objects.get(name=room_name)
 
-    if not room.user1 or not room.user1_name or not room.user2 or not room.user2_name:
+    if not room.user1 or not room.user1_name or not room.user2 or not room.user2_name :
         user_ids = [user_id, receiverId]
         print("IDS ", user_id, receiverId, user_ids)
         user_ids.sort()
@@ -27,6 +27,19 @@ def handle_receive_message(
             room.user2_name = username
         room.save()
         print("user1 and user2 is created")
+        
+    user_ids = [user_id, receiverId]
+    print("IDS ", user_id, receiverId, user_ids)
+    user_ids.sort()
+    if room.user1 == user_id:
+        if username != room.user1_name or recieverName != room.user2_name:
+            room.user1_name = username
+            room.user2_name = recieverName
+    else:
+        if username != room.user2_name or recieverName != room.user1_name:
+            room.user1_name = recieverName
+            room.user2_name = username
+    room.save()
 
     latest_message = ChatMessage.objects.create(
         room=room, username=username, user_id=user_id, content=message

@@ -40,6 +40,7 @@ const Chat = () => {
             const response = await axiosInstance.get(`user/${receiverid}/`)
             console.log('reciever data', response.data)
             setRecieverData(response.data)
+            setLoading(false)
         } catch (err) {
             console.log(err)
         }
@@ -60,6 +61,7 @@ const Chat = () => {
             if (roomName) {
                 // Connect to WebSocket
                 socketRef.current = new WebSocket(`ws://localhost:8084/ws/chat/${roomName}/`);
+                
 
                 // Handle incoming messages
                 socketRef.current.onmessage = (event) => {
@@ -76,10 +78,12 @@ const Chat = () => {
     useEffect(() => {
         try {
             if (receiverid) {
-
+                setLoading(true)
+                setMessages([])
+                console.log('initail Loading',loading)
                 fetchData();
                 callWebsocket();
-                setLoading(false)
+                
             }
         } catch (err) {
             setError(err)
@@ -89,7 +93,7 @@ const Chat = () => {
     }, [roomName, receiverid]);
 
     const sendMessage = () => {
-        const recieverName = recieverData.fullname
+        const recieverName = recieverData.username || recieverData.email.split('@')[0];
         const payload = {
             message,
             senderName,
@@ -137,7 +141,7 @@ const Chat = () => {
                         : (
                             <>
                                 <header className="flex items-center justify-between px-4 py-2 border-b">
-                                    <h1 className="text-lg font-semibold">{recieverData?.fullname}</h1>
+                                    <h1 className="text-lg font-semibold">{recieverData?.username}</h1>
                                     <Link to='/'>
                                         <Button variant="outline" size="sm">
                                             Leave Chat

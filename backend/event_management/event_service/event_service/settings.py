@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'event_app',
+    'kafka_app',
+    'participant_app',
     'storages',
     'rest_framework',
     'corsheaders',
@@ -253,3 +255,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 APPEND_SLASH=False
+
+KAFKA_CONFIG = {
+    'bootstrap.servers': os.getenv('KAFKA_BOOTSTRAP_SERVERS', 'localhost:9092'),
+}
