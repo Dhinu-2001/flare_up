@@ -55,7 +55,7 @@ def create_checkout_session(request):
             )
             print("reacher regitration")
             return JsonResponse({"stripe_session": session}, status=200)
-    except Exception as e:
+    except Exception as e: 
         return JsonResponse(
             {"error": "Stripe payment failed", "details": str(e)},
             status=503,
