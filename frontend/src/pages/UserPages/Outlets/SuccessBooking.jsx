@@ -10,6 +10,7 @@ import axiosInstance from '@/axiosconfig'
 export default function SuccessBooking() {
     const [searchParams] = useSearchParams()
     const [data, setData] = useState(null);
+    const [ticketUrl, setTicketUrl] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null)
     const navigate = useNavigate()
@@ -34,7 +35,19 @@ export default function SuccessBooking() {
             const response = await axiosInstance.get(`/events/event/${event_id}/`)
             console.log('context', response)
             setData(response.data)
+            
+        } catch (err) {
+            setError(err)
             setLoading(false)
+        }
+    }
+
+    const fetchTicket = async (transaction_id) => {
+        try {
+            const response = await axiosInstance.get(`/events/ticket-download/${transaction_id}/`)
+            console.log('context', response)
+            setTicketUrl(response.data)
+            
         } catch (err) {
             setError(err)
             setLoading(false)
@@ -43,7 +56,10 @@ export default function SuccessBooking() {
 
     useEffect(() => {
         if (paymentDetails.event_id) {
+            setLoading(true)
             fetchData(paymentDetails.event_id);
+            fetchTicket(paymentDetails.transaction_id)
+            setLoading(false)
         }
     }, [paymentDetails.event_id]);
 

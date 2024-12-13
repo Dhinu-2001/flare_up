@@ -13,4 +13,5 @@ urlpatterns = [
     path('create_category/',views.CreateCategoryAPI.as_view(), name='CreateCategoryAPI'),
     path('category/<str:category_name>/',views.CategoryAPI.as_view(), name='CategoryAPI'),
     path('type/',views.TypeAPI.as_view(), name='TypeAPI'),
+    path('ticket-download/<str:transaction_id>/',views.TicketDownloadAPI.as_view(), name='TicketDownloadAPI'),
 ]

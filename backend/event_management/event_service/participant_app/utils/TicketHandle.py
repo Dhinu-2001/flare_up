@@ -5,14 +5,18 @@ from asgiref.sync import sync_to_async
 from PIL import Image, ImageDraw, ImageFont
 import zipfile
 from io import BytesIO
+from channels.db import database_sync_to_async
+from participant_app.models import TicketDetails
 
-def upload_to_cloudinary(file_path, folder="tickets"):
-    # Upload to Cloudinary
-    response = cloudinary.uploader.upload(file_path, folder=folder, resource_type="raw")
-    # Return the secure URL
+def upload_to_cloudinary(file_path, id, folder="tickets"):
+    
+    response = cloudinary.uploader.upload(file_path, folder=folder, resource_type="raw",public_id=f"tickets_{id}", use_filename=True,
+        format="zip")
+   
     print('Cloudinary response',response)
     return response['secure_url']
 
+@sync_to_async
 class TicketPDF(FPDF):
     def header(self):
         self.set_font('Arial', 'B', 12)
@@ -76,20 +80,30 @@ def generate_ticket_pdf(event_obj, ticket_number, user_id, output_file="ticket.p
     return output_file
     
 
-@sync_to_async
-def generate_tickets_zip(event_obj, ticket_numbers, user_id):
+
+async def generate_tickets_zip(event_obj, user_id, event_ticket_name, ticket_quantity, ticket_registration_obj):
     # Create an in-memory ZIP file
     zip_buffer = BytesIO()
-
+    
+    # CREATE TICKET NUMBER RANGE
+    current_participants_count = event_obj.current_participants_count
+    ticket_range = current_participants_count + ticket_quantity 
+    print('BEFORE TICET NUMBER OBJ')
     with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zipf:
-        for ticket_number in ticket_numbers:
+        for number in range(current_participants_count, ticket_range):
+            ticket_number = f"{event_ticket_name}_{event_obj.id}_00{number}"
             output_file = f"{ticket_number}.pdf"
-            generate_ticket_pdf(event_obj, ticket_number, user_id, output_file)
+            
+            output_file = await generate_ticket_pdf(event_obj, ticket_number, user_id, output_file)
             zipf.write(output_file, os.path.basename(output_file))
             os.remove(output_file)  # Clean up individual ticket files
+            
+            await database_sync_to_async(TicketDetails.objects.create)(ticket_registration_id=ticket_registration_obj, ticket_number=ticket_number)
+            event_obj.current_participants_count += 1
+            await database_sync_to_async(event_obj.save)()
 
     zip_buffer.seek(0)
     # Upload ZIP file to Cloudinary
-    zip_url = upload_to_cloudinary(zip_buffer)
+    zip_url = upload_to_cloudinary(zip_buffer, ticket_registration_obj.id)
 
     return zip_url

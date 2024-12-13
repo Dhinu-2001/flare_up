@@ -20,6 +20,7 @@ class KafkaConsumerService:
 
             # Call the asynchronous function
             obj = ParticipantHandle()
+            print('CALLING PARTIC OBJ')
             await obj.HandleEventParticipant(payment_data)
 
         except Exception as e:
