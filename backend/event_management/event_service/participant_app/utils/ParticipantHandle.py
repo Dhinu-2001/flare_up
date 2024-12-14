@@ -25,8 +25,9 @@ class ParticipantHandle:
         ticket_registration_obj = await database_sync_to_async(TicketRegistration.objects.create)(user_id=user_id, event_id=event_obj, ticket_quantity=ticket_quantity, registered_at=registered_at, transaction_id=transaction_id)
         
         print('CALLING ZIP DEF')
-        zip_url = await generate_tickets_zip(event_obj, user_id, event_ticket_name, ticket_quantity, ticket_registration_obj)
-        ticket_registration_obj.ticket_file = zip_url
+        response = await generate_tickets_zip(event_obj, user_id, event_ticket_name, ticket_quantity, ticket_registration_obj)
+        ticket_registration_obj.ticket_secure_url = response.get('secure_url')
+        ticket_registration_obj.ticket_public_id = response.get('public_id')
         
         print('SAVING COUNT')
         await database_sync_to_async(ticket_registration_obj.save)()

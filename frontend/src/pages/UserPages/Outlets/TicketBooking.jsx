@@ -224,9 +224,9 @@ export default function TicketBooking() {
                 Book Tickets
               </Button>
  
-              <a href='https://res.cloudinary.com/dzwjm8n8v/raw/upload/v1734088735/tickets/tickets_5.zip'  download="ticket.png">
+              {/* <a href='https://res.cloudinary.com/dzwjm8n8v/raw/upload/v1734088735/tickets/tickets_5.zip'  download="ticket.png">
                 Download Ticket
-              </a>
+              </a> */}
             </form>
           </Form>
         </div>

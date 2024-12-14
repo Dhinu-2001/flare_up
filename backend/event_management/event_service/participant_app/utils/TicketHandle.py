@@ -14,7 +14,7 @@ def upload_to_cloudinary(file_path, id, folder="tickets"):
         format="zip")
    
     print('Cloudinary response',response)
-    return response['secure_url']
+    return response
 
 @sync_to_async
 class TicketPDF(FPDF):
@@ -104,6 +104,6 @@ async def generate_tickets_zip(event_obj, user_id, event_ticket_name, ticket_qua
 
     zip_buffer.seek(0)
     # Upload ZIP file to Cloudinary
-    zip_url = upload_to_cloudinary(zip_buffer, ticket_registration_obj.id)
+    response = upload_to_cloudinary(zip_buffer, ticket_registration_obj.id)
 
-    return zip_url
+    return response

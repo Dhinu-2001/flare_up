@@ -6,7 +6,8 @@ class TicketRegistration(models.Model):
     user_id = models.IntegerField(blank=True, null=True)
     event_id = models.ForeignKey(Event, related_name='ticket_registrations', on_delete=models.CASCADE)
     ticket_quantity = models.IntegerField(blank=True, null=True)
-    ticket_file = models.CharField(max_length=255, blank=True, null=True)
+    ticket_secure_url = models.CharField(max_length=255, blank=True, null=True)
+    ticket_public_id = models.CharField(max_length=255, blank=True, null=True)
     registered_at = models.DateTimeField(blank=True)
     transaction_id = models.CharField(max_length=255, blank=True, null=True)
 
