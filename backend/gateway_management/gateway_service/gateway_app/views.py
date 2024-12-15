@@ -104,7 +104,7 @@ class UserAPI(APIView):
         try:
             print("reached api gateway", user_id)
             response = requests.get(
-                f"http://localhost:8081/user/{user_id}/",
+                f"http://localhost:8081/user-profile/{user_id}/",
             )
             if response.status_code == 201:
                 return Response(response.json(), status=status.HTTP_200_OK)

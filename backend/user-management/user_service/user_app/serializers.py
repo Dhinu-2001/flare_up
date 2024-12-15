@@ -91,7 +91,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
         model = Organization
         fields = ['id', 'name', 'address', 'created_at', 'updated_at']
     
-class UserRetrieveSerializer(serializers.ModelSerializer):
+class UserProfileRetrieveSerializer(serializers.ModelSerializer):
     organization = OrganizationSerializer(read_only=True)
     has_password = serializers.SerializerMethodField()
     
@@ -106,6 +106,19 @@ class UserRetrieveSerializer(serializers.ModelSerializer):
     
     def get_has_password(self, obj):
         return bool(obj.password)
+
+class UserDataRetrieveSerializer(serializers.ModelSerializer):
+    organization = OrganizationSerializer(read_only=True)
+    
+    class Meta:
+        model = CustomUser
+        fields = [
+            'id', 'username', 'fullname', 'email', 'phone_number',
+            'profile_picture',  'role', 'organization' 
+        ]
+        read_only_fields = ['id']
+    
+
 
 class VerifyOTPSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)

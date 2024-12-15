@@ -8,7 +8,8 @@ from .serializers import (
     VerifyOTPSerializer,
     EmailSerializer,
     GoogleAuthSerializer,
-    UserRetrieveSerializer
+    UserProfileRetrieveSerializer,
+    UserDataRetrieveSerializer
 )
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import authenticate
@@ -402,14 +403,50 @@ class LogoutView(APIView):
         return response
 
 
-class User(APIView):
+class UserProfile(APIView):
     def get(self, request, user_id):
-        print('reached user',user_id)
-        print(type(user_id))
-        user = CustomUser.objects.get(id=user_id)
-        serializer = UserRetrieveSerializer(user)
-        print(serializer.data)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            if not user_id:
+                return Response(
+                    {"error":"User ID is missing."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            print('reached user',user_id)
+            print(type(user_id))
+            user = CustomUser.objects.get(id=user_id)
+            if user.DoesNotExist():
+                return Response(
+                    {"error":"User does not found."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            serializer = UserProfileRetrieveSerializer(user)
+            print(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+class UserData(APIView):
+    def get(self, request, user_id):
+        try:
+            if not user_id:
+                return Response(
+                    {"error":"User ID is missing."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            print('reached user',user_id)
+            print(type(user_id))
+            user = CustomUser.objects.get(id=user_id)
+            if user.DoesNotExist():
+                return Response(
+                    {"error":"User does not found."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            serializer = UserDataRetrieveSerializer(user)
+            print(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
     
 class UpdateUserProfile(APIView):
     def patch(self, request, user_id):

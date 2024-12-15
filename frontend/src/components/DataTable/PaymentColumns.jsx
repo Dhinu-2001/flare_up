@@ -40,45 +40,55 @@ export const PaymentColumns = [
         enableHiding: false,
     },
     {
-        accessorKey: "title",
+        accessorKey: "registered_at",
         header: ({ column }) => {
             return (
                 <Button
                     variant="ghost"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
-                    Event Title
+                    Paid At
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
         },
+        cell: ({ row }) => {
+            const registered_at = row.getValue("registered_at")
+            const formatted = new Intl.DateTimeFormat('en-GB', {
+                dateStyle: 'short',
+                timeStyle: 'medium',
+                hour12: true,
+              }).format(new Date(registered_at));
+
+            return <div className="font-medium">{formatted}</div>
+        },
     },
     {
-        accessorKey: "category",
-        header: "User",
+        accessorKey: "ticket_quantity",
+        header: "Ticket Quantity",
     },
-    {
-        accessorKey: "created_at",
-        header: "Paid At",
-    },
+    // {
+    //     accessorKey: "created_at",
+    //     header: "Paid At",
+    // },
 
     {
-        accessorKey: "approval_status",
+        accessorKey: "transaction_id",
         header: "Transaction ID",
     },
     {
-        accessorKey: "approval_status",
-        header: "Approval Status",
+        accessorKey: "status",
+        header: "Status",
     },
     {
-        accessorKey: "amount",
+        accessorKey: "amount_received",
         header: () => <div className="text-right">Amount</div>,
         cell: ({ row }) => {
-            const amount = parseFloat(row.getValue("amount"))
+            const amount = parseFloat(row.getValue("amount_received"))
             const formatted = new Intl.NumberFormat("en-US", {
                 style: "currency",
                 currency: "INR",
-            }).format(amount)
+            }).format(parseFloat(amount))
 
             return <div className="text-right font-medium">{formatted}</div>
         },

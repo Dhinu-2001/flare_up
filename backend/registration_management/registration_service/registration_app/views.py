@@ -113,20 +113,54 @@ class HandleSuccessPayment(APIView):
         except Exception as e:
             print(str(e))
             return Response(
-                {"message": "failed"}, status=status.HTTP_503_SERVICE_UNAVAILABLE
+                {"error": str(e)}, status=status.HTTP_503_SERVICE_UNAVAILABLE
             )
 
-class RegistrationsByHosterView(APIView):
+class PaymentsByHosterView(APIView):
     def get(self, request, user_id):
         # Query registrations based on hoster_id
-        registrations = Registration.objects.filter(hoster_id=user_id)
+        try:
+            if not user_id:
+                return Response(
+                    {"error": "Hoster ID is missing."},
+                    status=status.HTTP_400_BAD_REQUEST
+                    )
+            registrations = Registration.objects.filter(hoster_id=user_id)
+            
+            if registrations.exists():
+                # Serialize the query result
+                serializer = RegistrationSerializer(registrations, many=True)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            
+            return Response(
+                {"error": "No registrations found for the given hoster ID."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         
-        if registrations.exists():
-            # Serialize the query result
-            serializer = RegistrationSerializer(registrations, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        
-        return Response(
-            {"detail": "No registrations found for the given hoster_id."},
-            status=status.HTTP_404_NOT_FOUND
-        )
+class PaymentDetailView(APIView):
+    def get(self, request, transaction_id):
+        try:
+            if not transaction_id:
+                return Response(
+                    {"error": "Transaction ID is missing."},
+                    status=status.HTTP_400_BAD_REQUEST
+                    )
+            registration_obj = Registration.objects.get(transaction_id=transaction_id)
+            if registration_obj.exists():
+                serializer = RegistrationSerializer(registration_obj)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            
+            return Response(
+                {"error": "No payment found for the given transaction ID."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )

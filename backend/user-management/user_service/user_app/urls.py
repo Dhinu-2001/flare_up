@@ -10,7 +10,8 @@ urlpatterns = [
     
     path('token_refresh/', views.RefreshTokenView.as_view(), name='RefreshTokenView'),
     path('logout/', views.LogoutView.as_view(), name='LogoutView'),
-    path('user/<int:user_id>/', views.User.as_view(), name='User'),
+    path('user-profile/<int:user_id>/', views.UserProfile.as_view(), name='user-profile'),
+    path('user-data/<int:user_id>/', views.UserData.as_view(), name='user-data'),
     path('user/<int:user_id>/update_user_profile/', views.UpdateUserProfile.as_view(), name='UpdateUserProfile'),
     path('user/<int:user_id>/set_password/', views.setPassword.as_view(), name='setPassword'),
     path('forgot-password/', views.ForgotPassword.as_view(), name='ForgotPassword'),
