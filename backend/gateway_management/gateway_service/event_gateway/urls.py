@@ -14,4 +14,5 @@ urlpatterns = [
     path('category/<str:category_name>/',views.CategoryAPI.as_view(), name='CategoryAPI'),
     path('type/',views.TypeAPI.as_view(), name='TypeAPI'),
     path('ticket-download/<str:transaction_id>/',views.TicketDownloadAPI.as_view(), name='TicketDownloadAPI'),
+    path('participants/event/<int:event_id>/',views.ParticipantsByEventAPI.as_view(), name='participants_event'),
 ]

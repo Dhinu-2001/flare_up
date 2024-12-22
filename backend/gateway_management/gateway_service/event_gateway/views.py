@@ -212,7 +212,7 @@ class TicketDownloadAPI(APIView):
         try:
             print('reached api gateway', transaction_id)
             response = requests.get(
-                f"http://{env('EVENT_SVC_ADDRESS')}/participant/ticket-download/{transaction_id}/",
+                f"http://{env('EVENT_SVC_ADDRESS')}/participants/ticket-download/{transaction_id}/",
             )
             if response.status_code == 201:
                 return Response(response.json(), status=status.HTTP_200_OK)
@@ -220,4 +220,16 @@ class TicketDownloadAPI(APIView):
         except requests.exceptions.RequestException:
             return Response({'error': 'Event service is unavailable'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
         
+class ParticipantsByEventAPI(APIView):
+    def get(self, request, event_id):
+        try:
+            print('reached api gateway', event_id)
+            response = requests.get(
+                f"http://{env('EVENT_SVC_ADDRESS')}/participants/event/{event_id}/",
+            )
+            if response.status_code == 201:
+                return Response(response.json(), status=status.HTTP_200_OK)
+            return Response(response.json(), status=response.status_code)
+        except requests.exceptions.RequestException:
+            return Response({'error': 'Event service is unavailable'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
         

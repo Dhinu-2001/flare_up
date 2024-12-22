@@ -128,7 +128,7 @@ export default function EventDetails() {
               <Link className="mr-3" to={`/hoster/event/${cateData.event_data.id}/edit_event`}>
                 <Button>Edit Event</Button>
               </Link>
-              <Link to={`/hoster/event/${cateData.event_data.id}/edit_event`}>
+              <Link to={`/hoster/participants/event/${cateData.event_data.id}`}>
                 <Button>View Participants</Button>
               </Link>
             </div>

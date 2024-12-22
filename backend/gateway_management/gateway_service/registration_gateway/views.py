@@ -64,7 +64,7 @@ class PaymentDetailAPI(APIView):
             return Response({'error': 'Service address not configured'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
         payment_url = f"http://{registration_svc_address}/payments/{transaction_id}/"
-        event_url = f"http://{env('EVENT_SVC_ADDRESS')}/events/event/{event_id}/"
+        event_url = f"http://{env('EVENT_SVC_ADDRESS')}/participants/ticket_details/{transaction_id}/"
         user_url = f"http://localhost:8081/user-data/{user_id}/"
 
         try:
