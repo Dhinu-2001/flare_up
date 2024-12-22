@@ -118,7 +118,7 @@ export const PaymentColumns = [
                         <DropdownMenuSeparator />
                         {/* <DropdownMenuItem>View customer</DropdownMenuItem> */}
                         <DropdownMenuItem
-                            onClick={() => navigate(`/hoster/events/event/${event.id}`)}>
+                            onClick={() => navigate(`/hoster/payments/payment/${event.transaction_id}/${event.user_id}/${event.event_id}`)}>
                             View payment details
                         </DropdownMenuItem>
                     </DropdownMenuContent>

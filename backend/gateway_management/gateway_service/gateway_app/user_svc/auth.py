@@ -28,6 +28,30 @@ def register(request):
     except requests.exceptions.RequestException as e:
         # Handle network or connection issues with user service
         return Response({"error": "User Service is unavailable"}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+  
+
+def AdminRegister(request):
+    try:
+        # Parse incoming request data from the gateway
+        data = json.loads(request.body)
+
+        # Send the data as JSON to the user service
+        response = requests.post(
+            f"http://localhost:8081/admin-register/",
+            json=data,  # Send data as JSON
+            headers={"Content-Type": "application/json"}
+        )
+
+        # Handle different status codes from the user service response
+        if response.status_code == 201:
+            return Response(response.json(), status=status.HTTP_201_CREATED)
+        return Response(response.json(), status=response.status_code)
+
+    except requests.exceptions.RequestException as e:
+        # Handle network or connection issues with user service
+        return Response({"error": "User Service is unavailable"}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+    
+  
     
 def login(request):
     try:

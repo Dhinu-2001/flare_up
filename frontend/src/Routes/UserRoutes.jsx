@@ -17,6 +17,7 @@ import SuccessBooking from '@/pages/UserPages/Outlets/SuccessBooking'
 import ForgotPassword from '@/pages/ForgotPassword'
 import NewPassword from '@/pages/NewPassword'
 import Chat from '@/Page_components/Common/Chat'
+import AdminRegister from '@/Page_components/Register/Admin'
 
 
 function UserRoutes() {
@@ -24,6 +25,7 @@ function UserRoutes() {
     <Routes>
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/hoster_register" element={<HosterRegister />} />
+      <Route path="/admin_register" element={<AdminRegister />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/otp_verification" element={<OTPPage />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />

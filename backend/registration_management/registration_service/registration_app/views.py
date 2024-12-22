@@ -144,16 +144,22 @@ class PaymentsByHosterView(APIView):
         
 class PaymentDetailView(APIView):
     def get(self, request, transaction_id):
+        print(transaction_id)
         try:
             if not transaction_id:
                 return Response(
                     {"error": "Transaction ID is missing."},
                     status=status.HTTP_400_BAD_REQUEST
                     )
-            registration_obj = Registration.objects.get(transaction_id=transaction_id)
-            if registration_obj.exists():
-                serializer = RegistrationSerializer(registration_obj)
-                return Response(serializer.data, status=status.HTTP_200_OK)
+            try:
+                registration_obj = Registration.objects.get(transaction_id=transaction_id)
+            except Registration.DoesNotExist:
+                return Response(
+                    {"error": "Tansaction not found."},
+                    status=status.HTTP_ṆṆ404_NOT_FOUND
+                )
+            serializer = RegistrationSerializer(registration_obj)
+            return Response(serializer.data, status=status.HTTP_200_OK)
             
             return Response(
                 {"error": "No payment found for the given transaction ID."},

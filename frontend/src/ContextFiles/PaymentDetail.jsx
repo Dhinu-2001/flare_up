@@ -5,8 +5,9 @@ import { useParams } from 'react-router-dom'
 export const PaymentDetailDataContext =  createContext();
 
 function PaymentDetailProvider({children}) {
-    const {transaction_id, user_id} = useParams()
-    const numericUserId = Number(user_id)
+    const {transaction_id, user_id, event_id} = useParams()
+    const user = Number(user_id)
+    const event = Number(event_id)
     const [ data, setData] = useState(null)
     const [ loading, setLoading] = useState(true)
     const [ error, setError] = useState(null)
@@ -16,7 +17,7 @@ function PaymentDetailProvider({children}) {
         const fetchData = async()=>{
             try{
                 setLoading(true)
-                const response = await axiosInstance.get(`/payment_api/payments/${transaction_id}?user=${numericUserId}`)
+                const response = await axiosInstance.get(`/payment_api/payments/${transaction_id}/${user}/${event}/`)
                 console.log('payment details', response.data)
                 const result = response.data
                 setData(result)

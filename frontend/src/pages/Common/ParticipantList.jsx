@@ -3,7 +3,7 @@ import { DataTable } from '../../../components/DataTable/Data-Table';
 import { PaymentsByHosterDataContext } from "@/ContextFiles/PaymentsByHosterDataProvider";
 import { useContext } from "react";
 
-export default function PaymentList() {
+export default function ParticipantList() {
     const { data, error, loading } = useContext(PaymentsByHosterDataContext)
 
     if (loading) return <p>Loading...</p>

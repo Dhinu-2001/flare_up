@@ -18,6 +18,13 @@ class register(APIView):
     def post(self, request):
         response = auth.register(request)
         return response
+    
+@method_decorator(csrf_exempt, name="dispatch")
+class AdminRegister(APIView):
+    def post(self, request):
+        response = auth.AdminRegister(request)
+        return response
+
 
 
 @method_decorator(csrf_exempt, name="dispatch")
