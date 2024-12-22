@@ -8,6 +8,7 @@ class ParticipantHandle:
     async def HandleEventParticipant(self, payment_data):
         event_id = payment_data.get("event_id")
         user_id = payment_data.get("user_id")
+        username = payment_data.get("username")
         registered_at = payment_data.get("registered_at")
         transaction_id = payment_data.get("transaction_id")
         ticket_quantity = payment_data.get("ticket_quantity")
@@ -22,7 +23,7 @@ class ParticipantHandle:
         first_char = [word[0].upper() for word in split]
         event_ticket_name = ''.join(first_char)
         print('CREATING TICET RESGI OBJ')
-        ticket_registration_obj = await database_sync_to_async(TicketRegistration.objects.create)(user_id=user_id, event_id=event_obj, ticket_quantity=ticket_quantity, registered_at=registered_at, transaction_id=transaction_id)
+        ticket_registration_obj = await database_sync_to_async(TicketRegistration.objects.create)(user_id=user_id, username=username, event_id=event_obj, ticket_quantity=ticket_quantity, registered_at=registered_at, transaction_id=transaction_id)
         
         print('CALLING ZIP DEF')
         response = await generate_tickets_zip(event_obj, user_id, event_ticket_name, ticket_quantity, ticket_registration_obj)

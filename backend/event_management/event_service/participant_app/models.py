@@ -4,6 +4,7 @@ from event_app.models import Event
 # Create your models here.
 class TicketRegistration(models.Model):
     user_id = models.IntegerField(blank=True, null=True)
+    username = models.CharField(max_length=50, blank=True, null=True)
     event_id = models.ForeignKey(Event, related_name='ticket_registrations', on_delete=models.CASCADE)
     ticket_quantity = models.IntegerField(blank=True, null=True)
     ticket_secure_url = models.CharField(max_length=255, blank=True, null=True)

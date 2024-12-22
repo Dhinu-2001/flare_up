@@ -47,10 +47,11 @@ def create_checkout_session(request):
                 cancel_url="http://localhost:4242/cancel",
                 metadata={
                     "user_id": data["user_id"],
+                    "username": data["username"],
                     "event_id": data["event_id"],
                     "event_title": data["title"],
                     "quantity": data["quantity"],
-                    "hoster_id": data["hoster_id"]
+                    "hoster_id": data["hoster_id"],
                 },
             )
             print("reacher regitration")
@@ -87,6 +88,7 @@ class HandleSuccessPayment(APIView):
                 "event_id": session.metadata.get("event_id", ""),
                 "event_title": session.metadata.get("event_title", ""),
                 "user_id": session.metadata.get("user_id", ""),
+                "username": session.metadata.get("username", ""),
                 "hoster_id": session.metadata.get("hoster_id", ""),
                 "ticket_quantity": session.metadata.get("quantity", ""),
                 "status": payment_intent.status,
@@ -155,16 +157,12 @@ class PaymentDetailView(APIView):
                 registration_obj = Registration.objects.get(transaction_id=transaction_id)
             except Registration.DoesNotExist:
                 return Response(
-                    {"error": "Tansaction not found."},
+                    {"error": "No payment found for the given transaction ID."},
                     status=status.HTTP_ṆṆ404_NOT_FOUND
                 )
             serializer = RegistrationSerializer(registration_obj)
             return Response(serializer.data, status=status.HTTP_200_OK)
-            
-            return Response(
-                {"error": "No payment found for the given transaction ID."},
-                status=status.HTTP_404_NOT_FOUND
-            )
+           
         except Exception as e:
             return Response(
                 {"error": str(e)},

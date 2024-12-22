@@ -1,10 +1,10 @@
-import { PaymentColumns } from "@/components/DataTable/PaymentColumns";
-import { DataTable } from '../../../components/DataTable/Data-Table';
-import { PaymentsByHosterDataContext } from "@/ContextFiles/PaymentsByHosterDataProvider";
+import { ParticipantsColumn } from "@/components/DataTable/ParticipantsColumn";
+import { DataTable } from "@/components/DataTable/Data-Table"; 
+import { PaymentsByEventDataContext } from "@/ContextFiles/PaymentsByEventDataProvider";
 import { useContext } from "react";
 
 export default function ParticipantList() {
-    const { data, error, loading } = useContext(PaymentsByHosterDataContext)
+    const { data, error, loading } = useContext(PaymentsByEventDataContext)
 
     if (loading) return <p>Loading...</p>
     if (error) return <p>Error loading data</p>
@@ -17,7 +17,7 @@ export default function ParticipantList() {
                 Payments
             </h3>
             <div className="container mx-auto pt-0 py-10">
-                <DataTable columns={PaymentColumns} data={data} />
+                <DataTable columns={ParticipantsColumn} data={data} />
             </div>
         </div>
     );

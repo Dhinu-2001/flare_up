@@ -19,6 +19,8 @@ import Chat from "@/pages/UserPages/Outlets/Chat";
 import PaymentsByHosterDataProvider from "@/ContextFiles/PaymentsByHosterDataProvider";
 import PaymentDetailProvider from "@/ContextFiles/PaymentDetail";
 import PaymentDetail from "@/pages/Common/PaymentDetail";
+import ParticipantList from "@/pages/Common/ParticipantList";
+import PaymentsByEventDataProvider from "@/ContextFiles/PaymentsByEventDataProvider";
 
 function HosterRoutes() {
   return (
@@ -86,6 +88,15 @@ function HosterRoutes() {
         />
 
         <Route path="/events/event/:event_id" element={<EventDetails />} />
+
+        <Route
+          path="/participants/event/:event_id"
+          element={
+            <PaymentsByEventDataProvider>
+              <ParticipantList />
+            </PaymentsByEventDataProvider>
+          }
+        />
 
         <Route
           path="payments"

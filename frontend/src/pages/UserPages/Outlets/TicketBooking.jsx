@@ -55,6 +55,7 @@ export default function TicketBooking() {
   const [total, setTotal] = useState(0);
   const state = store.getState();
   const user_id = state.id;
+  const username = state.username;
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -86,6 +87,7 @@ export default function TicketBooking() {
       );
       const payment_data = {
         user_id: user_id,
+        username: username,
         event_id: data.event_data.id,
         hoster_id: data.user_data.id,
         title: data.event_data.title,
@@ -95,7 +97,7 @@ export default function TicketBooking() {
       };
 
       const response = await axiosInstance.post(
-        "/registration_api/create-checkout-session/",
+        "/payment_api/create-checkout-session/",
         payment_data,
         {
           headers: {

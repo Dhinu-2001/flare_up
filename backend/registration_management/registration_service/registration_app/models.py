@@ -12,6 +12,7 @@ class Registration(models.Model):
     amount_received = models.DecimalField(max_digits=10, decimal_places=2)
     currency = models.CharField(max_length=50, blank=True, null=True)
     transaction_id = models.CharField(max_length=255, blank=True, null=True)
+    username = models.CharField(max_length=50, blank=True, null=True)
 
     def __str__(self):
         return f"Registration {self.id}: User {self.user_id} for Event {self.event_id}"

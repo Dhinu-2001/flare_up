@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Download, Mail, Phone, User } from "lucide-react";
+import { ArrowLeft, Download, Mail, Phone, User, Ticket } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function PaymentDetail() {
@@ -25,16 +25,16 @@ export default function PaymentDetail() {
   return (
     <div className="container mx-auto p-4 space-y-8">
       <div className="flex items-center justify-between">
-        <Link to="/hoster/payments">
+        {/* <Link to="/hoster/payments">
           <Button variant="ghost" className="flex items-center gap-2">
             <ArrowLeft className="h-4 w-4" />
             Back to Payments
           </Button>
-        </Link>
-        <Button variant="outline" className="flex items-center gap-2">
+        </Link> */}
+        {/* <Button variant="outline" className="flex items-center gap-2">
           <Download className="h-4 w-4" />
           Download Invoice
-        </Button>
+        </Button> */}
       </div>
 
       <Card className="w-full max-w-3xl mx-auto">
@@ -48,7 +48,7 @@ export default function PaymentDetail() {
           <div className="flex justify-between items-start">
             <div>
               <h2 className="text-xl font-semibold">
-                {data.event_data.event_data.title}
+                {data.event_data.event_id.title}
               </h2>
               <p className="text-sm text-muted-foreground">
                 Event Date :{" "}
@@ -56,7 +56,7 @@ export default function PaymentDetail() {
                   dateStyle: "short",
                   timeStyle: "medium",
                   hour12: true,
-                }).format(new Date(data.event_data.event_data.start_date_time))}
+                }).format(new Date(data.event_data.event_id.start_date_time))}
               </p>
             </div>
             <div className="text-right">
@@ -135,6 +135,22 @@ export default function PaymentDetail() {
                 </CardContent>
               </Card>
             </div>
+            <div>
+              <Label className="text-sm font-medium">Ticket Numbers</Label>
+              <Card>
+                <CardContent className="p-4 space-y-2">
+                  <div className="flex-col items-center gap-4">
+                    {data.event_data.ticket_details.map((ticket) => (
+                      <div className="flex items-center gap-2">
+                        <Ticket className="h-4 w-4 text-muted-foreground" />
+                        <span>{ticket.ticket_number}</span><br/>
+                        
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
 
           <Separator />
@@ -150,7 +166,7 @@ export default function PaymentDetail() {
                   </div>
                   <div className="text-right">
                     <p className="font-semibold">
-                      Rs. {data.event_data.event_data.ticket_price}
+                      Rs. {data.event_data.event_id.ticket_price}
                     </p>
                     <p>{data.payment_data.ticket_quantity}</p>
                   </div>
