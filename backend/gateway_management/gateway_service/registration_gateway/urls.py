@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
     path('create-checkout-session/', views.create_checkout_sessionAPI.as_view(), name='create_checkout_sessionAPI'),
-    path('registrations/<int:user_id>/', views.RegistrationsByHosterViewAPI.as_view(), name='registrations-by-hoster-API'),
+    path('payments/<int:user_id>/', views.PaymentsByHosterViewAPI.as_view(), name='payments-by-hoster-API'),
+    path('payments/<str:transaction_id>/<int:user>/<int:event>/', views.PaymentDetailAPI.as_view(), name='payment-detail-API'),
 
 ]

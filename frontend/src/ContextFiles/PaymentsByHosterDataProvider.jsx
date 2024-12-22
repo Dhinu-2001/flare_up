@@ -14,7 +14,7 @@ function PaymentsByHosterDataProvider ({ children }) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axiosInstance.get(`registrations/${hoster_id}/`)
+                const response = await axiosInstance.get(`payment_api/payments/${hoster_id}/`)
                 console.log('Payment detraliil', response)
                 setData(response.data)
                 setLoading(false)

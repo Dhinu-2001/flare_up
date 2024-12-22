@@ -59,7 +59,7 @@ function AsideBar() {
                     </Button>
                 </Link>
 
-                <Link to="/hoster/payment_list">
+                <Link to="/hoster/payments">
                     <Button
                         variant="ghost"
                         className={`w-full justify-start ${activeNav === 'billing' ? 'bg-blue-500' : ''}`}

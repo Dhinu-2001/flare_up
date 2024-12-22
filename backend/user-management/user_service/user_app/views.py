@@ -8,7 +8,8 @@ from .serializers import (
     VerifyOTPSerializer,
     EmailSerializer,
     GoogleAuthSerializer,
-    UserRetrieveSerializer
+    UserProfileRetrieveSerializer,
+    UserDataRetrieveSerializer
 )
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import authenticate
@@ -85,6 +86,37 @@ class register(APIView):
 
             content = {"error": error_messages}
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class Adminregister(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            print("register request data", request.data)
+            serializer = RegisterUserSerializer(data=request.data)
+
+            if serializer.is_valid():
+                print(serializer.validated_data)
+                user = CustomUser.objects.create(**serializer.validated_data)
+                user.is_staff = True
+                user.is_admin = True
+                user.is_superadmin = True
+                user.save()
+                print("reached here")
+                # request.session.pop("otp", None)
+                # request.session.pop("email", None)
+                # request.session.pop("user_data", None)
+                
+                return Response(
+                    {
+                        "message": "Admin account created. You can login now."
+                    },
+                    status=status.HTTP_200_OK,
+                )
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class resend_otp(APIView):
@@ -402,14 +434,51 @@ class LogoutView(APIView):
         return response
 
 
-class User(APIView):
+class UserProfile(APIView):
     def get(self, request, user_id):
-        print('reached user',user_id)
-        print(type(user_id))
-        user = CustomUser.objects.get(id=user_id)
-        serializer = UserRetrieveSerializer(user)
-        print(serializer.data)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            if not user_id:
+                return Response(
+                    {"error":"User ID is missing."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            print('reached user',user_id)
+            try:
+                user = CustomUser.objects.get(id=user_id)
+            except CustomUser.DoesNotExist:
+                return Response(
+                    {"error": "User not found."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            serializer = UserProfileRetrieveSerializer(user)
+            print(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+class UserData(APIView):
+    def get(self, request, user_id):
+        try:
+            if not user_id:
+                return Response(
+                    {"error":"User ID is missing."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            print('reached user',user_id)
+            print(type(user_id))
+            try:
+                user_object = CustomUser.objects.get(id=user_id)
+            except CustomUser.DoesNotExist:
+                return Response(
+                    {"error": "User not found."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            serializer = UserDataRetrieveSerializer(user_object)
+            print(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
     
 class UpdateUserProfile(APIView):
     def patch(self, request, user_id):

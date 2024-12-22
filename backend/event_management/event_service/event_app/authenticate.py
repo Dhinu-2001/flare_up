@@ -45,7 +45,7 @@ class CustomAuthentication(JWTAuthentication):
             print('user in authencation', useri)
             
             enforce_csrf(request)
-            return self.get_user(validated_token), validated_token
+            return (self.get_user(validated_token), validated_token)
             
         except AuthenticationFailed as e:
             # Check for a specific message indicating an expired token

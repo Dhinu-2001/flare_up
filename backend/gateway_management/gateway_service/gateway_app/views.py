@@ -18,6 +18,13 @@ class register(APIView):
     def post(self, request):
         response = auth.register(request)
         return response
+    
+@method_decorator(csrf_exempt, name="dispatch")
+class AdminRegister(APIView):
+    def post(self, request):
+        response = auth.AdminRegister(request)
+        return response
+
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -104,7 +111,7 @@ class UserAPI(APIView):
         try:
             print("reached api gateway", user_id)
             response = requests.get(
-                f"http://localhost:8081/user/{user_id}/",
+                f"http://localhost:8081/user-profile/{user_id}/",
             )
             if response.status_code == 201:
                 return Response(response.json(), status=status.HTTP_200_OK)

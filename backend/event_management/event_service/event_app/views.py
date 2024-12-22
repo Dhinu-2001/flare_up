@@ -52,7 +52,7 @@ class Event(APIView):
             # Fetching hoster details
             try:
                 response = requests.get(
-                    f"http://localhost:8081/user/{int(event_data['host_id'])}/"
+                    f"http://localhost:8081/user-data/{int(event_data['host_id'])}/"
                 )
                 user_data = response.json() if response.status_code == 200 else None
                 print('user request data', user_data)
