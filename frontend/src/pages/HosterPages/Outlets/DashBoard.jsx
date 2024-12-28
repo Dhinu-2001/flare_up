@@ -4,14 +4,17 @@ import { Users, DollarSign, UserPlus2, ShoppingCart, ChevronLeft, ChevronRight }
 import MapComponent from '@/Page_components/Common/MapComponent'
 
 import { EventsDataContext } from "@/ContextFiles/EventsDataProvider";
+import { AnalyticsHosterDataContext } from '@/ContextFiles/AnalyticsHoster';
+import { MainGraph } from '@/Page_components/HosterHome/Dashboard/MainGraph';
 
 function DashBoard() {
     const [currentSlide, setCurrentSlide] = useState(0)
-    const { data, error, loading } = useContext(EventsDataContext)
-    if (loading) return <p>Loading...</p>
-    if (error) return <p>Error loading data</p>
+    const { data : mapdata , error : mapError, loading : MapLoading } = useContext(EventsDataContext)
+    const { data : Analyticsdata , error : AnalyticsError, loading : AnalyticsLoading } = useContext(AnalyticsHosterDataContext)
+    if (MapLoading || AnalyticsLoading ) return <p>Loading...</p>
+    if (mapError ) return <p>Error loading data</p>
 
-    console.log('actual event data', data)
+    console.log('Analyticsdata', Analyticsdata)
 
     const slides = [
         {
@@ -26,47 +29,47 @@ function DashBoard() {
         }
     ]
 
-    const chartData = {
-        labels: ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        datasets: [
-            {
-                fill: true,
-                label: 'Sales',
-                data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
-                borderColor: 'rgb(53, 162, 235)',
-                backgroundColor: 'rgba(53, 162, 235, 0.1)',
-                tension: 0.4,
-            },
-        ],
-    }
+    // const chartData = {
+    //     labels: ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    //     datasets: [
+    //         {
+    //             fill: true,
+    //             label: 'Sales',
+    //             data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
+    //             borderColor: 'rgb(53, 162, 235)',
+    //             backgroundColor: 'rgba(53, 162, 235, 0.1)',
+    //             tension: 0.4,
+    //         },
+    //     ],
+    // }
 
-    const chartOptions = {
-        responsive: true,
-        plugins: {
-            legend: {
-                display: false,
-            },
-        },
-        scales: {
-            y: {
-                beginAtZero: true,
-                grid: {
-                    color: 'rgba(0, 0, 0, 0.1)',
-                },
-            },
-            x: {
-                grid: {
-                    display: false,
-                },
-            },
-        },
-    }
+    // const chartOptions = {
+    //     responsive: true,
+    //     plugins: {
+    //         legend: {
+    //             display: false,
+    //         },
+    //     },
+    //     scales: {
+    //         y: {
+    //             beginAtZero: true,
+    //             grid: {
+    //                 color: 'rgba(0, 0, 0, 0.1)',
+    //             },
+    //         },
+    //         x: {
+    //             grid: {
+    //                 display: false,
+    //             },
+    //         },
+    //     },
+    // }
 
     return (
         <>
             <div className="flex flex-col">
                 <div className='h-40 lg:h-80 mb-4'>
-                    <MapComponent mapEvent={data} />
+                    <MapComponent mapEvent={mapdata} />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                     <Card className="rounded-none">
@@ -142,23 +145,13 @@ function DashBoard() {
                     </Card>
                 </div>
 
+                <MainGraph chartData={Analyticsdata.result} />
+
                 {/* Charts and Carousel Grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                     {/* Sales Overview Chart */}
                     {/* <div className="lg:col-span-2">
-                        <Card>
-                            <CardContent className="p-4">
-                            <div className="mb-4">
-                                <h3 className="text-lg font-semibold">Sales Overview</h3>
-                                <p className="text-sm text-gray-500">
-                                <span className="text-green-500">+4% more</span> in 2022
-                                </p>
-                            </div>
-                            <div className="h-[300px]">
-                                <Line data={chartData} options={chartOptions} />
-                            </div>
-                            </CardContent>
-                        </Card>
+                        
                         </div> */}
 
                     {/* Carousel */}

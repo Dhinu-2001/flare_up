@@ -233,3 +233,16 @@ class ParticipantsByEventAPI(APIView):
         except requests.exceptions.RequestException:
             return Response({'error': 'Event service is unavailable'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
         
+class AnalyticsHosterAPI(APIView):
+    def get(self, request, hoster_id):
+        try:
+            print('reached api gateway', hoster_id)
+            response = requests.get(
+                f"http://{env('EVENT_SVC_ADDRESS')}/analytics/get_event_participant_stats/{hoster_id}/",
+            )
+            if response.status_code == 201:
+                return Response(response.json(), status=status.HTTP_200_OK)
+            return Response(response.json(), status=response.status_code)
+        except requests.exceptions.RequestException:
+            return Response({'error': 'Event service is unavailable'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        

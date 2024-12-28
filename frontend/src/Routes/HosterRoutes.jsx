@@ -21,6 +21,7 @@ import PaymentDetailProvider from "@/ContextFiles/PaymentDetail";
 import PaymentDetail from "@/pages/Common/PaymentDetail";
 import ParticipantList from "@/pages/Common/ParticipantList";
 import PaymentsByEventDataProvider from "@/ContextFiles/PaymentsByEventDataProvider";
+import AnalyticsHosterProvider from "@/ContextFiles/AnalyticsHoster";
 
 function HosterRoutes() {
   return (
@@ -29,9 +30,11 @@ function HosterRoutes() {
         <Route
           path="dashboard"
           element={
-            <EventsDataProvider>
-              <DashBoard />
-            </EventsDataProvider>
+            <AnalyticsHosterProvider>
+              <EventsDataProvider>
+                <DashBoard />
+              </EventsDataProvider>
+            </AnalyticsHosterProvider>
           }
         />
         <Route

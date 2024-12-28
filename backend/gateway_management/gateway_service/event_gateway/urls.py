@@ -15,4 +15,5 @@ urlpatterns = [
     path('type/',views.TypeAPI.as_view(), name='TypeAPI'),
     path('ticket-download/<str:transaction_id>/',views.TicketDownloadAPI.as_view(), name='TicketDownloadAPI'),
     path('participants/event/<int:event_id>/',views.ParticipantsByEventAPI.as_view(), name='participants_event'),
+    path('analytics/<int:hoster_id>/',views.AnalyticsHosterAPI.as_view(), name='analytics_hoster_api'),
 ]
