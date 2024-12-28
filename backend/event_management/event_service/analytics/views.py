@@ -1,7 +1,7 @@
 # from django.shortcuts import render
 # from rest_framework.views import APIView
 from django.http import JsonResponse
-from event_app.models import Event
+from event_app.models import Event, EventCategory
 from participant_app.models import TicketRegistration
 
 # # Create your views here.
@@ -9,7 +9,7 @@ from participant_app.models import TicketRegistration
 #     def get(self, request, host_id):
 #         event_objs = Event.objects.filter(host_id=host_id)
         
-from django.db.models import Count, Sum
+from django.db.models import Count, Sum, Q
 from django.db.models.functions import TruncDate
 from datetime import datetime, timedelta
 import json
@@ -61,3 +61,20 @@ def get_event_participant_stats(request, host_id):
     
     return JsonResponse({'result': result})      
         
+        
+def EventCountOnCatgory(request, host_id):
+    categories = EventCategory.objects.annotate(
+    events=Count('event', filter=Q(event__host_id=host_id))
+)
+
+    # Transform the result into the desired format
+    output = [
+        {
+            "category": category.name,
+            "events": category.events,
+            # "fill": category_colors.get(item['category__name'], "var(--color-default)")
+        }
+        for category in categories
+    ]
+
+    return JsonResponse({'result': output}) 
