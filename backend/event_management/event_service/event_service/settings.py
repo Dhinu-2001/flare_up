@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'event_app',
     'kafka_app',
     'participant_app',
+    'analytics',
     'storages',
     'rest_framework',
     'corsheaders',

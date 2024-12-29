@@ -2,6 +2,8 @@ import requests
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from concurrent.futures import ThreadPoolExecutor
+from collections import defaultdict
 import environ
 env = environ.Env()
 environ.Env.read_env()
@@ -232,4 +234,106 @@ class ParticipantsByEventAPI(APIView):
             return Response(response.json(), status=response.status_code)
         except requests.exceptions.RequestException:
             return Response({'error': 'Event service is unavailable'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+def fetch_service_data(url):
+    try:
+        response = requests.get(url)
+        return response.json() if response.status_code == 200 else None
+    except:
+        return None
+
+class AnalyticsHosterAPI(APIView):
+    def get(self, request, hoster_id):
+        try:
+            print('reached api gateway', hoster_id)
+            
+            # Service Addresses
+            event_service = env('EVENT_SVC_ADDRESS')
+            registration_service = env('REGISTRATION_SVC_ADDRESS')
+            
+            # Defining endpoints
+            urls = {
+                'overall_event_participant' : f"http://{event_service}/analytics/get_event_participant_stats/{hoster_id}/",
+                'event_count_on_catgory' : f"http://{event_service}/analytics/event_count_on_category/{hoster_id}/",
+                'participant_count_on_category' : f"http://{event_service}/analytics/participant_count_on_category/{hoster_id}/",
+                'total_income' : f"http://{registration_service}/total_income/{hoster_id}/",
+            }
+            
+            # Fetch data parallel with ThreadPoolExecutor
+            with ThreadPoolExecutor(max_workers=4) as executor:
+                futures = {
+                    key: executor.submit(fetch_service_data, url)
+                    for key, url in urls.items()
+                }
+
+                results = {
+                    key: future.result()
+                    for key, future in futures.items()
+                }
+
+            response_data = {
+                'total_events': results['overall_event_participant'].get('total events', 0),
+                'total_participants': results['overall_event_participant'].get('total participants', 0),
+                'total_income': results['total_income'].get('total income', 0),
+                'overall_event_participant': results['overall_event_participant'].get('event_participant_stats', []),
+                'event_count_on_catgory': results['event_count_on_catgory'].get('result', []),
+                'participant_count_on_category': results['participant_count_on_category'].get('result', []),
+            }
+            print('RESULT OF THREAD CALL', response_data)
+
+            
+            return Response(response_data, status=status.HTTP_200_OK)
+        except requests.exceptions.RequestException:
+            return Response({'error': 'Event service is unavailable'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        except Exception as e:
+            print('EXECEPTION', e)
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+
+class AnalyticsAdminAPI(APIView):
+    def get(self, request, admin_id):
+        try:
+            print('reached api gateway', admin_id)
+            
+            # Service Addresses
+            event_service = env('EVENT_SVC_ADDRESS')
+            registration_service = env('REGISTRATION_SVC_ADDRESS')
+            
+            # Defining endpoints
+            urls = {
+                'overall_event_participant' : f"http://{event_service}/analytics/admin/get_event_participant_stats/{admin_id}/",
+                'event_count_on_catgory' : f"http://{event_service}/analytics/admin/event_count_on_category/{admin_id}/",
+                'participant_count_on_category' : f"http://{event_service}/analytics/admin/participant_count_on_category/{admin_id}/",
+                
+            }
+            
+            # Fetch data parallel with ThreadPoolExecutor
+            with ThreadPoolExecutor(max_workers=4) as executor:
+                futures = {
+                    key: executor.submit(fetch_service_data, url)
+                    for key, url in urls.items()
+                }
+
+                results = {
+                    key: future.result()
+                    for key, future in futures.items()
+                }
+
+            response_data = {
+                'total_events': results['overall_event_participant'].get('total events', 0),
+                'total_participants': results['overall_event_participant'].get('total participants', 0),
+                'overall_event_participant': results['overall_event_participant'].get('event_participant_stats', []),
+                'event_count_on_catgory': results['event_count_on_catgory'].get('result', []),
+                'participant_count_on_category': results['participant_count_on_category'].get('result', []),
+            }
+            print('RESULT OF THREAD CALL', response_data)
+
+            
+            return Response(response_data, status=status.HTTP_200_OK)
+        except requests.exceptions.RequestException:
+            return Response({'error': 'Event service is unavailable'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        except Exception as e:
+            print('EXECEPTION', e)
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
