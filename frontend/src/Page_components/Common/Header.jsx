@@ -15,6 +15,8 @@ import { useDispatch } from 'react-redux';
 import { clearAuthData } from '@/redux/auth/authSlice';
 import { Link, useNavigate } from 'react-router-dom';
 import axiosInstance from '@/axiosconfig';
+import NotificationMenu from '@/Page_components/Common/NotificationMenu';
+import { MessageCircle } from 'lucide-react';
 
 function Header() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -63,7 +65,7 @@ function Header() {
         <Button variant="ghost" className="text-blue-400 hover:text-blue-300 hover:bg-gray-700">My Tickets</Button>
       </>
     )
-  } 
+  }
   // else if (role === 'hoster') {
   //   content = (
   //     <>
@@ -93,8 +95,8 @@ function Header() {
   return (
     <>
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 h-16 py-4 px-6 flex justify-between items-center ">
-        <h1 className="text-3xl font-bold text-blue-400">MeetMingle</h1>
+      <header className="fixed top-0 left-0 right-0 z-50 h-16 py-4 px-6 flex justify-between items-center backdrop-blur-3xl ">
+        <h1 className="text-3xl font-bold text-blue-400">FlareUP</h1>
 
         <div>
           {content}
@@ -102,40 +104,60 @@ function Header() {
 
         <nav>
 
-
-
           {isAuthenticated ?
             (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button className="bg-transparent hover:none text-blue-400">
-                    <Avatar>
-                      <AvatarImage src="https://github.com/shadcn.png" />
-                      <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
+              <div className='flex items-center gap-5 pr-2'>
+                <Link to='/chat'>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className=
+                    " bg-sky-500 border-white hover:bg-sky-300  h-8 w-8 rounded-full"
+
+                  >
+                    <MessageCircle className="h-8 w-8 transition-transform" />
                   </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56">
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuGroup>
-                    <DropdownMenuItem>
-                      Profile
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      Setting
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={logout}>
-                      Logout
-                    </DropdownMenuItem>
-                  </DropdownMenuGroup>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                </Link>
+
+                <NotificationMenu />
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button className="  text-blue-400  bg-sky-500 border-white hover:bg-sky-300  h-8 w-8 rounded-full">
+                      <Avatar>
+                        <AvatarImage src="https://github.com/shadcn.png" />
+                        <AvatarFallback>CN</AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56">
+                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuGroup>
+                      <DropdownMenuItem>
+                        Profile
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        Setting
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={logout}>
+                        Logout
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             ) :
             (
-              <Link to='/register'>
-                <Button variant="ghost" className="text-blue-400 hover:text-blue-400 hover:bg-gray-700">Sign up</Button>
-              </Link>
+              <div>
+                <Link to='/login'>
+                  <Button variant="ghost" className="text-blue-400 hover:text-blue-400 hover:bg-gray-700">Sign in</Button>
+                </Link>
+
+                <Link to='/register'>
+                  <Button variant="ghost" className="text-blue-400 hover:text-blue-400 hover:bg-gray-700">Sign up</Button>
+                </Link>
+              </div>
             )
           }
         </nav>

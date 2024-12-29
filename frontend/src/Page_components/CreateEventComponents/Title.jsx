@@ -7,8 +7,9 @@ import { SelectContent, SelectTrigger } from '@radix-ui/react-select'
 import { CalendarIcon, ChevronDown } from 'lucide-react'
 import React, { useState } from 'react'
 
-function Title({ createEvent, errors, category, type, setCategory, setType, categoriesTypesData }) {
-  const [availableTypes, setAvailableTypes] = useState(null)
+function Title({ createEvent, errors, category, type, setCategory, setType, categoriesTypesData,availableTypes, setAvailableTypes }) {
+  
+  console.log('category set',category)
 
   return (
     <Card className="min-w-72   max-w-xl flex-1 bg-black text-gray-100 ">

@@ -49,7 +49,7 @@ export default function EventBannerUploadCloudinary({ publicId, setPublicId }) {
         <div className="space-y-4">
           <div >
             <h3>Upload event banner</h3>
-            <CloudinaryUploadWidget uwConfig={uwConfig} setPublicId={setPublicId} idEle={"banner"} />
+            <CloudinaryUploadWidget uwConfig={uwConfig} setPublicId={setPublicId} idEle={"banner"} buttonText={'Upload banner'} />
             {/* <CloudinaryUploadWidget uwConfig={uwConfig} setPublicId={setPublicId} loadedType={bannerLoaded} setLoadedType={setBannerLoaded} idEle={"banner"} /> */}
 
 

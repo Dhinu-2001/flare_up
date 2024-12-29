@@ -83,7 +83,7 @@ export default function PromoVideoUploadCloudinary({ publicId, setPublicId }) {
                 <div className="space-y-4">
                     <div>
                         <h3>Upload event promo video</h3>
-                        <CloudinaryUploadWidget uwConfig={uwConfig} setPublicId={setPublicId} idEle={"promovideo"}  />
+                        <CloudinaryUploadWidget uwConfig={uwConfig} setPublicId={setPublicId} idEle={"promovideo"} buttonText={'Upload video'}  />
                         {/* <Label htmlFor="video-upload" className="sr-only">Choose a video file</Label>loadedType, setLoadedType
                         <Input
                             id="video-upload"

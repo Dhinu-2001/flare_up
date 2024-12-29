@@ -8,7 +8,8 @@ from .serializers import (
     VerifyOTPSerializer,
     EmailSerializer,
     GoogleAuthSerializer,
-    UserRetrieveSerializer
+    UserProfileRetrieveSerializer,
+    UserDataRetrieveSerializer
 )
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import authenticate
@@ -21,6 +22,10 @@ from django.core.cache import cache
 from .token_services import TokenService
 import jwt
 import environ
+from google.auth.transport import requests as google_requests
+from google.oauth2 import id_token
+import cachecontrol
+import requests
 
 env = environ.Env()
 environ.Env.read_env()
@@ -48,8 +53,6 @@ class register(APIView):
 
         if serializer.is_valid():
             email = serializer.data["email"]
-            print(email)
-            print(type(email))
             otp = send_otp(email)
 
             print(email, otp)
@@ -57,13 +60,7 @@ class register(APIView):
             cache.set(f"{email}",[email, otp, serializer.validated_data], timeout=120)
             
             cache_data=cache.get(f"{email}")
-            print('value setted in cache', cache_data)
-
-            # cache.set("otp", otp, timeout=60)  # Stored for 2 minute
-            # cache.set("email", email, timeout=60)  # Stored for 2 minute
-            # cache.set(
-            #     "user_data", serializer.validated_data, timeout=120
-            # )  
+            print('value setted in cache', cache_data) 
             print("after cache")
             # request.session['otp'] = otp
             # request.session['email'] = email
@@ -87,8 +84,39 @@ class register(APIView):
                     else:
                         error_messages.append(f"{field.capitalize()}: {error}")
 
-            content = {"message": error_messages}
+            content = {"error": error_messages}
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class Adminregister(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            print("register request data", request.data)
+            serializer = RegisterUserSerializer(data=request.data)
+
+            if serializer.is_valid():
+                print(serializer.validated_data)
+                user = CustomUser.objects.create(**serializer.validated_data)
+                user.is_staff = True
+                user.is_admin = True
+                user.is_superadmin = True
+                user.save()
+                print("reached here")
+                # request.session.pop("otp", None)
+                # request.session.pop("email", None)
+                # request.session.pop("user_data", None)
+                
+                return Response(
+                    {
+                        "message": "Admin account created. You can login now."
+                    },
+                    status=status.HTTP_200_OK,
+                )
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class resend_otp(APIView):
@@ -133,7 +161,6 @@ class VerifyOTP(APIView):
             email = serializer.validated_data["email"]
             enteredOtp = serializer.validated_data["enteredOtp"]
             
-
             print("Send by user", enteredOtp, email)
             
             cache_data=cache.get(f"{email}")
@@ -188,8 +215,6 @@ class VerifyOTP(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-from google.auth.transport import requests
-from google.oauth2 import id_token
 
 
 class GoogleAuth(APIView):
@@ -197,9 +222,15 @@ class GoogleAuth(APIView):
         token = request.data.get("gToken")
         role = request.data.get("role")
         CLIENT_ID = env("GOOGLE_CLIENT_ID")
+        print(token, role, CLIENT_ID)
         
         try:
-            idinfo = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
+            print('before gtoken validation')
+            
+            session = requests.session()
+            cached_session = cachecontrol.CacheControl(session)
+            request = google_requests.Request(session=cached_session)
+            idinfo = id_token.verify_oauth2_token(token, request, CLIENT_ID, clock_skew_in_seconds=10)
             print("token info", idinfo)
 
             # CHECKING IS THE CORRECT AUDIENCE#####
@@ -276,9 +307,10 @@ class GoogleAuth(APIView):
                 print(response)
                 return response
 
-        except ValueError:
+        except Exception as e:
+            print(e)
             return Response(
-                {"error": "Google Oauth Failed"}, status=status.HTTP_400_BAD_REQUEST
+                {"error": f"Google Oauth Failed: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST
             )
 
         # else:
@@ -326,7 +358,7 @@ class login(APIView):
                 )
         else:
             return Response(
-                {"Invalid": "Invalid username or password"},
+                {"error": "Invalid username or password"},
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 
@@ -402,14 +434,51 @@ class LogoutView(APIView):
         return response
 
 
-class User(APIView):
+class UserProfile(APIView):
     def get(self, request, user_id):
-        print('reached user',user_id)
-        print(type(user_id))
-        user = CustomUser.objects.get(id=user_id)
-        serializer = UserRetrieveSerializer(user)
-        print(serializer.data)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            if not user_id:
+                return Response(
+                    {"error":"User ID is missing."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            print('reached user',user_id)
+            try:
+                user = CustomUser.objects.get(id=user_id)
+            except CustomUser.DoesNotExist:
+                return Response(
+                    {"error": "User not found."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            serializer = UserProfileRetrieveSerializer(user)
+            print(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+class UserData(APIView):
+    def get(self, request, user_id):
+        try:
+            if not user_id:
+                return Response(
+                    {"error":"User ID is missing."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            print('reached user',user_id)
+            print(type(user_id))
+            try:
+                user_object = CustomUser.objects.get(id=user_id)
+            except CustomUser.DoesNotExist:
+                return Response(
+                    {"error": "User not found."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+            serializer = UserDataRetrieveSerializer(user_object)
+            print(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
     
 class UpdateUserProfile(APIView):
     def patch(self, request, user_id):
@@ -419,17 +488,143 @@ class UpdateUserProfile(APIView):
         try:
             print('request data',request.data)
             if request.data:
-                    updated_data = request.data
-                    user_object = CustomUser.objects.get(id=user_id)
+                updated_data = request.data
+                user_object = CustomUser.objects.get(id=user_id)
+                if 'profile_publicId' in updated_data:
+                    user_object.profile_picture = updated_data['profile_publicId']
+                else:
                     user_object.fullname = updated_data['fullname']
                     user_object.username = updated_data['username']
                     user_object.email = updated_data['email']
                     user_object.phone_number = updated_data['phone_number']
-                    user_object.save()
+                user_object.save()
                     
-                    return Response({'message':'User id updated successfully'}, status=status.HTTP_202_ACCEPTED)
+                return Response({'message':'User data updated successfully'}, status=status.HTTP_202_ACCEPTED)
 
             else:
                 return Response({'error':'Please input the data'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+                return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+# if len(new_password) < 8:  # Example validation
+#         return Response({'error': 'Password must be at least 8 characters long'}, status=400)
+from django.contrib.auth.hashers import check_password  
+
+class setPassword(APIView):
+    def post(self, request, user_id):
+        try:
+            user_email = request.user
+            user_object = CustomUser.objects.get(email = user_email)
+            new_password = request.data.get('new_password')
+            confirm_password = request.data.get('confirm_password')
+            if new_password != confirm_password:
+                    return Response({'error':'New password and confirm password must be same to confirm.'}, status=status.HTTP_400_BAD_REQUEST)
+            if not user_object.password:
+                
+                user_object.set_password(new_password)
+                user_object.save()
+                return Response({'message':'User password updated successfully'}, status=status.HTTP_202_ACCEPTED)
+            else:
+                current_password = request.data.get('current_password')
+                print('beore checking')
+                if not check_password(current_password, user_object.password):
+                    return Response({'error': 'Current password is incorrect.'}, status=status.HTTP_400_BAD_REQUEST)
+                print('after checking')
+                user_object.set_password(new_password)
+                user_object.save()
+                return Response({'message':'User password updated successfully'}, status=status.HTTP_202_ACCEPTED)
+
+        except Exception as e:
+                return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            
+class ForgotPassword(APIView):
+    def post(self, request):
+        try:
+            email = request.data.get('email')
+            print(email)
+            user_object = CustomUser.objects.get(email=email)
+            if not user_object:
+                return Response({'error':'Entered email is not in use.'}, status=status.HTTP_404_NOT_FOUND)
+            
+            otp = send_otp(email)
+
+            print(email, otp)
+
+            cache.set(f"{email}",[email, otp], timeout=120)
+            
+            cache_data=cache.get(f"{email}")
+            print('value setted in cache', cache_data) 
+            print("after cache")
+            return Response(
+                {"message": "An OTP has been sent to your email"},
+                status=status.HTTP_201_CREATED,
+            )
+        except Exception as e:
+            print(e)
+            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+class VerifyOTPForgotPassword(APIView):
+    def post(self, request):
+        print(request.data)
+        serializer = VerifyOTPSerializer(data=request.data)
+        if serializer.is_valid():
+            print(request.session.session_key)
+            email = serializer.validated_data["email"]
+            enteredOtp = serializer.validated_data["enteredOtp"]
+            
+            print("Send by user", enteredOtp, email)
+            
+            cache_data=cache.get(f"{email}")
+            
+            if cache_data:
+                cached_email = cache_data[0]
+                cached_OTP = cache_data[1]
+            else:
+                print('No data found in cache for this email')
+                return Response({'error':'No data found in cache'},status=status.HTTP_400_BAD_REQUEST)
+            
+
+            print("redis", cached_email, cached_OTP)
+
+            if cached_email != email:
+                return Response(
+                    {"message": "Invalid email address"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            if cached_OTP != enteredOtp:
+                return Response(
+                    {"message": "Invalid Otp"}, status=status.HTTP_400_BAD_REQUEST
+                )
+            print('email veri')
+            return Response(
+                {
+                    "message": "Email verified."
+                },
+                status=status.HTTP_202_ACCEPTED
+            )
+            
+        else:
+            print(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class SetNewPassword(APIView):
+    def post(self, request):
+        try:
+            new_password = request.data.get('new_password')
+            confirm_password = request.data.get('confirm_password')
+            email = request.data.get('email')
+            user_object = CustomUser.objects.get(email = email)
+            if not user_object:
+                return Response({'error':'User not found'}, status=status.HTTP_404_NOT_FOUND)
+            
+            if new_password != confirm_password:
+                    return Response({'error':'New password and confirm password must be same to confirm.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+            user_object.set_password(new_password)
+            user_object.save()
+            return Response({'message':'User password updated successfully'}, status=status.HTTP_202_ACCEPTED)
+
         except Exception as e:
                 return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)

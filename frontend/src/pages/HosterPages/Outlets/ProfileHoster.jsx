@@ -1,6 +1,6 @@
 'use client'
 
-import { Settings, MessageSquare, Package, Pen, Plus, Settings2 } from 'lucide-react'
+import { Settings, MessageSquare, Package, Pen, Plus, Settings2, TriangleAlert, CircleOff } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -25,22 +25,81 @@ import React from 'react'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 import { Link } from 'react-router-dom'
+import HosterProfileUploadCloudinary from '@/Page_components/CloudinaryComponents/HosterProfileUploadCloudinary'
 
 const schema = z.object({
   username: z.string().min(1, { message: 'Username is required' }),
   fullname: z.string().min(1, { message: 'Fullname is required' }),
-  phone_number: z.string().min(1, { message: 'Phone number is required' }),
+  phone_number: z.string().min(10, { message: 'Phone number is required' }),
   email: z.string().min(1, { message: 'Email is required' }),
 })
 
+const selectPasswordSchema = (data) => {
+  if (data) {
+    const schemaNotPassword = z.object({
+      new_password: z
+        .string()
+        .min(8, { message: "Password must be at least 8 characters long" })
+        .regex(/[a-z]/, { message: "Password must contain at least one lowercase letter" })
+        .regex(/[A-Z]/, { message: "Password must contain at least one uppercase letter" })
+        .regex(/[0-9]/, { message: "Password must contain at least one number" }),
+      confirm_password: z
+        .string()
+        .min(8, { message: "Password must be at least 8 characters long" })
+        .regex(/[a-z]/, { message: "Password must contain at least one lowercase letter" })
+        .regex(/[A-Z]/, { message: "Password must contain at least one uppercase letter" })
+        .regex(/[0-9]/, { message: "Password must contain at least one number" }),
+    })
+      .refine((data) => data.new_password === data.confirm_password, {
+        message: "Passwords must match",
+        path: ["confirm_password"], // Show error on the confirm_password field
+      });
+
+    const schemaHasPassword = z.object({
+      current_password: z
+        .string()
+        .min(8, { message: "Password must be at least 8 characters long" })
+        .regex(/[a-z]/, { message: "Password must contain at least one lowercase letter" })
+        .regex(/[A-Z]/, { message: "Password must contain at least one uppercase letter" })
+        .regex(/[0-9]/, { message: "Password must contain at least one number" }),
+      new_password: z
+        .string()
+        .min(8, { message: "Password must be at least 8 characters long" })
+        .regex(/[a-z]/, { message: "Password must contain at least one lowercase letter" })
+        .regex(/[A-Z]/, { message: "Password must contain at least one uppercase letter" })
+        .regex(/[0-9]/, { message: "Password must contain at least one number" }),
+      confirm_password: z
+        .string()
+        .min(8, { message: "Password must be at least 8 characters long" })
+        .regex(/[a-z]/, { message: "Password must contain at least one lowercase letter" })
+        .regex(/[A-Z]/, { message: "Password must contain at least one uppercase letter" })
+        .regex(/[0-9]/, { message: "Password must contain at least one number" }),
+    })
+      .refine((data) => data.new_password === data.confirm_password, {
+        message: "Passwords must match",
+        path: ["confirm_password"], // Show error on the confirm_password field
+      });
+
+    const selectSchema = data.has_password ? schemaHasPassword : schemaNotPassword
+    return selectSchema
+  }
+}
+
 function ProfileHoster() {
   const { data, loading, error, refreshData } = useContext(ProfileDataContext)
-  const { register, setValue, handleSubmit, formState: { errors, isSubmitting }, clearErrors, reset } = useForm({
+  const { register: updateHosterProfileForm, setValue, handleSubmit, formState: { errors, isSubmitting }, clearErrors, reset } = useForm({
     resolver: zodResolver(schema)
   })
+
+  const { register: updateHosterPasswordForm, setValue: setValuePassword, handleSubmit: handleSubmitPassword, formState: { errors: errorsPassword, isSubmitting: isSubmittingPassword }, clearErrors: clearErrorsPassword, reset: resetPassword } = useForm({
+    resolver: zodResolver(selectPasswordSchema(data))
+  })
+
   const state = store.getState()
   const user_id = state.id
   let updateData = false
+  const [profilePublicId, setProfilePublicId] = useState();
+
 
   function setUpdateData() {
     console.log('setupdate triggered')
@@ -62,38 +121,71 @@ function ProfileHoster() {
 
   const onSubmit = async (data) => {
     console.log(data)
-    try {
-      const response = await axiosInstance.patch(`/user/${user_id}/update_user_profile/`, data, {
+
+    await toast.promise(
+      axiosInstance.patch(`/user/${user_id}/update_user_profile/`, data, {
         headers: {
           'Content-Type': 'application/json',
         },
-      })
-      console.log(response.data)
-      reset();
-      toast.success('Profile updated successfully')
-
-      await refreshData();
-    } catch (error) {
-      console.log('Event creation failed:', error)
-      toast.error('Profile updation failed')
-    } finally {
-
-    }
+      }),
+      {
+        loading: 'Profile updating',
+        success: (response) => {
+          // Fetch updated event details after success
+          console.log('response datat', response.data)
+          reset();
+          refreshData();
+          return 'Profile updated successfully';
+        },
+        error: (error) => {
+          console.log('Event creation failed:', error)
+          return error.response?.data?.error ? error.response?.data?.error : 'Profile updation failed'
+        },
+      }
+    );
   }
 
-  // const HandlePassword =()=>{
-    
-  // }
+  const onSubmitPassword = async (data) => {
+    console.log(data)
+
+    await toast.promise(
+      axiosInstance.post(`/user/${user_id}/set_password/`, data, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }),
+      {
+        loading: 'Password updating',
+        success: (response) => {
+          // Fetch updated event details after success
+          console.log(response.data)
+          resetPassword();
+          refreshData();
+          return 'Password updated successfully';
+        },
+        error: (error) => {
+          console.log('Event creation failed:', error)
+          return error.response?.data?.error ? error.response?.data?.error : 'Password updation failed'
+        },
+      }
+    );
+  }
+
+
 
   return (
     <div className="p-6">
       <Card className="mb-6">
         <CardContent className="p-6">
           <div className="flex items-center gap-4">
-            <Avatar className="h-20 w-20">
-              <AvatarImage src="/placeholder.svg" />
-              <AvatarFallback>AT</AvatarFallback>
-            </Avatar>
+            <div className='flex flex-col justify-center items-center gap-2' >
+              <Avatar className="h-28 w-28">
+                <AvatarImage src={`https://res.cloudinary.com/dzwjm8n8v/image/upload/v1732028654/${data.profile_picture}.png`} />
+                <AvatarFallback>{data.fullname}</AvatarFallback>
+              </Avatar>
+              {/* <Button className='border-2 bg-stone-900 text-white hover:bg-stone-800 '>Upload profile</Button> */}
+              <HosterProfileUploadCloudinary publicId={profilePublicId} setPublicId={setProfilePublicId} refreshData={refreshData} />
+            </div>
             <div>
               <h2 className="text-2xl font-semibold">{data.fullname}</h2>
               <p className="text-gray-500">{data.username}</p>
@@ -174,7 +266,7 @@ function ProfileHoster() {
                       <label className="text-sm font-medium">User Name</label>
                       <Input
                         placeholder="Enter user name"
-                        {...register("username")}
+                        {...updateHosterProfileForm("username")}
                       />
                       {errors.username && (
                         <div className='text-red-500'>{errors.username.message}</div>
@@ -185,7 +277,7 @@ function ProfileHoster() {
                       <label className="text-sm font-medium">Full name</label>
                       <Input
                         placeholder="Enter full name"
-                        {...register("fullname")}
+                        {...updateHosterProfileForm("fullname")}
                       />
                       {errors.fullname && (
                         <div className='text-red-500'>{errors.fullname.message}</div>
@@ -195,7 +287,7 @@ function ProfileHoster() {
                       <label className="text-sm font-medium">Phone number</label>
                       <Input
                         placeholder="Enter phone number"
-                        {...register("phone_number")}
+                        {...updateHosterProfileForm("phone_number")}
                       />
                       {errors.phone_number && (
                         <div className='text-red-500'>{errors.phone_number.message}</div>
@@ -206,7 +298,7 @@ function ProfileHoster() {
                       <label className="text-sm font-medium">Email</label>
                       <Input
                         placeholder="Enter emailId"
-                        {...register("email")}
+                        {...updateHosterProfileForm("email")}
                       />
                       {errors.email && (
                         <div className='text-red-500'>{errors.email.message}</div>
@@ -228,26 +320,139 @@ function ProfileHoster() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div>
+              <div className='flex items-center gap-2'>
                 <span className="font-semibold">User Name: </span>
-                <span className="text-gray-600">{data.username ? data.username : 'Please update'}</span>
+                <span className="text-gray-600">{data.username ? data.username :
+                  <div className='flex items-center'>
+                    <CircleOff className="mr-2 h-4 w-4 text-red-500" />
+                    Please update
+                  </div>
+                }</span>
               </div>
-              <div>
+              <div className='flex items-center gap-2'>
                 <span className="font-semibold">Full Name: </span>
                 <span className="text-gray-600">{data.fullname}</span>
               </div>
-              <div>
+              <div className='flex items-center gap-2'>
                 <span className="font-semibold">Phone number: </span>
-                <span className="text-gray-600">{data.phone_number ? data.phone_number : 'Please update'}</span>
+                <span className="text-gray-600">{data.phone_number ? data.phone_number :
+                  <div className='flex items-center'>
+                    <CircleOff className="mr-2 h-4 w-4 text-red-500" />
+                    Please update
+                  </div>
+                }</span>
               </div>
-              <div>
+              <div className='flex items-center gap-2'>
                 <span className="font-semibold">Email: </span>
                 <span className="text-gray-600">{data.email}</span>
               </div>
-              {/* <Button onClick={HandlePassword} variant="outline">
-                <Settings className="mr-2 h-4 w-4 " />
-                {data.password ? 'Change password' : 'Set password'}
-              </Button> */}
+
+              {data.has_password ?
+                (<Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline">
+                      <Settings className="mr-2 h-4 w-4 " />
+                      Change password
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Change password</DialogTitle>
+                    </DialogHeader>
+                    <form onSubmit={handleSubmitPassword(onSubmitPassword)}>
+                      <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium">Current Password</label>
+                          <Input
+                            placeholder="Enter current password"
+                            {...updateHosterPasswordForm("current_password")}
+                          />
+                          {errorsPassword.current_password && (
+                            <div className='text-red-500'>{errorsPassword.current_password.message}</div>
+                          )
+                          }
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium">New Password</label>
+                          <Input
+                            placeholder="Enter new password"
+                            {...updateHosterPasswordForm("new_password")}
+                          />
+                          {errorsPassword.new_password && (
+                            <div className='text-red-500'>{errorsPassword.new_password.message}</div>
+                          )}
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium">Confirm Password</label>
+                          <Input
+                            placeholder="Re-enter new password" type="password"
+                            {...updateHosterPasswordForm("confirm_password")}
+                          />
+                          {errorsPassword.confirm_password && (
+                            <div className='text-red-500'>{errorsPassword.confirm_password.message}</div>
+                          )
+                          }
+                        </div>
+                        <div className="flex justify-end">
+                          <Button type="submit" disabled={isSubmittingPassword} >
+                            {isSubmittingPassword ? "Updating password" : "Update password"}
+                          </Button>
+                          {errorsPassword.root && (
+                            <div className='text-red-500'>{errorsPassword.root.message}</div>
+                          )}
+                        </div>
+                      </div>
+                    </form>
+                  </DialogContent>
+                </Dialog>)
+                :
+                (<Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline">
+                      <TriangleAlert className="mr-2 h-6 w-6 text-red-500" />
+                      Set password
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Set password</DialogTitle>
+                    </DialogHeader>
+                    <form onSubmit={handleSubmitPassword(onSubmitPassword)}>
+                      <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium">New Password</label>
+                          <Input
+                            placeholder="Enter new password"
+                            {...updateHosterPasswordForm("new_password")}
+                          />
+                          {errorsPassword.new_password && (
+                            <div className='text-red-500'>{errorsPassword.new_password.message}</div>
+                          )}
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium">Confirm Password</label>
+                          <Input
+                            placeholder="Re-enter new password" type="password"
+                            {...updateHosterPasswordForm("confirm_password")}
+                          />
+                          {errorsPassword.confirm_password && (
+                            <div className='text-red-500'>{errorsPassword.confirm_password.message}</div>
+                          )
+                          }
+                        </div>
+                        <div className="flex justify-end">
+                          <Button type="submit" disabled={isSubmittingPassword} >
+                            {isSubmittingPassword ? "Creating password" : "Create password"}
+                          </Button>
+                          {errorsPassword.root && (
+                            <div className='text-red-500'>{errorsPassword.root.message}</div>
+                          )}
+                        </div>
+                      </div>
+                    </form>
+                  </DialogContent>
+                </Dialog>)
+              }
             </div>
           </CardContent>
         </Card>

@@ -7,9 +7,9 @@ import { env } from '@/utils/env'
 
 // Initialize Mapbox
 mapboxgl.accessToken = env.VITE_map_key
-console.log('map key loakded',env.VITE_map_key)
+console.log('map key loakded', env.VITE_map_key)
 
-export default function LocationPicker({ lng, setLng, lat, setLat, address, setAddress, city, setCity, state, setState,country, setCountry }) {
+export default function LocationPicker({ lng, setLng, lat, setLat, address, setAddress, city, setCity, state, setState, country, setCountry }) {
   const mapContainer = useRef(null);
   const map = useRef(null);
   const marker = useRef(null);

@@ -24,6 +24,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import AsideBar from '@/Page_components/HosterHome/AsideBar'
 
+
 function HosterHomeLayout() {
 
   const navigate = useNavigate()
@@ -77,21 +78,28 @@ function HosterHomeLayout() {
     // </div>
 
     <div className=" min-h-screen bg-gradient-to-tl from-stone-800 to-black ">
+
       <Header />
+      {/* <div className='w-16 overflow-hidden'> */}
+        
+          {/* <ChatSidebar /> */}
+       
+      
+
       <AsideBar />
 
       {/* Main Content */}
       <div className={`transition-margin duration-300 ease-in-out ${sidebarOpen ? 'md:ml-64' : ''}`}>
         {/* Header */}
-        <header className=" p-4">
+        {/* <header className=" p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-black">
 
               <Home className="h-4 w-4" />
               <span>/</span>
               <span>Dashboard</span>
-            </div>
-            {/* <div className="flex items-center gap-4">
+            </div> */}
+        {/* <div className="flex items-center gap-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input className="pl-10" placeholder="Type here..." />
@@ -106,11 +114,13 @@ function HosterHomeLayout() {
                 <Bell className="h-4 w-4" />
               </Button>
             </div> */}
-          </div>
-        </header>
+        {/* </div>
+        </header> */}
 
-        <main className="p-4">
+        <main className="p-4 mt-9">
+          
           <Outlet />
+          
         </main>
       </div>
     </div>

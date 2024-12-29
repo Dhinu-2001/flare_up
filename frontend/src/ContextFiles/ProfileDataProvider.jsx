@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react'
 import axiosInstance from '@/axiosconfig'
-import { store } from "../redux/Store";
+import { store } from '../redux/Store';
 
 export const ProfileDataContext = createContext();
 

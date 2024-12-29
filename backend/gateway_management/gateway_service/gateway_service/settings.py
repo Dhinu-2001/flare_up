@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'gateway_app',
     'event_gateway',
+    'registration_gateway',
     'rest_framework',
     'corsheaders'
 ]

@@ -55,11 +55,11 @@ function AsideBar() {
                         onClick={() => setActiveNav('tables')}
                     >
                         <Package className="mr-2 h-4 w-4" />
-                        Tables
+                        Your Events
                     </Button>
                 </Link>
 
-                <Link to="/hoster/payment_list">
+                <Link to="/hoster/payments">
                     <Button
                         variant="ghost"
                         className={`w-full justify-start ${activeNav === 'billing' ? 'bg-blue-500' : ''}`}

@@ -43,6 +43,7 @@ class Event(models.Model):
     payment_required  = models.BooleanField(default=False)
     ticket_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     participant_capacity = models.IntegerField(blank=True, null=True)
+    current_participants_count = models.IntegerField(default=0)
 
     # Media
     banner_image = models.CharField(max_length=255, blank=True, null=True)
@@ -56,7 +57,8 @@ class Event(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     # Status
-    status = models.CharField(max_length=50, choices=[('Active', 'Active'), ('Cancelled', 'Cancelled'), ('Draft', 'Draft')], default='Draft')
+    status = models.CharField(max_length=50, choices=[('Active', 'Active'), ('Cancelled', 'Cancelled'), ('Cancelled by Admin', 'Cancelled by Admin'), ('Draft', 'Draft')], default='Draft')
+    status_request  = models.BooleanField(default=False)
     
     # Admin approval
     approval_status = models.CharField(max_length=50, choices=[('Approved', 'Approved'), ('Rejected', 'Rejected'), ('Waiting for approval', 'Waiting for approval')], default='Waiting for approval')

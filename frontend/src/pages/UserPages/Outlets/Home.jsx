@@ -40,8 +40,8 @@ function Home() {
           </div>
         </section>
         <section className="p-10 px-40 bg-gradient-to-tl from-stone-800 to-black">
-          <h2 className="text-2xl font-semibold mb-6 text-purple-400">Hot Upcoming Concerts</h2>
-          <CardComponent />
+          <h2 className="text-2xl font-semibold mb-6 text-purple-400">Hot Upcoming Events</h2>
+          <CardComponent EventsData={data}/>
         </section>
       </main>
     </>

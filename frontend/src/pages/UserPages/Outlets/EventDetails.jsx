@@ -5,11 +5,13 @@ import { Button } from "@/components/ui/button"
 import { ChevronDown, DollarSign } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Play, MapPin, Calendar, Timer, Users, Ticket, Clock, Image as ImageIcon, Locate } from 'lucide-react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import axiosInstance from '@/axiosconfig'
 import MapEvent from '@/Page_components/Common/MapEvent'
 import { Cloudinary } from "@cloudinary/url-gen";
 import { AdvancedVideo, responsive, placeholder } from "@cloudinary/react";
+import { ParticipantCarousel } from '@/Page_components/Common/ParticipantCarousel'
+import { MessageCircle } from 'lucide-react'
 
 export default function EventDetails() {
   const { event_id } = useParams()
@@ -17,6 +19,7 @@ export default function EventDetails() {
   const [eventData, setEventData] = useState(null)
   const [myVideo, setMyVideo] = useState(null)
   const [cloudName] = useState("dzwjm8n8v");
+  const [isHovered, setIsHovered] = useState(false)
 
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
@@ -39,8 +42,7 @@ export default function EventDetails() {
 
       console.log(response.data)
       setEventData(response.data)
-      console.log('event data', eventData?.event_data)
-      setMyVideo(cld.image(eventData.event_data.promo_video))
+      // setMyVideo(cld.image(eventData.event_data.promo_video))
 
     } catch (error) {
       console.log(error)
@@ -151,9 +153,22 @@ export default function EventDetails() {
             </div>
           </div>
         </div>
+        <Link to={`/chat/${eventData.user_data.id}/`}>
+          <Button
+            className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-sky-400 p-0 shadow-lg transition-all hover:scale-110 hover:bg-sky-200"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
+            <MessageCircle
+              className={`h-6 w-6 text-background transition-transform ${isHovered ? 'scale-110' : 'scale-100'
+                }`}
+            />
+            <span className="sr-only">Open messages</span>
+          </Button>
+        </Link>
+
       </div>
 
-      {/* Video Section */}
       <div className="container mx-auto px-4 py-16">
         <h2 className="text-3xl font-bold mb-8">Featured Highlights</h2>
         <div className="grid md:grid-cols-2 gap-8">
@@ -223,12 +238,16 @@ export default function EventDetails() {
 
         </div>
       </div>
-      {/* Location & Tickets Section */}
+
+      <div className='my-5'>
+        <ParticipantCarousel participants={eventData?.event_data?.key_participants} />
+      </div>
+
       <div className="bg-zinc-900">
         <div className="container mx-auto px-4 py-20">
           <div className="grid md:grid-cols-2 gap-8">
             <div>
-              <h2 className="text-3xl font-bold mb-8">Event Location</h2>
+              <h2 className="text-3xl font-bold mb-8">Event Video</h2>
               {/* <AdvancedVideo
                 style={{ maxWidth: "100%" }}
                 cldVid={myVideo}
@@ -254,7 +273,7 @@ export default function EventDetails() {
                 <div className="grid gap-6">
                   <div className="flex justify-between items-center">
                     <div>
-                      
+
                     </div>
                     {/* <Badge className="bg-emerald-400 text-black">$199</Badge> */}
                   </div>
@@ -282,9 +301,11 @@ export default function EventDetails() {
                       </div>
                     </CardContent>
                   </Card>
-                  <Button className=" bg-blue-500 text-black hover:bg-blue-800">
-                    Register Now
-                  </Button>
+                  <Link to={`/catgory/${eventData.event_data.category}/${eventData.event_data.type}/${eventData.event_data.id}/ticket_registration`}>
+                    <Button className=" bg-blue-500 text-black hover:bg-blue-800 rounded-none">
+                      Register Now
+                    </Button>
+                  </Link>
                 </div>
               </Card>
             </div>

@@ -1,6 +1,7 @@
-import { clearAuthData, setNewToken } from "@/redux/auth/authSlice"
-import { persistor } from "@/redux/Store";
+import { clearAuthData } from "@/redux/auth/authSlice"
+import { persistor, store } from "@/redux/Store";
 import axiosInstance from '@/axiosconfig';
+
 
 export const handleLogout = async () => {
     
@@ -10,6 +11,8 @@ export const handleLogout = async () => {
         if (response.status == 200) {
             store.dispatch(clearAuthData());
             await persistor.purge();
+            window.location.href = '/login';
+
         } else {
             console.error('Logout failed on the backend. Status:', response.status);
         }

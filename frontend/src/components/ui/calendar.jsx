@@ -11,6 +11,9 @@ function Calendar({
   showOutsideDays = true,
   ...props
 }) {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
   return (
     (<DayPicker
       showOutsideDays={showOutsideDays}
@@ -40,14 +43,22 @@ function Calendar({
         day_range_end: "day-range-end",
         day_selected:
           "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
-        day_today: "bg-accent text-accent-foreground",
+        day_today: "bg-accent border-2 border-white text-accent-foreground",
         day_outside:
           "day-outside text-muted-foreground opacity-50 aria-selected:bg-accent/50 aria-selected:text-muted-foreground aria-selected:opacity-30",
         day_disabled: "text-muted-foreground opacity-50",
         day_range_middle:
           "aria-selected:bg-accent aria-selected:text-accent-foreground",
         day_hidden: "invisible",
+        day_before_today: "day-before-today text-muted-foreground opacity-30 aria-selected:bg-accent/30 aria-selected:text-muted-foreground aria-selected:opacity-30",
         ...classNames,
+
+      }}
+      modifiers={{
+        before_today: (day) => day < today,
+      }}
+      modifiersClassNames={{
+        before_today: "day-before-today",
       }}
       components={{
         IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" />,
