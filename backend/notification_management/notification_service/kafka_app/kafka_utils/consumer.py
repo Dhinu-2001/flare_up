@@ -14,7 +14,10 @@ class KafkaConsumerService:
         try:
             print('payment_data Consumer', payment_data)
             user_id = payment_data["user_id"]
-            message = f"Payment of {payment_data['amount_received']} {payment_data['currency']} for Event: {payment_data['event_title']} was successful."
+            if payment_data['status'] == 'Payment failed':
+                message = 'Payment failed'
+            else:
+                message = f"Payment of {payment_data['amount_received']} {payment_data['currency']} for Event: {payment_data['event_title']} was successful."
             type = 'Notification'
 
             # Call the asynchronous function

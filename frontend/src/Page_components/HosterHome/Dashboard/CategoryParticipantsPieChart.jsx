@@ -36,49 +36,49 @@ import {
 
 const desktopData = 
 [
-    {
-        "category": "Corporate",
-        "events": 0,
-        "fill": "var(--color-Corporate)"
-    },
-    {
-        "category": "Music",
-        "events": 1,
+  {
+      "category": "Music",
+      "tickets": 1,
         "fill": "var(--color-Music)"
-    },
-    {
-        "category": "Tech",
-        "events": 2,
-        "fill": "var(--color-Tech)"
-    },
-    {
-        "category": "Educational Event",
-        "events": 0,
-        "fill": "var(--color-Educational Event)"
-    },
-    {
-        "category": "Cultural & Community",
-        "events": 0,
-        "fill": "var(--color-Corporate)"
-    },
-    {
-        "category": "Sports",
-        "events": 0,
+  },
+  {
+      "category": "Sports",
+      "tickets": 0,
         "fill": "var(--color-Sports)"
-    }
+  },
+  {
+      "category": "Tech",
+      "tickets": 7,
+        "fill": "var(--color-Tech)"
+  },
+  {
+      "category": "Cultural & Community",
+      "tickets": 0,
+        "fill": "var(--color-Cultural & Community)"
+  },
+  {
+      "category": "Educational Events",
+      "tickets": 0,
+        "fill": "var(--color-Educational Events)"
+  },
+  {
+      "category": "Corporate Events",
+      "tickets": 0,
+        "fill": "var(--color-Corporate)"
+  }
 ]
 
 const chartConfig = {
-  visitors: {
-    label: "Visitors",
+  participants: {
+    label: "Participants",
   },
-  events: {
-    label: "Events",
+  tickets: {
+    label: "Tickets",
   },
   mobile: {
     label: "Mobile",
   },
-  Corporate: {
+  'Corporate Events': {
     label: "Corporate",
     color: "hsl(var(--chart-1))",
   },
@@ -95,28 +95,30 @@ const chartConfig = {
     color: "hsl(var(--chart-4))",
   },
   'Educational Event': {
-    label: "Educational Event",
+    label: "Educational",
     color: "hsl(var(--chart-5))",
   },
 }
 
- export default function CategoryParticipantsPieChart() {
+ export default function CategoryParticipantsPieChart({PieData}) {
+  PieData.forEach((item) => {
+    item.fill = `var(--color-${item.category.replace(/[^a-zA-Z0-9]/g, "-")})`;
+  });
   const id = "pie-interactive"
-  const [activeMonth, setActiveMonth] = React.useState(desktopData[0].category)
+  const [activeMonth, setActiveMonth] = React.useState(PieData[0].category)
 
   const activeIndex = React.useMemo(
-    () => desktopData.findIndex((item) => item.category === activeMonth),
+    () => PieData.findIndex((item) => item.category === activeMonth),
     [activeMonth]
   )
-  const categories = React.useMemo(() => desktopData.map((item) => item.category), [])
+  const categories = React.useMemo(() => PieData.map((item) => item.category), [])
 
   return (
-    <Card data-chart={id} className="flex flex-col">
+    <Card data-chart={id} className="flex flex-col border-none">
       <ChartStyle id={id} config={chartConfig} />
       <CardHeader className="flex-row items-start space-y-0 pb-0">
         <div className="grid gap-1">
-          <CardTitle>Pie Chart - Interactive</CardTitle>
-          <CardDescription>January - June 2024</CardDescription>
+          <CardDescription>Total Paricipants under category</CardDescription>
         </div>
         <Select value={activeMonth} onValueChange={setActiveMonth}>
           <SelectTrigger
@@ -168,8 +170,8 @@ const chartConfig = {
               content={<ChartTooltipContent hideLabel />}
             />
             <Pie
-              data={desktopData}
-              dataKey="events"
+              data={PieData}
+              dataKey="tickets"
               nameKey="category"
               innerRadius={60}
               strokeWidth={5}
@@ -203,14 +205,14 @@ const chartConfig = {
                           y={viewBox.cy}
                           className="fill-foreground text-3xl font-bold"
                         >
-                          {desktopData[activeIndex].events.toLocaleString()}
+                          {PieData[activeIndex].tickets.toLocaleString()}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground"
                         >
-                          Visitors
+                          Participants
                         </tspan>
                       </text>
                     )

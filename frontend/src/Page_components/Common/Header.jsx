@@ -95,8 +95,8 @@ function Header() {
   return (
     <>
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 h-16 py-4 px-6 flex justify-between items-center ">
-        <h1 className="text-3xl font-bold text-blue-400">MeetMingle</h1>
+      <header className="fixed top-0 left-0 right-0 z-50 h-16 py-4 px-6 flex justify-between items-center backdrop-blur-3xl ">
+        <h1 className="text-3xl font-bold text-blue-400">FlareUP</h1>
 
         <div>
           {content}

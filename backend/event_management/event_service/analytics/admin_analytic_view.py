@@ -15,13 +15,11 @@ from datetime import datetime, timedelta
 import json
 
 
-def total_events_participants(host_id):
-    total_events = Event.objects.filter(host_id=host_id).count()
+def total_events_participants():
+    total_events = Event.objects.all().count()
     
     total_participants= (
-        TicketRegistration.objects.filter(
-            event_id__host_id=host_id
-        )
+        TicketRegistration.objects.all()
         .aggregate(participants=Sum("ticket_quantity"))
     )['participants'] or 0
     
@@ -29,14 +27,14 @@ def total_events_participants(host_id):
     
     return {'total events':total_events, 'total participants': total_participants}
 
-def get_event_participant_stats(request, host_id):
+def get_event_participant_stats(request, admin_id):
     # Calculate date range
     end_date = datetime.now()
     start_date = end_date - timedelta(days=90)  # last 3 months
 
     # Query for events created per day
     events_per_day = (
-        Event.objects.filter(host_id=host_id, created_at__range=(start_date, end_date))
+        Event.objects.filter(created_at__range=(start_date, end_date))
         .annotate(date=TruncDate("created_at"))
         .values("date")
         .annotate(events=Count("id"))
@@ -46,7 +44,7 @@ def get_event_participant_stats(request, host_id):
     # Query for participants per day based on ticket registrations
     participants_per_day = (
         TicketRegistration.objects.filter(
-            event_id__host_id=host_id, registered_at__range=(start_date, end_date)
+            registered_at__range=(start_date, end_date)
         )
         .annotate(date=TruncDate("registered_at"))
         .values("date")
@@ -76,15 +74,15 @@ def get_event_participant_stats(request, host_id):
     # Convert to list and format for chart
     result = list(chart_data.values())
     
-    response_data = total_events_participants(host_id)
+    response_data = total_events_participants()
     response_data["event_participant_stats"] = result
 
     return JsonResponse(response_data)
 
 
-def EventCountOnCategory(request, host_id):
+def EventCountOnCategory(request, admin_id):
     categories = EventCategory.objects.annotate(
-        events=Count("event", filter=Q(event__host_id=host_id))
+        events=Count("event")
     )
 
     # Transform the result into the desired format
@@ -100,11 +98,11 @@ def EventCountOnCategory(request, host_id):
     return JsonResponse({"result": output})
 
 
-def ParticipantCountOnCategory(request, host_id):
+def ParticipantCountOnCategory(request, admin_id):
     categories = EventCategory.objects.annotate(
         total_tickets=Sum(
             "event__ticket_registrations__ticket_quantity",
-            filter=Q(event__host_id=host_id),
+            
         )
     )
     output = [

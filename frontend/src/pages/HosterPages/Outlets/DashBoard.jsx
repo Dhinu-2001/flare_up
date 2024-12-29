@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Users,
   DollarSign,
@@ -47,59 +47,23 @@ function DashBoard() {
     },
   ];
 
-  // const chartData = {
-  //     labels: ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-  //     datasets: [
-  //         {
-  //             fill: true,
-  //             label: 'Sales',
-  //             data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
-  //             borderColor: 'rgb(53, 162, 235)',
-  //             backgroundColor: 'rgba(53, 162, 235, 0.1)',
-  //             tension: 0.4,
-  //         },
-  //     ],
-  // }
-
-  // const chartOptions = {
-  //     responsive: true,
-  //     plugins: {
-  //         legend: {
-  //             display: false,
-  //         },
-  //     },
-  //     scales: {
-  //         y: {
-  //             beginAtZero: true,
-  //             grid: {
-  //                 color: 'rgba(0, 0, 0, 0.1)',
-  //             },
-  //         },
-  //         x: {
-  //             grid: {
-  //                 display: false,
-  //             },
-  //         },
-  //     },
-  // }
-
   return (
     <>
       <div className="flex flex-col">
         <div className="h-40 lg:h-80 mb-4">
           <MapComponent mapEvent={mapdata} />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
           <Card className="rounded-none">
             <CardContent className="p-4">
               <div className="flex justify-between items-start">
                 <div>
                   <p className="text-sm text-gray-500">TODAY'S MONEY</p>
-                  <h3 className="text-2xl font-bold">$53,000</h3>
-                  <p className="text-sm">
+                  <h3 className="text-2xl font-bold">Rs.{Analyticsdata.total_income}</h3>
+                  {/* <p className="text-sm">
                     <span className="text-green-500">+55%</span>
                     <span className="text-gray-500"> since yesterday</span>
-                  </p>
+                  </p> */}
                 </div>
                 <div className="bg-blue-500 p-3 rounded-lg">
                   <DollarSign className="h-6 w-6 text-white" />
@@ -112,12 +76,12 @@ function DashBoard() {
             <CardContent className="p-4">
               <div className="flex justify-between items-start">
                 <div>
-                  <p className="text-sm text-gray-500">TODAY'S USERS</p>
-                  <h3 className="text-2xl font-bold">2,300</h3>
-                  <p className="text-sm">
+                  <p className="text-sm text-gray-500">TOTAL EVENTS</p>
+                  <h3 className="text-2xl font-bold">{Analyticsdata.total_events}</h3>
+                  {/* <p className="text-sm">
                     <span className="text-green-500">+3%</span>
                     <span className="text-gray-500"> since last week</span>
-                  </p>
+                  </p> */}
                 </div>
                 <div className="bg-red-500 p-3 rounded-lg">
                   <Users className="h-6 w-6 text-white" />
@@ -130,12 +94,12 @@ function DashBoard() {
             <CardContent className="p-4">
               <div className="flex justify-between items-start">
                 <div>
-                  <p className="text-sm text-gray-500">NEW CLIENTS</p>
-                  <h3 className="text-2xl font-bold">+3,462</h3>
-                  <p className="text-sm">
+                  <p className="text-sm text-gray-500">TOTAL PARTICIPANTS</p>
+                  <h3 className="text-2xl font-bold">{Analyticsdata.total_participants}</h3>
+                  {/* <p className="text-sm">
                     <span className="text-red-500">-2%</span>
                     <span className="text-gray-500"> since last quarter</span>
-                  </p>
+                  </p> */}
                 </div>
                 <div className="bg-green-500 p-3 rounded-lg">
                   <UserPlus2 className="h-6 w-6 text-white" />
@@ -144,7 +108,7 @@ function DashBoard() {
             </CardContent>
           </Card>
 
-          <Card className="rounded-none">
+          {/* <Card className="rounded-none">
             <CardContent className="p-4">
               <div className="flex justify-between items-start">
                 <div>
@@ -160,18 +124,28 @@ function DashBoard() {
                 </div>
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
         </div>
 
-        <MainGraph chartData={Analyticsdata.result} />
-        <div className="grid grid-cols-3 gap-4 ">
-          <CategoryEventPieChart />
-          <CategoryParticipantsPieChart />
-        </div>
+        <MainGraph chartData={Analyticsdata.overall_event_participant} />
+
+        <Card className="flex flex-col w-2/3">
+          <CardHeader className="flex-row items-start space-y-0 pb-0">
+            <CardTitle>Category Analysis</CardTitle>
+          </CardHeader>
+          <div className="grid grid-cols-2  ">
+            <CategoryEventPieChart
+              PieData={Analyticsdata.event_count_on_catgory}
+            />
+            <CategoryParticipantsPieChart
+              PieData={Analyticsdata.participant_count_on_category}
+            />
+          </div>
+        </Card>
 
         {/* Charts and Carousel Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          {/* Carousel */}
+        {/* <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+         
           <div className="lg:col-span-1">
             <Card className="bg-gradient-to-br h-[400px] relative overflow-hidden">
               <CardContent className="p-0 h-full">
@@ -215,7 +189,7 @@ function DashBoard() {
               </CardContent>
             </Card>
           </div>
-          {/* Carousel */}
+         
           <div className="lg:col-span-1">
             <Card className="bg-gradient-to-br h-[400px] relative overflow-hidden">
               <CardContent className="p-0 h-full">
@@ -259,7 +233,7 @@ function DashBoard() {
               </CardContent>
             </Card>
           </div>
-          {/* Carousel */}
+       
           <div className="lg:col-span-1">
             <Card className="bg-gradient-to-br h-[400px] relative overflow-hidden">
               <CardContent className="p-0 h-full">
@@ -303,7 +277,7 @@ function DashBoard() {
               </CardContent>
             </Card>
           </div>
-          {/* Carousel */}
+       
           <div className="lg:col-span-1">
             <Card className="bg-gradient-to-br h-[400px] relative overflow-hidden">
               <CardContent className="p-0 h-full">
@@ -347,7 +321,7 @@ function DashBoard() {
               </CardContent>
             </Card>
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   );
