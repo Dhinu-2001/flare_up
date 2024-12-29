@@ -22,4 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('gateway_app.urls')),
     path('events/',include('event_gateway.urls')),
+    path('payment_api/',include('registration_gateway.urls')),
 ]

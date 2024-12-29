@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import axiosInstance from '@/axiosconfig';
 import { useDispatch } from "react-redux"
 import { setAuthData } from "@/redux/auth/authSlice"
+import { toast } from 'sonner';
 
 const TIMER_DURATION = 60; // 60 seconds
 
@@ -33,7 +34,7 @@ export default function OTPInputPage() {
       setIsActive(remainingTime > 0);
     } else {
       startTimer();
-    }                                                                                                                                                                                                                                                                                                                                                                                                   
+    }
 
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
@@ -87,49 +88,44 @@ export default function OTPInputPage() {
     e.preventDefault();
     console.log('submit otp')
     const email = localStorage.getItem('registeredEmail');
+    const url = localStorage.getItem('OTP_url');
+    console.log('local', email, url)
     const enteredOtp = otp.join('');
-    const authType = localStorage.getItem('AuthType')
 
     try {
-      const {data} = await axiosInstance.post('/otp_verification/', { email, enteredOtp, authType });
-      console.log(data);
-
-      toast.success('Registered successfully')
-      
-      if(authType == 'NormalAuth'){
+      if (url === 'registration') {
+        const { data } = await axiosInstance.post('/otp_verification/', { email, enteredOtp });
+        console.log(data);
+        toast.success('Email verified.')
         navigate('/login');
-      }else if (authType == 'GoogleAuth'){
-        dispatch(setAuthData(data))
-        if(data.role == 'hoster'){
-          navigate('/hoster')
-        }else if(data.role == 'admin'){
-          navigate('/admin_dashboard')
-        }else if(data.role == 'user'){
-          navigate('/')
-        }
+      } else if (url === 'forgot-password') {
+        const { data } = await axiosInstance.post('/verify-otp-forgot-password/', { email, enteredOtp });
+        console.log(data);
+        toast.success('Email verified.')
+        navigate('/new-password');
       }
-    }catch(error) {
-      console.log('OTP verification failed:', error);
-      toast.error('OTP verification failed')
-      // Handle error (e.g., show error message to user)
+
+    } catch (error) {
+      const errorMessage = error.response?.data?.error || 'OTP verification failed'
+      toast.error(errorMessage)
     }
   };
 
   const handleResendOTP = async () => {
     const email = localStorage.getItem('registeredEmail');
     console.log('resend otp', email)
-    
+
     try {
       await axiosInstance.post('/resend_otp/', { email });
       startTimer();
       setOtp(['', '', '', '', '', '']);
       console.log('OTP resent');
       toast.info('An new OTP has sent to your registered email.')
-      // Optionally, show a success message to the user
     } catch (error) {
       console.log('Resend OTP failed:', error);
-      toast.error('Resent OTP failed')
-      // Handle error (e.g., show error message to user)
+      const errorMessage = error.response?.data?.error || 'Resend OTP failed'
+      toast.error(errorMessage)
+      navigate('/register')
     }
   };
 

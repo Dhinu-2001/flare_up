@@ -12,10 +12,10 @@ class EventTypeSerializer(serializers.ModelSerializer):
         model = EventType
         fields = ['id', 'name', 'description', 'category', 'status']
 
-# class KeyParticipantSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = KeyParticipant
-#         fields = ['name', 'role', 'bio', 'photo', 'event']
+class KeyParticipantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = KeyParticipant
+        fields = ['name', 'role', 'bio', 'photo', 'event']
 
 
 # class SponsorSerializer(serializers.ModelSerializer):
@@ -30,6 +30,7 @@ from rest_framework import serializers
 from .models import Event
 
 class EventCreateSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = Event
         fields = [
@@ -41,6 +42,7 @@ class EventCreateSerializer(serializers.ModelSerializer):
         ]
         
 class EventRetrieveSerializer(serializers.ModelSerializer):
+    key_participants = KeyParticipantSerializer(many=True, read_only=True)
     # Define datetime fields with a readable format
     start_date_time = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
     end_date_time = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
@@ -56,6 +58,8 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
     latitude = serializers.DecimalField(max_digits=15, decimal_places=6, required=False, allow_null=True)
     longitude = serializers.DecimalField(max_digits=15, decimal_places=6, required=False, allow_null=True)
     
+    
+    
     class Meta:
         model = Event
         fields = [
@@ -63,8 +67,8 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
             'latitude', 'longitude', 'address_line_1', 'city', 'state', 'country', 
             'payment_required', 'ticket_price', 'participant_capacity', 'banner_image', 
             'promo_video', 'start_date_time', 'end_date_time', 'registration_deadline', 
-            'created_at', 'updated_at', 'status', 'approval_status', 'approval_comments', 
-            'approval_updated_at'
+            'created_at', 'updated_at', 'status', 'status_request', 'approval_status', 'approval_comments', 
+            'approval_updated_at', 'key_participants'
         ]
         read_only_fields = [
             'id', 'created_at', 'updated_at', 'approval_updated_at'
@@ -82,7 +86,6 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
         return representation
 
 class KeyParticipantSerializer(serializers.ModelSerializer):
-    photo = serializers.ImageField(required=False)
 
     class Meta:
         model = KeyParticipant

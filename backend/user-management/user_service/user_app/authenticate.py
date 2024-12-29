@@ -18,7 +18,7 @@ def enforce_csrf(request):
 
 class CustomAuthentication(JWTAuthentication):
     def authenticate(self, request):
-        public_paths = ['/login/', '/register/', '/token_refresh/','/otp_verification/', '/resend_otp/', '/GoogleAuth/', '/GoogleAuthLogin/', '/logout/']
+        public_paths = ['/login/', '/register/', '/admin-register/', '/token_refresh/','/otp_verification/', '/resend_otp/', '/GoogleAuth/', '/GoogleAuthLogin/', '/logout/', '/forgot-password/', '/verify-otp-forgot-password/', '/set-new-password/']
         print('path:', request.path)
         # Skip authentication for public paths
         if request.path in public_paths:
@@ -48,7 +48,7 @@ class CustomAuthentication(JWTAuthentication):
 
             #     raise AuthenticationFailed('Invalid token type')
                     
-            enforce_csrf(request)
+            # enforce_csrf(request)
             return self.get_user(validated_token), validated_token
             
         except AuthenticationFailed as e:

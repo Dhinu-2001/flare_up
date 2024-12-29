@@ -60,6 +60,16 @@ export const HosterEventColumns = [
   {
     accessorKey: "created_at",
     header: "Created at",
+    cell: ({ row }) => {
+      const created_at = row.getValue("created_at")
+      const formatted = new Intl.DateTimeFormat('en-GB', {
+          dateStyle: 'short',
+          timeStyle: 'medium',
+          hour12: true,
+        }).format(new Date(created_at));
+
+      return <div >{formatted}</div>
+  },
   },
   {
     accessorKey: "approval_status",

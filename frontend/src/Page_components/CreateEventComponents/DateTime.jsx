@@ -25,6 +25,7 @@ function DateTime({ startdatetime, setStartdatetime, enddatetime, setEnddatetime
         today.setHours(0, 0, 0, 0);
 
         if (selectedDate < today) {
+            console.log('start date',selectedDate)
             setStartDateError("Please select a date that is not in the past.");
             setShowError(true);
             setStartdatetime();
