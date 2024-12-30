@@ -139,8 +139,8 @@ function Header() {
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
-                    <DropdownMenuItem>Profile</DropdownMenuItem>
-                    <DropdownMenuItem>Setting</DropdownMenuItem>
+                    {/* <DropdownMenuItem>Profile</DropdownMenuItem>
+                    <DropdownMenuItem>Setting</DropdownMenuItem> */}
                     <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
                   </DropdownMenuGroup>
                 </DropdownMenuContent>

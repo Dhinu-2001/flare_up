@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { AdminEventColumns } from "../../../components/DataTable/AdminEventColumns"
 import { DataTable } from '../../../components/DataTable/Data-Table';
 import { EventsDataContext } from "@/ContextFiles/EventsDataProvider";
+import EventListShimmer from "@/components/Shimmer/EventList";
 
 function getData() {
   // Mock data to simulate API data fetching
@@ -48,7 +49,7 @@ function getData() {
 export default function EventList() {
     const {data, error, loading} = useContext(EventsDataContext)
 
-    if(loading) return <p>Loading...</p>
+    if(loading) return <EventListShimmer/>
     if(error) return <p>Error loading data</p>
     console.log('actual event data',data)
 

@@ -86,7 +86,7 @@ const selectPasswordSchema = (data) => {
   }
 }
 
-function ProfileHoster() {
+function ProfileAdmin() {
   const { data, loading, error, refreshData } = useContext(ProfileDataContext)
   const { register: updateHosterProfileForm, setValue, handleSubmit, formState: { errors, isSubmitting }, clearErrors, reset } = useForm({
     resolver: zodResolver(schema)
@@ -459,7 +459,7 @@ function ProfileHoster() {
         </Card>
 
         {/* Organization Information */}
-        <Card className="col-span-1">
+        {/* <Card className="col-span-1">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Organization Information</CardTitle>
             <Link to='/hoster/organization/update_organization/'>
@@ -487,7 +487,7 @@ function ProfileHoster() {
               </div>
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
 
         {/* Conversations */}
         {/* <Card className="col-span-1">
@@ -516,4 +516,4 @@ function ProfileHoster() {
   )
 }
 
-export default ProfileHoster
+export default ProfileAdmin

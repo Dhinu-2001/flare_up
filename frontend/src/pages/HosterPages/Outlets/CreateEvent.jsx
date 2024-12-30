@@ -22,6 +22,7 @@ import { store } from "../../../redux/Store";
 import exceptions from '@mapbox/mapbox-gl-geocoder/lib/exceptions'
 import { setError, setLoading } from '@/redux/auth/authSlice'
 import { toast } from 'sonner'
+import EventFormShimmer from '@/components/Shimmer/EventCreation'
 // Define the date-time format you expect: "PPP HH:mm:ss"
 const dateTimeFormat = "yyyy-MM-dd HH:mm:ss";
 
@@ -76,34 +77,10 @@ function CreateEvent() {
   const reduxState = store.getState()
 
   if (!data) {
-    return <div>Loading...</div>
+    return <EventFormShimmer/>
   }
 
   console.log('cat and type',data)
-  // useEffect(() => {
-  //   const fetchTypesAndCategories = async () => {
-  //     try {
-  //       const response = await axiosInstance.get('/events/event-types-and-categories/')
-
-  //       const data = response.data
-  //       console.log('data', data);
-
-  //       setCategoriesTypesData(data)
-  //       // setTypesData(response.data.types)
-  //       console.log('Updated categoriesTypesData:', categoriesTypesData);
-
-  //     } catch (error) {
-  //       console.log(error)
-  //       setError(error)
-  //     } finally {
-  //       // setLoading()
-  //     }
-  //   }
-  //   fetchTypesAndCategories();
-  // }, []);
-
-  
-
 
   const handleRegistrationMode = (value) => {
     if (value == 'free') {

@@ -2,11 +2,12 @@ import { PaymentColumns } from "@/components/DataTable/PaymentColumns";
 import { DataTable } from '../../../components/DataTable/Data-Table';
 import { PaymentsByHosterDataContext } from "@/ContextFiles/PaymentsByHosterDataProvider";
 import { useContext } from "react";
+import EventListShimmer from "@/components/Shimmer/EventList";
 
 export default function PaymentList() {
     const { data, error, loading } = useContext(PaymentsByHosterDataContext)
 
-    if (loading) return <p>Loading...</p>
+    if (loading) return <EventListShimmer/>
     if (error) return <p>Error loading data</p>
     console.log('actual event data', data)
 

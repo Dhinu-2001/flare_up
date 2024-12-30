@@ -11,6 +11,7 @@ import axiosInstance from '@/axiosconfig'
 import MapEvent from '@/Page_components/Common/MapEvent'
 import { toast } from 'sonner'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import AdminEventDetailsShimmer from '@/components/Shimmer/AdminEventDetails'
 
 // Mock event data
 const event = {
@@ -76,7 +77,7 @@ export default function EventDetails() {
 
 
 
-    if (!cateData) return <p>Loading...</p>;
+    if (!cateData) return <AdminEventDetailsShimmer/>;
 
     // if (!cateData) return <p>Error loading data</p>;
     console.log('cate event data', cateData)

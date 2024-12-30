@@ -9,6 +9,7 @@ import { MessageCircle } from 'lucide-react';
 import ChatList from './ChatList';
 import axiosInstance from '@/axiosconfig';
 import { format } from 'date-fns';
+import ChatShimmer from '@/components/Shimmer/Chat';
 
 const formatDate = (isoDateString) => {
     const date = new Date(isoDateString);
@@ -106,24 +107,6 @@ const Chat = () => {
     };
 
     return (
-        // <div className='flex justify-center items-center h-screen '>
-        //     <h2>Chat Room: {roomName}</h2>
-        //     <div>
-        //         {messages.map((msg, index) => (
-        //             <div key={index}>
-        //                 <strong>{msg.username}</strong>: {msg.message}
-        //             </div>
-        //         ))}
-        //     </div>
-        //     <input
-        //         className='text-black'
-        //         type="text" 
-        //         value={message}
-        //         onChange={(e) => setMessage(e.target.value)}
-        //         placeholder="Type a message..."
-        //     />
-        //     <button onClick={sendMessage}>Send</button>
-        // </div>
         <div className='flex gap-4'>
             <div className='bg-gradient-to-tl from-stone-800 to-black h-screen w-1/3 py-12 overflow-y-auto'>
                 <header className="flex items-center justify-between px-4 py-2 border-b">
@@ -137,7 +120,7 @@ const Chat = () => {
             <div className="flex-1 flex flex-col h-screen py-12 bg-gradient-to-tl from-stone-800 to-black">
                 {receiverid ?
                     (loading ?
-                        (<p>Loading...</p>)
+                        (<ChatShimmer/>)
                         : (
                             <>
                                 <header className="flex items-center justify-between px-4 py-2 border-b">
