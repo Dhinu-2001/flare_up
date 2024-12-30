@@ -33,7 +33,7 @@ export default function CaseStudies() {
                 console.log(response.data);
                 setEventsData(response.data);
                 if (response.data?.category_data?.[0]?.event_types) {
-                    const eventType = response.data?.category_data?.[0]?.event_types.map((eventType) => eventType.name);
+                    const eventTypes = response.data?.category_data?.[0]?.event_types.map((eventType) => eventType.name);
                     setTypes(["All", ...new Set(eventTypes)]);
                 }
             } catch (error) {
