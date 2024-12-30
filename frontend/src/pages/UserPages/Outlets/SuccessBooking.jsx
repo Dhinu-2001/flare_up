@@ -69,7 +69,7 @@ export default function SuccessBooking() {
     }
   }, [paymentDetails.event_id]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <BookingResultShimmer/>;
   if (error) return <p>Error: {error.message}</p>;
 
   return (
