@@ -31,6 +31,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { DataContext } from '@/ContextFiles/DataProvider'
 import axiosInstance from '@/axiosconfig'
 import { Link } from 'react-router-dom'
+import AdminCategoryListShimmer from '@/components/Shimmer/AdminCategoryList'
 
 const schema = z.object({
     name: z.string().min(1, { message: 'Name is required' }),
@@ -43,7 +44,7 @@ export default function CategoryList() {
         resolver: zodResolver(schema)
     })
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <AdminCategoryListShimmer/>;
     if (error) return <p>Error loading data</p>;
 
     console.log('category and types', data)

@@ -38,6 +38,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { Textarea } from '@/components/ui/textarea'
+import AdminCategoryDetailsShimmer from '@/components/Shimmer/AdminCategoryDetails'
 
 const schema = z.object({
     name: z.string().min(1, { message: 'Name is required' }),
@@ -94,7 +95,7 @@ export default function CategoryDetails() {
         ],
     })
 
-    if (!cateData) return <p>Loading...</p>;
+    if (!cateData) return <AdminCategoryDetailsShimmer/>;
     if (!cateData) return <p>Error loading data</p>;
 
     const onSubmit = async (data) => {

@@ -3,17 +3,19 @@ import CardComponent from '@/Page_components/Common/CardComponent'
 import MapComponent from '@/Page_components/Common/MapComponent'
 import { EventsDataContext } from "@/ContextFiles/EventsDataProvider";
 import HomePageEventDetails from '@/Page_components/UserSideComponents/HomePageEventDetails'
+import PreLoader from '@/Page_components/PreLoader/PreLoader';
 
 
 function Home() {
   const { data, error, loading } = useContext(EventsDataContext)
-  if (loading) return <p>Loading...</p>
+  if (loading) return <PreLoader/>
   if (error) return <p>Error loading data</p>
 
   console.log('actual event data',data)
 
   return (
     <>
+    
       <video
         autoPlay
         loop

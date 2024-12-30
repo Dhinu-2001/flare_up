@@ -12,6 +12,8 @@ import { Cloudinary } from "@cloudinary/url-gen";
 import { AdvancedVideo, responsive, placeholder } from "@cloudinary/react";
 import { ParticipantCarousel } from '@/Page_components/Common/ParticipantCarousel'
 import { MessageCircle } from 'lucide-react'
+import PreLoader from '@/Page_components/PreLoader/PreLoader'
+import EventDetailShimmer from '@/components/Shimmer/TicketBooking'
 
 export default function EventDetails() {
   const { event_id } = useParams()
@@ -70,10 +72,9 @@ export default function EventDetails() {
     return () => clearInterval(timer)
   }, [])
 
-  if (!eventData) return <p>Loading...</p>;
+  if (!eventData) return <PreLoader/>
 
-
-
+                                       
   return (
     <div className="min-h-screen bg-black text-white py-20 px-4 md:px-6">
 

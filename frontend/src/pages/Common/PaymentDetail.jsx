@@ -14,11 +14,12 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, Download, Mail, Phone, User, Ticket } from "lucide-react";
 import { Link } from "react-router-dom";
+import AdminEventDetailsShimmer from "@/components/Shimmer/AdminEventDetails";
 
 export default function PaymentDetail() {
   const { data, error, loading } = useContext(PaymentDetailDataContext);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <AdminEventDetailsShimmer/>;
   if (error) return <p>Error loading data</p>;
   console.log("actual event data", data);
 

@@ -2,13 +2,14 @@
 import axiosInstance from "@/axiosconfig";
 import { Button } from "@/components/ui/button"
 import { DataContext } from "@/ContextFiles/DataProvider"
+import PreLoader from "@/Page_components/PreLoader/PreLoader";
 import { useContext } from "react"
 import { Link } from "react-router-dom";
 
 export default function Categories() {
   const { data, loading, error } = useContext(DataContext)
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <PreLoader/>;
   if (error) return <p>Error loading data</p>;
 
   const tech_cover = '/Images/Tech_cover.avif';

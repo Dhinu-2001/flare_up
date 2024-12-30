@@ -36,6 +36,7 @@ import axiosInstance from "@/axiosconfig";
 import exceptions from "@mapbox/mapbox-gl-geocoder/lib/exceptions";
 import { toast } from "sonner";
 import { store } from "@/redux/Store";
+import TicketBookingShimmer from "@/components/Shimmer/TicketBooking";
 
 const formSchema = z.object({
   quantity: z.number().min(1).max(10),
@@ -132,7 +133,7 @@ export default function TicketBooking() {
     }
   }, [data]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <TicketBookingShimmer/>;
   if (error) return <p>Error loading data</p>;
 
   console.log(data);
