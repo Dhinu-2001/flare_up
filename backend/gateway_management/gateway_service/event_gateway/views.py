@@ -270,6 +270,7 @@ class AnalyticsHosterAPI(APIView):
                     key: future.result()
                     for key, future in futures.items()
                 }
+            print('RESULT',results['total_income'])
 
             response_data = {
                 'total_events': results['overall_event_participant'].get('total events', 0),
@@ -286,7 +287,7 @@ class AnalyticsHosterAPI(APIView):
         except requests.exceptions.RequestException:
             return Response({'error': 'Event service is unavailable'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
         except Exception as e:
-            print('EXECEPTION', e)
+            print('EXECEPTION',e)
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
 

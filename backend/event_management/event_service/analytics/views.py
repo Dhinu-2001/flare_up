@@ -78,6 +78,7 @@ def get_event_participant_stats(request, host_id):
     
     response_data = total_events_participants(host_id)
     response_data["event_participant_stats"] = result
+    print('overall', response_data)
 
     return JsonResponse(response_data)
 

@@ -29,6 +29,7 @@ function DashBoard() {
     error: AnalyticsError,
     loading: AnalyticsLoading,
   } = useContext(AnalyticsHosterDataContext);
+
   if (MapLoading || AnalyticsLoading) return <DashboardShimmer/>;
   if (mapError) return <p>Error loading data</p>;
 
