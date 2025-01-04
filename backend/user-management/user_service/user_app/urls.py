@@ -18,4 +18,6 @@ urlpatterns = [
     path('forgot-password/', views.ForgotPassword.as_view(), name='ForgotPassword'),
     path('verify-otp-forgot-password/', views.VerifyOTPForgotPassword.as_view(), name='VerifyOTPForgotPassword'),
     path('set-new-password/', views.SetNewPassword.as_view(), name='SetNewPassword'),
+    path('hoster_list/', views.HosterList.as_view(), name='hoster-list'),
+    path('user_list/', views.UserList.as_view(), name='user-list'),
 ]

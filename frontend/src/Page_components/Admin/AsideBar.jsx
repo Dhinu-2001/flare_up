@@ -70,7 +70,7 @@ function AsideBar() {
                     </Button>
                 </Link> */}
 
-                {/* <Link to="#">
+                <Link to="/admin/hoster_list">
                     <Button
                         variant="ghost"
                         className={`w-full justify-start ${activeNav === 'Hosters' ? 'bg-blue-500' : ''}`}
@@ -79,9 +79,9 @@ function AsideBar() {
                         <Calendar className="mr-2 h-4 w-4" />
                         Hosters
                     </Button>
-                </Link> */}
+                </Link>
 
-                {/* <Link to="#">
+                <Link to="#">
                     <Button
                         variant="ghost"
                         className={`w-full justify-start ${activeNav === 'Attendees' ? 'bg-blue-500' : ''}`}
@@ -90,7 +90,7 @@ function AsideBar() {
                         <Languages className="mr-2 h-4 w-4" />
                         Attendees
                     </Button>
-                </Link> */}
+                </Link>
 
                 <Link to="/admin/catgories">
                     <Button

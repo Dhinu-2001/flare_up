@@ -11,6 +11,8 @@ import EventDetails from "@/pages/AdminPages/Outlets/EventDetails";
 import AnalyticsAdminProvider from "@/ContextFiles/AnalyticsAdminProvider";
 import ProfileAdmin from "@/pages/AdminPages/Outlets/Profile";
 import ProfileDataProvider from "@/ContextFiles/ProfileAnalyticsDataProvider";
+import HosterListing from "@/pages/AdminPages/Outlets/HosterListing";
+import HosterListDataProvider from "@/ContextFiles/HosterListDataContext";
 
 function AdminRoutes() {
   return (
@@ -37,6 +39,16 @@ function AdminRoutes() {
         />
 
         <Route path="/events/event/:event_id" element={<EventDetails />} />
+
+        <Route
+          path="hoster_list"
+          element={
+            <HosterListDataProvider>
+              <HosterListing />
+            </HosterListDataProvider>
+          }
+        />
+
 
         <Route
           path="catgories"
