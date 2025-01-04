@@ -10,7 +10,7 @@ import EventsDataProvider from "@/ContextFiles/EventsDataProvider";
 import EventDetails from "@/pages/AdminPages/Outlets/EventDetails";
 import AnalyticsAdminProvider from "@/ContextFiles/AnalyticsAdminProvider";
 import ProfileAdmin from "@/pages/AdminPages/Outlets/Profile";
-import ProfileDataProvider from "@/ContextFiles/ProfileDataProvider";
+import ProfileDataProvider from "@/ContextFiles/ProfileAnalyticsDataProvider";
 
 function AdminRoutes() {
   return (

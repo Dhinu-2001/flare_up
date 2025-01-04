@@ -15,4 +15,5 @@ urlpatterns = [
     path('event-types-and-categories/', views.EventTypesAndCategories.as_view(), name='EventTypesAndCategories'),
     path('category/<str:category_name>/', category_view.Category.as_view(), name='EventTypesAndCategories'),
     path('type/', category_view.Types.as_view(), name='Types'),
+    path('get_user_ticket_booking_details/<int:user_id>/', views.get_user_ticket_booking_details, name='get_user_ticket_booking_details'),
 ]

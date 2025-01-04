@@ -65,13 +65,14 @@ function Header() {
             Discover
           </Button>
         </Link>
-
-        <Button
-          variant="ghost"
-          className="text-blue-400 hover:text-blue-300 hover:bg-gray-700"
-        >
-          My Tickets
-        </Button>
+        <Link to="ticket_history">
+          <Button
+            variant="ghost"
+            className="text-blue-400 hover:text-blue-300 hover:bg-gray-700"
+          >
+            My Tickets
+          </Button>
+        </Link>
       </>
     );
   }
@@ -139,8 +140,10 @@ function Header() {
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
-                    {/* <DropdownMenuItem>Profile</DropdownMenuItem>
-                    <DropdownMenuItem>Setting</DropdownMenuItem> */}
+                    <Link to="/profile">
+                      <DropdownMenuItem>Profile</DropdownMenuItem>
+                    </Link>
+                    {/* <DropdownMenuItem>Setting</DropdownMenuItem> */}
                     <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
                   </DropdownMenuGroup>
                 </DropdownMenuContent>

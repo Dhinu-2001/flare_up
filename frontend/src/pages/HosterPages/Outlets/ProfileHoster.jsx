@@ -1,5 +1,3 @@
-'use client'
-
 import { Settings, MessageSquare, Package, Pen, Plus, Settings2, TriangleAlert, CircleOff } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
