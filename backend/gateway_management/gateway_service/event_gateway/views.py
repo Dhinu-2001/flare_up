@@ -338,3 +338,60 @@ class AnalyticsAdminAPI(APIView):
             print('EXECEPTION', e)
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
+
+class GetUserDataEventAnalyticsAPI(APIView):
+    def get(self, request, user_id):
+        try:
+            print('reached api gateway', user_id)
+            
+            # Service Addresses
+            user_service = env('USER_SVC_ADDRESS')
+            event_service = env('EVENT_SVC_ADDRESS')
+            
+            # Defining endpoints
+            urls = {
+                'user_data' : f"http://localhost:8081/user-profile/{user_id}/",
+                'event_analytics' : f"http://{event_service}/analytics/get_user_event_analytics/{user_id}/",
+                
+            }
+            
+            # Fetch data parallel with ThreadPoolExecutor
+            with ThreadPoolExecutor(max_workers=4) as executor:
+                futures = {
+                    key: executor.submit(fetch_service_data, url)
+                    for key, url in urls.items()
+                }
+
+                results = {
+                    key: future.result()
+                    for key, future in futures.items()
+                }
+            
+            print('RESULT', results)
+
+            response_data = {
+                'user_data': results.get('user_data', 0),
+                'event_analytics': results['event_analytics'].get('result', 0),
+            }
+            print('RESULT OF THREAD CALL', response_data)
+
+            
+            return Response(response_data, status=status.HTTP_200_OK)
+        except requests.exceptions.RequestException:
+            return Response({'error': 'Event service is unavailable'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        except Exception as e:
+            print('EXECEPTION', e)
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+class GetUserTicketBookingDetailsAPI(APIView):
+    def get(self, request, user_id):
+        try:
+            print('reached api gateway', user_id)
+            response = requests.get(
+                f"http://{env('EVENT_SVC_ADDRESS')}/events/get_user_ticket_booking_details/{user_id}/",
+            )
+            if response.status_code == 201:
+                return Response(response.json(), status=status.HTTP_200_OK)
+            return Response(response.json(), status=response.status_code)
+        except requests.exceptions.RequestException:
+            return Response({'error': 'Event service is unavailable'}, status=status.HTTP_503_SERVICE_UNAVAILABLE)

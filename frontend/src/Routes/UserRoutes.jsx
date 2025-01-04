@@ -19,8 +19,10 @@ import NewPassword from "@/pages/NewPassword";
 import Chat from "@/Page_components/Common/Chat";
 import AdminRegister from "@/Page_components/Register/Admin";
 import ProfileUser from "@/pages/UserPages/Outlets/ProfileUser";
-import ProfileDataProvider from "@/ContextFiles/ProfileDataProvider";
+import ProfileDataProvider from "@/ContextFiles/ProfileAnalyticsDataProvider";
 import BookedEventList from "@/pages/UserPages/Outlets/BookedEventList";
+import ProfileAnalyticsDataProvider from "@/ContextFiles/ProfileAnalyticsDataProvider";
+import UserTicketHistoryDataProvider from "@/ContextFiles/UserTicketHistoryDataContext";
 
 function UserRoutes() {
   return (
@@ -74,18 +76,18 @@ function UserRoutes() {
         <Route
           path="profile"
           element={
-            <ProfileDataProvider>
+            <ProfileAnalyticsDataProvider>
               <ProfileUser />
-            </ProfileDataProvider>
+            </ProfileAnalyticsDataProvider>
           }
         />
 
         <Route
           path="ticket_history"
           element={
-            <ProfileDataProvider>
+            <UserTicketHistoryDataProvider>
               <BookedEventList />
-            </ProfileDataProvider>
+            </UserTicketHistoryDataProvider>
           }
         />
       </Route>

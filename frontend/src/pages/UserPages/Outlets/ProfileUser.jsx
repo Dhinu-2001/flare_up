@@ -15,7 +15,7 @@ import { Switch } from "@/components/ui/switch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-import { ProfileDataContext } from "@/ContextFiles/ProfileDataProvider";
+import { ProfileAnalyticsDataContext } from "@/ContextFiles/ProfileAnalyticsDataProvider";
 import { useContext, useEffect, useState } from "react";
 import {
   Dialog,
@@ -132,7 +132,7 @@ const selectPasswordSchema = (data) => {
 };
 
 function ProfileUser() {
-  const { data, loading, error, refreshData } = useContext(ProfileDataContext);
+  const { data, loading, error, refreshData } = useContext(ProfileAnalyticsDataContext);
   const {
     register: updateHosterProfileForm,
     setValue,
@@ -167,11 +167,11 @@ function ProfileUser() {
 
   // Populate form fields with userDetails when the component mounts
   useEffect(() => {
-    if (data) {
-      setValue("username", data.username || "");
-      setValue("fullname", data.fullname || "");
-      setValue("phone_number", data.phone_number || "");
-      setValue("email", data.email || "");
+    if (data.user_data) {
+      setValue("username", data.user_data.username || "");
+      setValue("fullname", data.user_data.fullname || "");
+      setValue("phone_number", data.user_data.phone_number || "");
+      setValue("email", data.user_data.email || "");
     }
   }, [data, setValue, updateData]);
 
@@ -242,16 +242,16 @@ function ProfileUser() {
         </h2>
 
         <div>
-          <div className="grid grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <Card className="col-span-1 mb-6">
               <CardContent className="p-6 pb-0">
                 <div className="flex items-center gap-4">
                   <div className="flex flex-col justify-center items-center gap-2">
                     <Avatar className="h-28 w-28">
                       <AvatarImage
-                        src={`https://res.cloudinary.com/dzwjm8n8v/image/upload/v1732028654/${data.profile_picture}.png`}
+                        src={`https://res.cloudinary.com/dzwjm8n8v/image/upload/v1732028654/${data.user_data.profile_picture}.png`}
                       />
-                      <AvatarFallback>{data.fullname}</AvatarFallback>
+                      <AvatarFallback>{data.user_data.fullname}</AvatarFallback>
                     </Avatar>
                     {/* <Button className='border-2 bg-stone-900 text-white hover:bg-stone-800 '>Upload profile</Button> */}
                     <HosterProfileUploadCloudinary
@@ -261,8 +261,8 @@ function ProfileUser() {
                     />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-semibold">{data.fullname}</h2>
-                    <p className="text-gray-500">{data.username}</p>
+                    <h2 className="text-2xl font-semibold">{data.user_data.fullname}</h2>
+                    <p className="text-gray-500">{data.user_data.username}</p>
                   </div>
                   <div className="ml-auto flex gap-2">
                     {/* <Button variant="outline">
@@ -380,8 +380,8 @@ function ProfileUser() {
                   <div className="flex items-center gap-2">
                     <span className="font-semibold">User Name: </span>
                     <span className="text-gray-600">
-                      {data.username ? (
-                        data.username
+                      {data.user_data.username ? (
+                        data.user_data.username
                       ) : (
                         <div className="flex items-center">
                           <CircleOff className="mr-2 h-4 w-4 text-red-500" />
@@ -392,13 +392,13 @@ function ProfileUser() {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="font-semibold">Full Name: </span>
-                    <span className="text-gray-600">{data.fullname}</span>
+                    <span className="text-gray-600">{data.user_data.fullname}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="font-semibold">Phone number: </span>
                     <span className="text-gray-600">
-                      {data.phone_number ? (
-                        data.phone_number
+                      {data.user_data.phone_number ? (
+                        data.user_data.phone_number
                       ) : (
                         <div className="flex items-center">
                           <CircleOff className="mr-2 h-4 w-4 text-red-500" />
@@ -409,10 +409,10 @@ function ProfileUser() {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="font-semibold">Email: </span>
-                    <span className="text-gray-600">{data.email}</span>
+                    <span className="text-gray-600">{data.user_data.email}</span>
                   </div>
 
-                  {data.has_password ? (
+                  {data.user_data.has_password ? (
                     <Dialog>
                       <DialogTrigger asChild>
                         <Button variant="outline">
@@ -565,7 +565,7 @@ function ProfileUser() {
 
             <Card className="rounded-none col-span-2 mb-6 ">
               <CardContent className="p-6">
-                <UserAnalytics />
+                <UserAnalytics totalData={data.event_analytics.totalData} monthlyData={data.event_analytics.monthlyData} yearlyData={data.event_analytics.yearlyData} />
               </CardContent>
             </Card>
           </div>

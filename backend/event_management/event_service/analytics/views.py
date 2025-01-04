@@ -2,18 +2,18 @@
 # from rest_framework.views import APIView
 from django.http import JsonResponse
 from event_app.models import Event, EventCategory
-from participant_app.models import TicketRegistration
+from participant_app.models import TicketRegistration, TicketDetails
 
 # # Create your views here.
 # class MainGraph(APIView):
 #     def get(self, request, host_id):
 #         event_objs = Event.objects.filter(host_id=host_id)
 
-from django.db.models import Count, Sum, Q
+from django.db.models import Count, Sum, Q, F
 from django.db.models.functions import TruncDate
 from datetime import datetime, timedelta
 import json
-
+from django.utils.timezone import now
 
 def total_events_participants(host_id):
     total_events = Event.objects.filter(host_id=host_id).count()
@@ -117,3 +117,82 @@ def ParticipantCountOnCategory(request, host_id):
         for category in categories
     ]
     return JsonResponse({"result": output})
+
+
+
+def get_user_event_analytics(request, user_id):
+    # Get current date
+    today = now().date()
+
+    # Define date ranges
+    start_of_month = today.replace(day=1)
+    start_of_year = today.replace(month=1, day=1)
+    last_month_start = (today - timedelta(days=30)).replace(day=1)
+
+    # Filter registrations for the last month and year
+    monthly_registrations = TicketRegistration.objects.filter(
+        user_id=user_id,
+        registered_at__gte=start_of_month,
+    )
+
+    yearly_registrations = TicketRegistration.objects.filter(
+        user_id=user_id,
+        registered_at__gte=start_of_year,
+    )
+    
+    total_registrations = TicketRegistration.objects.filter(
+        user_id=user_id,
+    )
+
+    # Helper to get analytics data
+    def get_analytics_data(registrations):
+        total_events = registrations.count()
+        category_data = (
+            registrations
+            .values(category_name=F("event_id__category__name"))
+            .annotate(count=Count("id"))
+            .order_by("-count")
+        )
+
+        categories = []
+        color_map = {
+            "Music": "bg-blue-500",
+            "Sports": "bg-green-500",
+            "Tech": "bg-purple-500",
+            "Education": "bg-blue-500",
+            "Cultural": "bg-green-500",
+            "Business": "bg-purple-500",
+        }
+        icon_map = {
+            "Music": "Music",
+            "Sports": "Dumbbell",
+            "Tech": "Laptop",
+            "Education": "Music",
+            "Cultural": "Dumbbell",
+            "Business": "Laptop",
+        }
+
+        for data in category_data:
+            categories.append({
+                "name": data["category_name"],
+                "count": data["count"],
+                "icon": icon_map.get(data["category_name"], "DefaultIcon"),
+                "color": color_map.get(data["category_name"], "bg-gray-500"),
+            })
+
+        return {
+            "totalEvents": total_events,
+            "categories": categories,
+        }
+
+    # Generate analytics
+    monthly_data = get_analytics_data(monthly_registrations)
+    yearly_data = get_analytics_data(yearly_registrations)
+    total_data = get_analytics_data(total_registrations)
+
+    output =  {
+        "monthlyData": monthly_data,
+        "yearlyData": yearly_data,
+        "totalData": total_data,
+    }
+    return JsonResponse({"result": output}) 

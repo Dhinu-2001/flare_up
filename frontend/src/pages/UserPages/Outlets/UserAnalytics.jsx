@@ -13,34 +13,34 @@ import { PolarAngleAxis, RadialBar, RadialBarChart } from "recharts";
 import { ChartContainer, ChartStyle } from "@/components/ui/chart";
 import { Music, Dumbbell, Laptop } from "lucide-react";
 
-// Mock data
-const monthlyData = {
-  totalEvents: 8,
-  categories: [
-    { name: "Music", count: 4, icon: Music, color: "bg-blue-500" },
-    { name: "Sports", count: 2, icon: Dumbbell, color: "bg-green-500" },
-    { name: "Tech", count: 2, icon: Laptop, color: "bg-purple-500" },
-    { name: "Education", count: 4, icon: Music, color: "bg-blue-500" },
-    { name: "Cultural", count: 2, icon: Dumbbell, color: "bg-green-500" },
-    { name: "Business", count: 2, icon: Laptop, color: "bg-purple-500" },
-  ],
-};
+// // Mock data
+// const monthlyData = {
+//   totalEvents: 8,
+//   categories: [
+//     { name: "Music", count: 4, icon: Music, color: "bg-blue-500" },
+//     { name: "Sports", count: 2, icon: Dumbbell, color: "bg-green-500" },
+//     { name: "Tech", count: 2, icon: Laptop, color: "bg-purple-500" },
+//     { name: "Education", count: 4, icon: Music, color: "bg-blue-500" },
+//     { name: "Cultural", count: 2, icon: Dumbbell, color: "bg-green-500" },
+//     { name: "Business", count: 2, icon: Laptop, color: "bg-purple-500" },
+//   ],
+// };
 
-const yearlyData = {
-  totalEvents: 24,
-  categories: [
-    { name: "Music", count: 12, icon: Music, color: "bg-blue-500" },
-    { name: "Sports", count: 10, icon: Dumbbell, color: "bg-green-500" },
-    { name: "Tech", count: 6, icon: Laptop, color: "bg-purple-500" },
-    { name: "Education", count: 4, icon: Music, color: "bg-blue-500" },
-    { name: "Cultural", count: 2, icon: Dumbbell, color: "bg-green-500" },
-    { name: "Business", count: 2, icon: Laptop, color: "bg-purple-500" },
-  ],
-};
+// const yearlyData = {
+//   totalEvents: 24,
+//   categories: [
+//     { name: "Music", count: 12, icon: Music, color: "bg-blue-500" },
+//     { name: "Sports", count: 10, icon: Dumbbell, color: "bg-green-500" },
+//     { name: "Tech", count: 6, icon: Laptop, color: "bg-purple-500" },
+//     { name: "Education", count: 4, icon: Music, color: "bg-blue-500" },
+//     { name: "Cultural", count: 2, icon: Dumbbell, color: "bg-green-500" },
+//     { name: "Business", count: 2, icon: Laptop, color: "bg-purple-500" },
+//   ],
+// };
 
-export default function UserAnalytics() {
-  const [timeFrame, setTimeFrame] = useState("month");
-  const data = timeFrame === "month" ? monthlyData : yearlyData;
+export default function UserAnalytics({totalData, monthlyData, yearlyData}) {
+  const [timeFrame, setTimeFrame] = useState("total");
+  const data = timeFrame === "total" ? totalData : "month" ? monthlyData : yearlyData;
   const maxEvents = Math.max(...data.categories.map((cat) => cat.count));
 
   const radialData = [
@@ -70,6 +70,10 @@ export default function UserAnalytics() {
             onValueChange={(value) => setTimeFrame(value)}
             className="flex space-x-4"
           >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="total" id="total" />
+              <Label htmlFor="month">Overall</Label>
+            </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="month" id="month" />
               <Label htmlFor="month">Last Month</Label>
