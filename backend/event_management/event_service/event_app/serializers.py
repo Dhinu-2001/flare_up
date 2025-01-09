@@ -10,7 +10,7 @@ class EventCategorySerializer(serializers.ModelSerializer):
 class EventTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = EventType
-        fields = ['id', 'name', 'description', 'category', 'status']
+        fields = ['id', 'name', 'description', 'type_image', 'category', 'status']
 
 class KeyParticipantSerializer(serializers.ModelSerializer):
     class Meta:

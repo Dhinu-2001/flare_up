@@ -47,8 +47,8 @@ export default function CategoryBannerUploadCloudinary({ publicId, setPublicId }
     <Card className="bg-black w-full max-w-md mx-auto">
       <CardContent className="p-6">
         <div className="space-y-4">
-          <div >
-            <CloudinaryUploadWidget uwConfig={uwConfig} setPublicId={setPublicId} idEle={"category"} buttonText={'Upload banner'} />
+          <div  >
+            <CloudinaryUploadWidget  uwConfig={uwConfig} setPublicId={setPublicId} idEle={"category"} buttonText={'Upload banner'} />
             {/* <CloudinaryUploadWidget uwConfig={uwConfig} setPublicId={setPublicId} loadedType={bannerLoaded} setLoadedType={setBannerLoaded} idEle={"banner"} /> */}
 
 

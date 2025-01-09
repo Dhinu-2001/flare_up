@@ -28,6 +28,7 @@ import axiosInstance from "@/axiosconfig";
 import { Link } from "react-router-dom";
 import AdminCategoryListShimmer from "@/components/Shimmer/AdminCategoryList";
 import CategoryBannerUploadCloudinary from "@/Page_components/CloudinaryComponents/CategoryBannerUploadCloudinary";
+import { toast } from "sonner";
 
 const schema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
@@ -35,7 +36,7 @@ const schema = z.object({
 });
 
 export default function CategoryList() {
-  const { data, loading, error } = useContext(DataContext);
+  const { data, loading, refreshData, error } = useContext(DataContext);
   const [bannerPublicId, setBannerPublicId] = useState("");
   const {
     register,
@@ -63,26 +64,32 @@ export default function CategoryList() {
   // }, [errors, clearErrors]);
 
   const onSubmit = async (data) => {
+
+    data.category_image = bannerPublicId;
     const { name, description } = data;
     console.log(name, description);
-    try {
-      data.category_image = bannerPublicId;
 
-      const response = await axiosInstance.post(
-        "/events/create_category/",
-        data,
-        {
+    await toast.promise(
+        axiosInstance.post("/events/create_category/", data, {
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
+          },
+        }),
+        {
+          loading: 'Category creating',
+          success: (response) => {
+            // Fetch updated event details after success
+            console.log('response data', response.data)
+            reset();
+            refreshData();
+            return 'Category created successfully';
+          },
+          error: (error) => {
+            console.log('Category creation failed:', error)
+            return error.response?.data?.error ? error.response?.data?.error : 'Profile updation failed'
           },
         }
       );
-      console.log(response.data);
-      reset();
-    } catch (error) {
-      console.log("Event creation failed:", error);
-    } finally {
-    }
   };
 
   return (
@@ -95,13 +102,13 @@ export default function CategoryList() {
           </p>
         </div>
         <Dialog>
-          <DialogTrigger asChild>
+          <DialogTrigger  asChild>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
               Add New Category
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-6 rounded-lg shadow-lg z-[1050]" >
             <DialogHeader>
               <DialogTitle>Add New Category</DialogTitle>
             </DialogHeader>
