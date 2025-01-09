@@ -316,6 +316,7 @@ class EventTypesAndCategories(APIView):
                     "description": category.description,
                     "status": category.status,
                     "updated_at": category.updated_at,
+                    "category_image": category.category_image,
                     "event_types": [
                         {
                             "id": event_type.id,
@@ -323,6 +324,7 @@ class EventTypesAndCategories(APIView):
                             "description": event_type.description,
                             "status": event_type.status,
                             "updated_at": event_type.updated_at,
+                            "type_image": event_type.type_image,
                         }
                         for event_type in category.event_types.all()
                     ],

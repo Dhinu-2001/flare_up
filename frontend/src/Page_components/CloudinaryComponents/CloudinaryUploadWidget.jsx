@@ -17,7 +17,7 @@ function CloudinaryUploadWidget({ uwConfig, setPublicId, idEle, buttonText }) {
         const script = document.createElement("script");
         script.setAttribute("async", "");
         script.setAttribute("id", "uw");
-        
+
         script.src = "https://upload-widget.cloudinary.com/global/all.js";
         script.addEventListener("load", () => setLoaded(true));
         document.body.appendChild(script);
@@ -28,11 +28,10 @@ function CloudinaryUploadWidget({ uwConfig, setPublicId, idEle, buttonText }) {
     }
   }, [loaded]);
 
-
   useEffect(() => {
-    console.log(loaded)
+    console.log(loaded);
 
-    if (loaded && window.cloudinary  ) {
+    if (loaded && window.cloudinary) {
       // Check if cloudinary is available
       const myWidget = window.cloudinary.createUploadWidget(
         uwConfig,
@@ -43,10 +42,9 @@ function CloudinaryUploadWidget({ uwConfig, setPublicId, idEle, buttonText }) {
           }
         }
       );
-        
+
       const buttonElement = document.getElementById(idEle);
       const openWidget = () => {
-        
         myWidget.open();
       };
 
@@ -56,26 +54,28 @@ function CloudinaryUploadWidget({ uwConfig, setPublicId, idEle, buttonText }) {
       // Cleanup function to remove the listener on component unmount
       return () => {
         buttonElement.removeEventListener("click", openWidget);
-        setval(false)
+        setval(false);
       };
     }
   }, [loaded, uwConfig, val, setPublicId, idEle]); // Dependencies include loaded state and props
 
-  const handleClick =()=>{
-    setval(true)
-    console.log(loaded)
-  }
+  const handleClick = () => {
+    setval(true);
+    console.log(loaded);
+  };
 
   return (
     <CloudinaryScriptContext.Provider value={{ loaded }}>
-      <Button
-        id={idEle}
-        className="bg-black text-white border-2 border-white"
-        type="button"
-        onClick={handleClick}
-      >
-        {buttonText}
-      </Button>
+      <div className="relative z-[1100]">
+        <Button
+          id={idEle}
+          className=" bg-black text-white border-2 border-white"
+          type="button"
+          onClick={handleClick}
+        >
+          {buttonText}
+        </Button>
+      </div>
     </CloudinaryScriptContext.Provider>
   );
 }

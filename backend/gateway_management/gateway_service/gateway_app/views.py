@@ -229,3 +229,36 @@ class SetNewPasswordAPI(APIView):
                 {"error": "User service is unavailable"},
                 status=status.HTTP_503_SERVICE_UNAVAILABLE,
             )
+
+
+class HosterListAPI(APIView):
+    def get(self, request):
+        try:
+            print("reached api gateway")
+            response = requests.get(
+                f"http://localhost:8081/hoster_list/",
+            )
+            if response.status_code == 201:
+                return Response(response.json(), status=status.HTTP_200_OK)
+            return Response(response.json(), status=response.status_code)
+        except requests.exceptions.RequestException:
+            return Response(
+                {"error": "User service is unavailable"},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
+
+class UserListAPI(APIView):
+    def get(self, request):
+        try:
+            print("reached api gateway")
+            response = requests.get(
+                f"http://localhost:8081/user_list/",
+            )
+            if response.status_code == 201:
+                return Response(response.json(), status=status.HTTP_200_OK)
+            return Response(response.json(), status=response.status_code)
+        except requests.exceptions.RequestException:
+            return Response(
+                {"error": "User service is unavailable"},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )

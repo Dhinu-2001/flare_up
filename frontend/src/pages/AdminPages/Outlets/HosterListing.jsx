@@ -1,11 +1,13 @@
+import { UserTableColumn } from '@/components/DataTable/UserTableColumn'
+import React from 'react'
 import { useContext } from "react";
-import { AdminEventColumns } from "../../../components/DataTable/AdminEventColumns"
-import { DataTable } from '../../../components/DataTable/Data-Table';
-import { EventsDataContext } from "@/ContextFiles/EventsDataProvider";
 import EventListShimmer from "@/components/Shimmer/EventList";
+import { HosterListDataContext } from '@/ContextFiles/HosterListDataContext';
+import { UserTable } from '@/components/DataTable/User-Table';
 
-export default function EventList() {
-    const {data, error, loading} = useContext(EventsDataContext)
+
+function HosterListing() {
+    const {data, error, loading} = useContext(HosterListDataContext)
 
     if(loading) return <EventListShimmer/>
     if(error) return <p>Error loading data</p>
@@ -18,8 +20,10 @@ export default function EventList() {
         Events
       </h3>
       <div className="container mx-auto pt-0 py-10">
-        <DataTable columns={AdminEventColumns} data={data} />
+        <UserTable columns={UserTableColumn} data={data} />
       </div>
     </div>
   );
 }
+
+export default HosterListing

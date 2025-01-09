@@ -1,16 +1,19 @@
 import React, { createContext, useState, useEffect } from 'react'
 import axiosInstance from '@/axiosconfig'
+import { store } from '../redux/Store';
 
-export const DataContext = createContext();
+export const HosterListDataContext = createContext();
 
-function DataProvider ({ children }) {
+function HosterListDataProvider ({ children }) {
+    const state = store.getState()
+    const user_id = state.id
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null)
 
     const fetchData = async () => {
         try {
-            const response = await axiosInstance.get('/events/event-types-and-categories/')
+            const response = await axiosInstance.get(`hoster_list/`)
             console.log('context', response)
             setData(response.data)
             setLoading(false)
@@ -21,7 +24,6 @@ function DataProvider ({ children }) {
     }
 
     useEffect(() => {
-        
         fetchData();
     }, [])
 
@@ -31,10 +33,10 @@ function DataProvider ({ children }) {
       };
 
     return (
-        <DataContext.Provider value={{ data, error, refreshData, loading }}>
+        <HosterListDataContext.Provider value={{ data, error, loading, refreshData }}>
             {children}
-        </DataContext.Provider>
+        </HosterListDataContext.Provider>
     )
 }
 
-export default DataProvider 
+export default HosterListDataProvider 
