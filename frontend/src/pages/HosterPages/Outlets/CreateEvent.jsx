@@ -106,7 +106,7 @@ function CreateEvent() {
     data.registration_deadline = registrationDeadline.toISOString();
     data.banner_image = bannerPublicId
     data.promo_video = videoPublicId
-    data.longitude = lng
+    data.longitude = lng 
     data.latitude = lat
     data.address_line_1 = address
     data.city = city

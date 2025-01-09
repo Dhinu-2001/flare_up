@@ -4,7 +4,7 @@ from .models import Event, EventCategory, EventType, KeyParticipant, Sponsor
 class EventCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = EventCategory
-        fields = ['id', 'name', 'description', 'status']
+        fields = ['id', 'name', 'category_image', 'description', 'status']
 
 
 class EventTypeSerializer(serializers.ModelSerializer):
