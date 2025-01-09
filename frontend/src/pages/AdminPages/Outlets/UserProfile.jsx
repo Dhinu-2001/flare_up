@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Settings,
   MessageSquare,
@@ -10,227 +8,227 @@ import {
   TriangleAlert,
   CircleOff,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
+// import { Button } from "@/components/ui/button";
+// import { Switch } from "@/components/ui/switch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-import { ProfileDataContext } from "@/ContextFiles/ProfileDataProvider";
+import { UserDetailsDataContext } from "@/ContextFiles/UserDetails"; 
 import { useContext, useEffect, useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Textarea } from "@/components/ui/textarea";
-import axiosInstance from "@/axiosconfig";
-import { store } from "../../../redux/Store";
+// import {
+//   Dialog,
+//   DialogContent,
+//   DialogHeader,
+//   DialogTitle,
+//   DialogTrigger,
+// } from "@/components/ui/dialog";
+// import { useForm } from "react-hook-form";
+// import { zodResolver } from "@hookform/resolvers/zod";
+// import { z } from "zod";
+// import { Textarea } from "@/components/ui/textarea";
+// import axiosInstance from "@/axiosconfig";
+// import { store } from "../../../redux/Store";
 import React from "react";
-import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
-import { Link } from "react-router-dom";
-import HosterProfileUploadCloudinary from "@/Page_components/CloudinaryComponents/HosterProfileUploadCloudinary";
+// import { Input } from "@/components/ui/input";
+// import { toast } from "sonner";
+// import { Link } from "react-router-dom";
+// import HosterProfileUploadCloudinary from "@/Page_components/CloudinaryComponents/HosterProfileUploadCloudinary";
 import AdminProfileShimmer from "@/components/Shimmer/AdminProfile";
 
-const schema = z.object({
-  username: z.string().min(1, { message: "Username is required" }),
-  fullname: z.string().min(1, { message: "Fullname is required" }),
-  phone_number: z.string().min(10, { message: "Phone number is required" }),
-  email: z.string().min(1, { message: "Email is required" }),
-});
+// const schema = z.object({
+//   username: z.string().min(1, { message: "Username is required" }),
+//   fullname: z.string().min(1, { message: "Fullname is required" }),
+//   phone_number: z.string().min(10, { message: "Phone number is required" }),
+//   email: z.string().min(1, { message: "Email is required" }),
+// });
 
-const selectPasswordSchema = (data) => {
-  if (data) {
-    const schemaNotPassword = z
-      .object({
-        new_password: z
-          .string()
-          .min(8, { message: "Password must be at least 8 characters long" })
-          .regex(/[a-z]/, {
-            message: "Password must contain at least one lowercase letter",
-          })
-          .regex(/[A-Z]/, {
-            message: "Password must contain at least one uppercase letter",
-          })
-          .regex(/[0-9]/, {
-            message: "Password must contain at least one number",
-          }),
-        confirm_password: z
-          .string()
-          .min(8, { message: "Password must be at least 8 characters long" })
-          .regex(/[a-z]/, {
-            message: "Password must contain at least one lowercase letter",
-          })
-          .regex(/[A-Z]/, {
-            message: "Password must contain at least one uppercase letter",
-          })
-          .regex(/[0-9]/, {
-            message: "Password must contain at least one number",
-          }),
-      })
-      .refine((data) => data.new_password === data.confirm_password, {
-        message: "Passwords must match",
-        path: ["confirm_password"], // Show error on the confirm_password field
-      });
+// const selectPasswordSchema = (data) => {
+//   if (data) {
+//     const schemaNotPassword = z
+//       .object({
+//         new_password: z
+//           .string()
+//           .min(8, { message: "Password must be at least 8 characters long" })
+//           .regex(/[a-z]/, {
+//             message: "Password must contain at least one lowercase letter",
+//           })
+//           .regex(/[A-Z]/, {
+//             message: "Password must contain at least one uppercase letter",
+//           })
+//           .regex(/[0-9]/, {
+//             message: "Password must contain at least one number",
+//           }),
+//         confirm_password: z
+//           .string()
+//           .min(8, { message: "Password must be at least 8 characters long" })
+//           .regex(/[a-z]/, {
+//             message: "Password must contain at least one lowercase letter",
+//           })
+//           .regex(/[A-Z]/, {
+//             message: "Password must contain at least one uppercase letter",
+//           })
+//           .regex(/[0-9]/, {
+//             message: "Password must contain at least one number",
+//           }),
+//       })
+//       .refine((data) => data.new_password === data.confirm_password, {
+//         message: "Passwords must match",
+//         path: ["confirm_password"], // Show error on the confirm_password field
+//       });
 
-    const schemaHasPassword = z
-      .object({
-        current_password: z
-          .string()
-          .min(8, { message: "Password must be at least 8 characters long" })
-          .regex(/[a-z]/, {
-            message: "Password must contain at least one lowercase letter",
-          })
-          .regex(/[A-Z]/, {
-            message: "Password must contain at least one uppercase letter",
-          })
-          .regex(/[0-9]/, {
-            message: "Password must contain at least one number",
-          }),
-        new_password: z
-          .string()
-          .min(8, { message: "Password must be at least 8 characters long" })
-          .regex(/[a-z]/, {
-            message: "Password must contain at least one lowercase letter",
-          })
-          .regex(/[A-Z]/, {
-            message: "Password must contain at least one uppercase letter",
-          })
-          .regex(/[0-9]/, {
-            message: "Password must contain at least one number",
-          }),
-        confirm_password: z
-          .string()
-          .min(8, { message: "Password must be at least 8 characters long" })
-          .regex(/[a-z]/, {
-            message: "Password must contain at least one lowercase letter",
-          })
-          .regex(/[A-Z]/, {
-            message: "Password must contain at least one uppercase letter",
-          })
-          .regex(/[0-9]/, {
-            message: "Password must contain at least one number",
-          }),
-      })
-      .refine((data) => data.new_password === data.confirm_password, {
-        message: "Passwords must match",
-        path: ["confirm_password"], // Show error on the confirm_password field
-      });
+//     const schemaHasPassword = z
+//       .object({
+//         current_password: z
+//           .string()
+//           .min(8, { message: "Password must be at least 8 characters long" })
+//           .regex(/[a-z]/, {
+//             message: "Password must contain at least one lowercase letter",
+//           })
+//           .regex(/[A-Z]/, {
+//             message: "Password must contain at least one uppercase letter",
+//           })
+//           .regex(/[0-9]/, {
+//             message: "Password must contain at least one number",
+//           }),
+//         new_password: z
+//           .string()
+//           .min(8, { message: "Password must be at least 8 characters long" })
+//           .regex(/[a-z]/, {
+//             message: "Password must contain at least one lowercase letter",
+//           })
+//           .regex(/[A-Z]/, {
+//             message: "Password must contain at least one uppercase letter",
+//           })
+//           .regex(/[0-9]/, {
+//             message: "Password must contain at least one number",
+//           }),
+//         confirm_password: z
+//           .string()
+//           .min(8, { message: "Password must be at least 8 characters long" })
+//           .regex(/[a-z]/, {
+//             message: "Password must contain at least one lowercase letter",
+//           })
+//           .regex(/[A-Z]/, {
+//             message: "Password must contain at least one uppercase letter",
+//           })
+//           .regex(/[0-9]/, {
+//             message: "Password must contain at least one number",
+//           }),
+//       })
+//       .refine((data) => data.new_password === data.confirm_password, {
+//         message: "Passwords must match",
+//         path: ["confirm_password"], // Show error on the confirm_password field
+//       });
 
-    const selectSchema = data.has_password
-      ? schemaHasPassword
-      : schemaNotPassword;
-    return selectSchema;
-  }
-};
+//     const selectSchema = data.has_password
+//       ? schemaHasPassword
+//       : schemaNotPassword;
+//     return selectSchema;
+//   }
+// };
 
-function ProfileAdmin() {
-  const { data, loading, error, refreshData } = useContext(ProfileDataContext)
-  const {
-    register: updateHosterProfileForm,
-    setValue,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    clearErrors,
-    reset,
-  } = useForm({
-    resolver: zodResolver(schema),
-  });
+function UserProfile() {
+  const { data, loading, error, refreshData } = useContext(UserDetailsDataContext)
+//   const {
+//     register: updateHosterProfileForm,
+//     setValue,
+//     handleSubmit,
+//     formState: { errors, isSubmitting },
+//     clearErrors,
+//     reset,
+//   } = useForm({
+//     resolver: zodResolver(schema),
+//   });
 
-  const {
-    register: updateHosterPasswordForm,
-    setValue: setValuePassword,
-    handleSubmit: handleSubmitPassword,
-    formState: { errors: errorsPassword, isSubmitting: isSubmittingPassword },
-    clearErrors: clearErrorsPassword,
-    reset: resetPassword,
-  } = useForm({
-    resolver: zodResolver(selectPasswordSchema(data)),
-  });
+//   const {
+//     register: updateHosterPasswordForm,
+//     setValue: setValuePassword,
+//     handleSubmit: handleSubmitPassword,
+//     formState: { errors: errorsPassword, isSubmitting: isSubmittingPassword },
+//     clearErrors: clearErrorsPassword,
+//     reset: resetPassword,
+//   } = useForm({
+//     resolver: zodResolver(selectPasswordSchema(data)),
+//   });
 
-  const state = store.getState();
-  const user_id = state.id;
-  let updateData = false;
-  const [profilePublicId, setProfilePublicId] = useState();
+//   const state = store.getState();
+//   const user_id = state.id;
+//   let updateData = false;
+//   const [profilePublicId, setProfilePublicId] = useState();
 
-  function setUpdateData() {
-    console.log("setupdate triggered");
-    updateData = !updateData;
-  }
+//   function setUpdateData() {
+//     console.log("setupdate triggered");
+//     updateData = !updateData;
+//   }
 
   // Populate form fields with userDetails when the component mounts
-  useEffect(() => {
-    if (data) {
-      setValue("username", data.username || "");
-      setValue("fullname", data.fullname || "");
-      setValue("phone_number", data.phone_number || "");
-      setValue("email", data.email || "");
-    }
-  }, [data, setValue, updateData]);
+//   useEffect(() => {
+//     if (data) {
+//       setValue("username", data.username || "");
+//       setValue("fullname", data.fullname || "");
+//       setValue("phone_number", data.phone_number || "");
+//       setValue("email", data.email || "");
+//     }
+//   }, [data, setValue, updateData]);
 
   if (loading) return <AdminProfileShimmer />;
   if (error) return <p>Error loading data</p>;
 
-  const onSubmit = async (data) => {
-    console.log(data);
+//   const onSubmit = async (data) => {
+//     console.log(data);
 
-    await toast.promise(
-      axiosInstance.patch(`/user/${user_id}/update_user_profile/`, data, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }),
-      {
-        loading: "Profile updating",
-        success: (response) => {
-          // Fetch updated event details after success
-          console.log("response datat", response.data);
-          reset();
-          refreshData();
-          return "Profile updated successfully";
-        },
-        error: (error) => {
-          console.log("Event creation failed:", error);
-          return error.response?.data?.error
-            ? error.response?.data?.error
-            : "Profile updation failed";
-        },
-      }
-    );
-  };
+//     await toast.promise(
+//       axiosInstance.patch(`/user/${user_id}/update_user_profile/`, data, {
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//       }),
+//       {
+//         loading: "Profile updating",
+//         success: (response) => {
+//           // Fetch updated event details after success
+//           console.log("response datat", response.data);
+//           reset();
+//           refreshData();
+//           return "Profile updated successfully";
+//         },
+//         error: (error) => {
+//           console.log("Event creation failed:", error);
+//           return error.response?.data?.error
+//             ? error.response?.data?.error
+//             : "Profile updation failed";
+//         },
+//       }
+//     );
+//   };
 
-  const onSubmitPassword = async (data) => {
-    console.log(data);
+//   const onSubmitPassword = async (data) => {
+//     console.log(data);
 
-    await toast.promise(
-      axiosInstance.post(`/user/${user_id}/set_password/`, data, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }),
-      {
-        loading: "Password updating",
-        success: (response) => {
-          // Fetch updated event details after success
-          console.log(response.data);
-          resetPassword();
-          refreshData();
-          return "Password updated successfully";
-        },
-        error: (error) => {
-          console.log("Event creation failed:", error);
-          return error.response?.data?.error
-            ? error.response?.data?.error
-            : "Password updation failed";
-        },
-      }
-    );
-  };
+//     await toast.promise(
+//       axiosInstance.post(`/user/${user_id}/set_password/`, data, {
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//       }),
+//       {
+//         loading: "Password updating",
+//         success: (response) => {
+//           // Fetch updated event details after success
+//           console.log(response.data);
+//           resetPassword();
+//           refreshData();
+//           return "Password updated successfully";
+//         },
+//         error: (error) => {
+//           console.log("Event creation failed:", error);
+//           return error.response?.data?.error
+//             ? error.response?.data?.error
+//             : "Password updation failed";
+//         },
+//       }
+//     );
+//   };
 
   return (
     <div className="p-6">
@@ -245,11 +243,11 @@ function ProfileAdmin() {
                 <AvatarFallback>{data.fullname}</AvatarFallback>
               </Avatar>
               {/* <Button className='border-2 bg-stone-900 text-white hover:bg-stone-800 '>Upload profile</Button> */}
-              <HosterProfileUploadCloudinary
+              {/* <HosterProfileUploadCloudinary
                 publicId={profilePublicId}
                 setPublicId={setProfilePublicId}
                 refreshData={refreshData}
-              />
+              /> */}
             </div>
             <div>
               <h2 className="text-2xl font-semibold">{data.fullname}</h2>
@@ -314,7 +312,7 @@ function ProfileAdmin() {
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Profile Information</CardTitle>
 
-            <Dialog>
+            {/* <Dialog>
               <DialogTrigger onClick={() => setUpdateData()} asChild>
                 <Button
                   className="border-2 border-white"
@@ -393,7 +391,7 @@ function ProfileAdmin() {
                   </div>
                 </form>
               </DialogContent>
-            </Dialog>
+            </Dialog> */}
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -432,7 +430,7 @@ function ProfileAdmin() {
                 <span className="text-gray-600">{data.email}</span>
               </div>
 
-              {data.has_password ? (
+              {/* {data.has_password ? (
                 <Dialog>
                   <DialogTrigger asChild>
                     <Button variant="outline">
@@ -564,7 +562,7 @@ function ProfileAdmin() {
                     </form>
                   </DialogContent>
                 </Dialog>
-              )}
+              )} */}
             </div>
           </CardContent>
         </Card>
@@ -627,4 +625,4 @@ function ProfileAdmin() {
   );
 }
 
-export default ProfileAdmin;
+export default UserProfile;

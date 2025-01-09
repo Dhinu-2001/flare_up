@@ -8,7 +8,7 @@ import EventList from "@/pages/HosterPages/Outlets/EventList";
 import PaymentList from "@/pages/HosterPages/Outlets/PaymentList";
 import DataProvider from "@/ContextFiles/DataProvider";
 import EventsDataProvider from "@/ContextFiles/EventsDataProvider";
-import ProfileDataProvider from "@/ContextFiles/ProfileAnalyticsDataProvider";
+import ProfileDataProvider from "@/ContextFiles/ProfileDataProvider";
 import EventDetails from "@/pages/HosterPages/Outlets/EventDetails";
 import UpdateOrganization from "@/pages/HosterPages/Outlets/UpdateOrganization";
 import EventsByHosterDataProvider from "@/ContextFiles/EventsByHosterDataProvider";

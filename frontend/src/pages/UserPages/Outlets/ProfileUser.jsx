@@ -167,7 +167,7 @@ function ProfileUser() {
 
   // Populate form fields with userDetails when the component mounts
   useEffect(() => {
-    if (data.user_data) {
+    if (data) {
       setValue("username", data.user_data.username || "");
       setValue("fullname", data.user_data.fullname || "");
       setValue("phone_number", data.user_data.phone_number || "");

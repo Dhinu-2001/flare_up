@@ -73,7 +73,7 @@ export const UserTableColumn = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const event = row.original
+      const user = row.original
       const navigate = useNavigate();
 
       return (
@@ -94,8 +94,8 @@ export const UserTableColumn = [
             <DropdownMenuSeparator />
             {/* <DropdownMenuItem>View customer</DropdownMenuItem> */}
             <DropdownMenuItem
-              onClick={() => navigate(`/admin/events/event/${event.id}`)}>
-              View event details
+              onClick={() => navigate(`/admin/${user.id}`)}>
+              View user details
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

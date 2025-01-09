@@ -68,7 +68,7 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
             'payment_required', 'ticket_price', 'participant_capacity', 'banner_image', 
             'promo_video', 'start_date_time', 'end_date_time', 'registration_deadline', 
             'created_at', 'updated_at', 'status', 'status_request', 'approval_status', 'approval_comments', 
-            'approval_updated_at', 'key_participants'
+            'approval_updated_at', 'key_participants', 'current_participants_count',
         ]
         read_only_fields = [
             'id', 'created_at', 'updated_at', 'approval_updated_at'
