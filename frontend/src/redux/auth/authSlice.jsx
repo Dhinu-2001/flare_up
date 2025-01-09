@@ -7,6 +7,7 @@ const initialState = {
     id: null,
     username: null,
     email: null,
+    profile_picture: null,
     role: null,
     isAuthenticated: false,
     loading: false,
@@ -24,6 +25,7 @@ const authSlice = createSlice({
             state.username = action.payload.username;
             state.email = action.payload.email;
             state.role = action.payload.role;
+            state.profile_picture = action.payload.profile_picture;
             state.isAuthenticated = true;
             state.error = null;
         },
@@ -44,6 +46,7 @@ const authSlice = createSlice({
             state.username = null;
             state.email = null;
             state.role = null;
+            state.profile_picture = null;
             state.isAuthenticated = false;
             state.error = null;
         },

@@ -28,6 +28,7 @@ function Header() {
 
   const authenticateStateValue = useSelector((store) => store.isAuthenticated);
   const roleValue = useSelector((store) => store.role);
+  const profile_picture = useSelector((store) => store.profile_picture);
 
   useEffect(() => {
     setIsAuthenticated(authenticateStateValue);
@@ -71,6 +72,14 @@ function Header() {
             className="text-blue-400 hover:text-blue-300 hover:bg-gray-700"
           >
             My Tickets
+          </Button>
+        </Link>
+        <Link to="/profile">
+          <Button
+            variant="ghost"
+            className="text-blue-400 hover:text-blue-300 hover:bg-gray-700"
+          >
+            Profile
           </Button>
         </Link>
       </>
@@ -131,13 +140,14 @@ function Header() {
                 <DropdownMenuTrigger asChild>
                   <Button className="  text-blue-400  bg-sky-500 border-white hover:bg-sky-300  h-8 w-8 rounded-full">
                     <Avatar>
-                      <AvatarImage src="https://github.com/shadcn.png" />
+                      <AvatarImage src={`https://res.cloudinary.com/dzwjm8n8v/image/upload/v1732028654/${profile_picture}.png`} />
+                      {/* {`https://res.cloudinary.com/dzwjm8n8v/image/upload/v1732028654/${profile_picture}.png`} */}
                       <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56">
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  {/* <DropdownMenuLabel>My Account</DropdownMenuLabel> */}
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
                     <Link to="/profile">

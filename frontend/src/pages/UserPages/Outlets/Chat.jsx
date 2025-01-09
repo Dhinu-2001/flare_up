@@ -19,9 +19,6 @@ const UserChat = () => {
 
     // }
     
-
-    
-
     const room_array = [senderId, receiverId];
     room_array.sort((a, b) => a - b);
 

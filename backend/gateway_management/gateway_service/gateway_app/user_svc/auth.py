@@ -124,6 +124,7 @@ def GoogleAuth(request):
             json=data,
             headers={"Content-Type":"application/json"}
         )
+        print('response data',response.json())
         if response.status_code == 200:
             return Response(response.json(), status=status.HTTP_201_CREATED)
         return Response(response.json(),status=response.status_code)

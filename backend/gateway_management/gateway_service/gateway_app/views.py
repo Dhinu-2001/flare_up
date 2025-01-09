@@ -31,6 +31,7 @@ class AdminRegister(APIView):
 class login(APIView):
     def post(self, request):
         response = auth.login(request)
+        print(response)
         return response
 
 
@@ -49,6 +50,7 @@ class resend_otp(APIView):
 class GoogleAuth(APIView):
     def post(self, request):
         response = auth.GoogleAuth(request)
+        
         return response
 
 

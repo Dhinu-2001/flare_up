@@ -1,46 +1,32 @@
-"use client";
-
 import * as React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Clock, Tickets, Laptop, Download } from "lucide-react";
 import { useContext } from "react";
 import { UserTicketHistoryDataContext } from "@/ContextFiles/UserTicketHistoryDataContext";
-import AdminProfileShimmer from "@/components/Shimmer/AdminProfile";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import PreLoader from "@/Page_components/PreLoader/PreLoader";
+import { AdvancedImage } from "@cloudinary/react";
+import { Cloudinary } from "@cloudinary/url-gen";
+import { env } from "@/utils/env";
 
 export default function BookedEventList() {
   const { data, loading, error, refreshData } = useContext(
     UserTicketHistoryDataContext
   );
-  // const scrollContainerRef = React.useRef(null);
 
-  // const scroll = (direction) => {
-  //   if (scrollContainerRef.current) {
-  //     const scrollAmount = direction === "left" ? -400 : 400;
-  //     scrollContainerRef.current.scrollBy({
-  //       left: scrollAmount,
-  //       behavior: "smooth",
-  //     });
-  //   }
-  // };
+  const [cloudName] = React.useState(env.VITE_cloudinary_name);
+
+  const cld = new Cloudinary({
+    cloud: {
+      cloudName,
+    },
+  });
+
+  const myImage = (imageId) => cld.image(imageId);
 
   if (loading) return <PreLoader />;
   if (error) return <p>Error loading data</p>;
-
-  // const getTypeIcon = (type) => {
-  //   switch (type) {
-  //     case "Digital Course":
-  //       return <Laptop className="h-4 w-4" />;
-  //     case "Exam Preparation":
-  //       return <FileQuestion className="h-4 w-4" />;
-  //     case "Game-Based Learning":
-  //       return <Gamepad className="h-4 w-4" />;
-  //     default:
-  //       return null;
-  //   }
-  // };
 
   return (
     <div className="min-h-screen bg-black py-20 px-4 md:px-6 lg:px-8">
@@ -60,8 +46,8 @@ export default function BookedEventList() {
                 >
                   <div className="aspect-video bg-muted relative">
                     {event.event?.banner_image ? (
-                      <img
-                        src={`https://res.cloudinary.com/dzwjm8n8v/image/upload/v1731575754/${event.event?.banner_image}.jpg`}
+                      <AdvancedImage
+                        cldImg={myImage(event.event.banner_image)}
                         alt={event.event?.title}
                         className="object-cover w-full h-full"
                       />
