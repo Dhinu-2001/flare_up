@@ -8,7 +8,7 @@ import { store } from "./redux/Store";
 // baseURL: 'http://meetmingle.com/', FOR DOCKER
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8000/',
+  baseURL: 'http://meetmingle.com/',
   withCredentials: true,
 });
 

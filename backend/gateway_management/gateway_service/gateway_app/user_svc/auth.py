@@ -51,35 +51,33 @@ def AdminRegister(request):
         # Handle network or connection issues with user service
         return Response({"error": "User Service is unavailable"}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
     
-  
+import logging
+logger = logging.getLogger(__name__)
+
+
     
 def login(request):
     try:
         data = json.loads(request.body)
         
+        USER_SVC = env('USER_SVC_ADDRESS')
+        print('ENVIRONMENT VALUE', USER_SVC)
+        path = f"http://{USER_SVC}/login/"
+        print('ENVIRONMENT VALUE', path)
+        
         response = requests.post(
-            f"http://localhost:8081/login/",
+            path,
             json=data,
             headers={"Content-Type":"application/json"}
         )
-
-        print("Cookies in response gateway:", response.cookies.items())
-
+        
         gateway_response = Response(response.json(), status=response.status_code)
-
-        for cookie in response.cookies:
-            gateway_response.set_cookie(
-                key=cookie.name, 
-                value=cookie.value, 
-                httponly=cookie.has_nonstandard_attr('HttpOnly'),
-                secure=cookie.secure,
-                samesite=cookie.get_nonstandard_attr('SameSite')
-            )
 
         if response.status_code == 200:
             return gateway_response
         return Response(response.json(), status=response.status_code)
-    except:
+    except Exception as e:
+        print('Exception',str(e))
         return Response({"error": "User Service is unavailable"}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
     
 def VerifyOTP(request):
