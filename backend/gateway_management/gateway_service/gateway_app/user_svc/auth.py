@@ -4,6 +4,9 @@ from rest_framework.response import Response
 from rest_framework import status
 import os
 import environ
+import logging
+logger = logging.getLogger(__name__)
+
 
 env = environ.Env()
 environ.Env.read_env()
@@ -15,7 +18,7 @@ def register(request):
 
         # Send the data as JSON to the user service
         response = requests.post(
-            f"http://localhost:8081/register/",
+            f"http://{env('USER_SVC_ADDRESS')}/register/",
             json=data,  # Send data as JSON
             headers={"Content-Type": "application/json"}
         )
@@ -37,7 +40,7 @@ def AdminRegister(request):
 
         # Send the data as JSON to the user service
         response = requests.post(
-            f"http://localhost:8081/admin-register/",
+            f"http://{env('USER_SVC_ADDRESS')}/admin-register/",
             json=data,  # Send data as JSON
             headers={"Content-Type": "application/json"}
         )
@@ -51,8 +54,6 @@ def AdminRegister(request):
         # Handle network or connection issues with user service
         return Response({"error": "User Service is unavailable"}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
     
-import logging
-logger = logging.getLogger(__name__)
 
 
     
@@ -85,7 +86,7 @@ def VerifyOTP(request):
         data = json.loads(request.body)
         print(data)
         response = requests.post(
-            f"http://localhost:8081/otp_verification/",
+            f"http://{env('USER_SVC_ADDRESS')}/otp_verification/",
             json=data,
             headers={"Content-Type":"application/json"}
         )
@@ -100,7 +101,7 @@ def resend_otp(request):
         data = json.loads(request.body)
         print(data)
         response = requests.post(
-            f"http://localhost:8081/resend_otp/",
+            f"http://{env('USER_SVC_ADDRESS')}/resend_otp/",
             json=data,
             headers={"Content-Type":"application/json"}
         )
@@ -118,7 +119,7 @@ def GoogleAuth(request):
         print('google auth reached', path)
         
         response = requests.post(
-            f"http://localhost:8081/GoogleAuth/",
+            f"http://{env('USER_SVC_ADDRESS')}/GoogleAuth/",
             json=data,
             headers={"Content-Type":"application/json"}
         )
@@ -129,16 +130,16 @@ def GoogleAuth(request):
     except:
         return Response({"error":"User service is unavailable"}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
     
-def GoogleAuthLogin(request):
-    try:
-        data = json.loads(request.body)
-        response = requests.post(
-            f"http://localhost:8081/GoogleAuthLogin/",
-            json=data,
-            headers={"Content-Type":"application/json"}
-        )
-        if response.status_code == 200:
-            return Response(response.json(), status=status.HTTP_201_CREATED)
-        return Response(response.json(),status=response.status_code)
-    except:
-        return Response({"error":"User service is unavailable"}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+# def GoogleAuthLogin(request):
+#     try:
+#         data = json.loads(request.body)
+#         response = requests.post(
+#             f"http://{env('USER_SVC_ADDRESS')}/GoogleAuthLogin/",
+#             json=data,
+#             headers={"Content-Type":"application/json"}
+#         )
+#         if response.status_code == 200:
+#             return Response(response.json(), status=status.HTTP_201_CREATED)
+#         return Response(response.json(),status=response.status_code)
+#     except:
+#         return Response({"error":"User service is unavailable"}, status=status.HTTP_503_SERVICE_UNAVAILABLE)

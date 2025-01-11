@@ -350,7 +350,7 @@ class GetUserDataEventAnalyticsAPI(APIView):
             
             # Defining endpoints
             urls = {
-                'user_data' : f"http://localhost:8081/user-profile/{user_id}/",
+                'user_data' : f"http://{user_service}/user-profile/{user_id}/",
                 'event_analytics' : f"http://{event_service}/analytics/get_user_event_analytics/{user_id}/",
                 
             }

@@ -65,7 +65,7 @@ class RefreshTokenAPI(APIView):
     def post(self, request):
         try:
             response = requests.post(
-                f"http://localhost:8081/token_refresh/",
+                f"http://{env('USER_SVC_ADDRESS')}/token_refresh/",
                 json=request.data,
                 headers={"Content-Type": "application/json"},
             )
@@ -93,7 +93,7 @@ class RefreshTokenAPI(APIView):
 class LogoutAPI(APIView):
     def post(self, request):
         try:
-            response = requests.post(f"http://localhost:8081/logout/")
+            response = requests.post(f"http://{env('USER_SVC_ADDRESS')}/logout/")
 
             print(response)
             gateway_response = Response(response.json(), status=response.status_code)
@@ -113,7 +113,7 @@ class UserAPI(APIView):
         try:
             print("reached api gateway", user_id)
             response = requests.get(
-                f"http://localhost:8081/user-profile/{user_id}/",
+                f"http://{env('USER_SVC_ADDRESS')}/user-profile/{user_id}/",
             )
             if response.status_code == 201:
                 return Response(response.json(), status=status.HTTP_200_OK)
@@ -129,7 +129,7 @@ class UpdateUserProfileAPI(APIView):
     def patch(self, request, user_id):
         try:
             response = requests.patch(
-                f"http://localhost:8081/user/{user_id}/update_user_profile/",
+                f"http://{env('USER_SVC_ADDRESS')}/user/{user_id}/update_user_profile/",
                 json=request.data,
                 headers={"Content-Type": "application/json"},
             )
@@ -159,7 +159,7 @@ class setPasswordAPI(APIView):
             print(headers)
 
             response = requests.post(
-                f"http://localhost:8081/user/{user_id}/set_password/",
+                f"http://{env('USER_SVC_ADDRESS')}/user/{user_id}/set_password/",
                 json=request.data,
                 headers=headers,
             )
@@ -179,7 +179,7 @@ class ForgotPasswordAPI(APIView):
     def post(self, request):
         try:
             response = requests.post(
-                f"http://localhost:8081/forgot-password/",
+                f"http://{env('USER_SVC_ADDRESS')}/forgot-password/",
                 json=request.data,
                 headers={"Content-Type": "application/json"},
             )
@@ -200,7 +200,7 @@ class VerifyOTPForgotPasswordAPI(APIView):
     def post(self, request):
         try:
             response = requests.post(
-                f"http://localhost:8081/verify-otp-forgot-password/",
+                f"http://{env('USER_SVC_ADDRESS')}/verify-otp-forgot-password/",
                 json=request.data,
                 headers={"Content-Type":"application/json"}
             )
@@ -217,7 +217,7 @@ class SetNewPasswordAPI(APIView):
             headers = {"Content-Type": "application/json"}
 
             response = requests.post(
-                f"http://localhost:8081/set-new-password/",
+                f"http://{env('USER_SVC_ADDRESS')}/set-new-password/",
                 json=request.data,
                 headers=headers,
             )
@@ -238,7 +238,7 @@ class HosterListAPI(APIView):
         try:
             print("reached api gateway")
             response = requests.get(
-                f"http://localhost:8081/hoster_list/",
+                f"http://{env('USER_SVC_ADDRESS')}/hoster_list/",
             )
             if response.status_code == 201:
                 return Response(response.json(), status=status.HTTP_200_OK)
@@ -254,7 +254,7 @@ class UserListAPI(APIView):
         try:
             print("reached api gateway")
             response = requests.get(
-                f"http://localhost:8081/user_list/",
+                f"http://{env('USER_SVC_ADDRESS')}/user_list/",
             )
             if response.status_code == 201:
                 return Response(response.json(), status=status.HTTP_200_OK)
