@@ -9,6 +9,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Link } from 'react-router-dom';
+import { env } from "@/utils/env";
 
 
 export default function NotificationMenu() {
@@ -24,7 +25,7 @@ export default function NotificationMenu() {
 
     useEffect(() => {
         // Open WebSocket connection
-        const socket = new WebSocket(`ws://localhost:8084/ws/notifications/${user_id}/`);
+        const socket = new WebSocket(`ws://${env.VITE_notification_svc}/ws/notifications/${user_id}/`);
 
         socket.onmessage = (event) => {
             const data = JSON.parse(event.data);

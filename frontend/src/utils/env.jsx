@@ -6,6 +6,8 @@ const envSchema = z.object({
     VITE_cloudinary_upload_preset: z.string(),
     VITE_stripe: z.string(),
     VITE_googleOauthClientId: z.string(),
+    VITE_gateway_svc: z.string(),
+    VITE_notification_svc: z.string(),
 })
 
 export const env = envSchema.parse(import.meta.env);

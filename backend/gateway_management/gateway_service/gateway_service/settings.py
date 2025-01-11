@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'event_gateway',
     'registration_gateway',
     'rest_framework',
-    'corsheaders'
+    'corsheaders',
+    # 'channels',
 ]
 
 MIDDLEWARE = [
@@ -181,6 +182,16 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'gateway_service.wsgi.application'
+# ASGI_APPLICATION = 'gateway_service.asgi.application'
+
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             'hosts': [(env("REDIS_HOST"), env("REDIS_PORT"))],
+#         },
+#     },
+# }
 
 
 # Database

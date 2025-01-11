@@ -10,6 +10,7 @@ import ChatList from './ChatList';
 import axiosInstance from '@/axiosconfig';
 import { format } from 'date-fns';
 import ChatShimmer from '@/components/Shimmer/Chat';
+import { env } from "@/utils/env";
 
 const formatDate = (isoDateString) => {
     const date = new Date(isoDateString);
@@ -61,7 +62,7 @@ const Chat = () => {
 
             if (roomName) {
                 // Connect to WebSocket
-                socketRef.current = new WebSocket(`ws://localhost:8084/ws/chat/${roomName}/`);
+                socketRef.current = new WebSocket(`ws://${env.VITE_notification_svc}/ws/chat/${roomName}/`);
                 
 
                 // Handle incoming messages

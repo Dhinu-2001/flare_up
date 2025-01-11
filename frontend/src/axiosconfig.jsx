@@ -3,12 +3,12 @@ import Cookies from 'js-cookie'
 import { decryptToken, isTokenExpired, refreshAccessToken, } from './utils/tokenUtil'
 import { handleLogout } from "./utils/StateUtil";
 import { store } from "./redux/Store";
-
+import { env } from "@/utils/env";
 
 // baseURL: 'http://meetmingle.com/', FOR DOCKER
 
 const axiosInstance = axios.create({
-  baseURL: 'http://meetmingle.com/',
+  baseURL: `http://${env.VITE_gateway_svc}/`,
   withCredentials: true,
 });
 
