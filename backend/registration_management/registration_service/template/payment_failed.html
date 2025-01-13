@@ -43,7 +43,8 @@
                 user_id: "{{ payment_details.user_id }}",
                 quantity: "{{ payment_details.ticket_quantity }}",
             })
-            window.location.href = `http://localhost:5173/payment-success?${queryParams.toString()}`;
+            const frontendAddress = "{{ FRONTEND_ADDRESS }}";
+            window.location.href = `http://${frontendAddress}/payment-success?${queryParams.toString()}`;
         }
     </script>
 </body>

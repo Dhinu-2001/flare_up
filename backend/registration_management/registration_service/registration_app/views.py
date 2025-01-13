@@ -67,6 +67,8 @@ def create_checkout_session(request):
 class HandleSuccessPayment(APIView):
     def get(self, request, user_id):
         print("Get method")
+        FRONTEND_ADDRESS = env('FRONTEND_ADDRESS')
+        print(FRONTEND_ADDRESS)
         try:
             user_id = int(user_id)
             print('user_id user_id',user_id)
@@ -109,7 +111,7 @@ class HandleSuccessPayment(APIView):
                 kafka_producer = KafkaProducerService(config={}) 
                 kafka_producer.send_payment_notification_message(kafka_data)
                 
-                return render(request, "payment_success.html", {"payment_details": payment_details})
+                return render(request, "payment_success.html", {"payment_details": payment_details, "FRONTEND_ADDRESS": FRONTEND_ADDRESS})
             else:
                 print(serializer.error_messages)
                 
@@ -119,7 +121,7 @@ class HandleSuccessPayment(APIView):
                 kafka_producer = KafkaProducerService(config={}) 
                 kafka_producer.send_payment_notification_message(kafka_data)
 
-                return render(request, "payment_failed.html", {"payment_details": payment_details})
+                return render(request, "payment_failed.html", {"payment_details": payment_details, "FRONTEND_ADDRESS": FRONTEND_ADDRESS})
             
         except Exception as e:
             print(str(e))
@@ -129,11 +131,12 @@ class HandleSuccessPayment(APIView):
             kafka_producer = KafkaProducerService(config={}) 
             kafka_producer.send_payment_notification_message(kafka_data)
             
-            return render(request, "payment_failed.html", {"payment_details": payment_details})
+            return render(request, "payment_failed.html", {"payment_details": payment_details, "FRONTEND_ADDRESS": FRONTEND_ADDRESS})
             
 
 class HandleFailurePayment(APIView):
     def get(self, request, user_id):
+        FRONTEND_ADDRESS = env('FRONTEND_ADDRESS')
         print("Get method")
         try:
             user_id = int(user_id)
@@ -182,7 +185,7 @@ class HandleFailurePayment(APIView):
                 kafka_producer = KafkaProducerService(config={}) 
                 kafka_producer.send_payment_notification_message(kafka_data)
 
-                return render(request, "payment_failed.html", {"payment_details": payment_details})
+                return render(request, "payment_failed.html", {"payment_details": payment_details, "FRONTEND_ADDRESS": FRONTEND_ADDRESS})
             else:
                 print(serializer.error_messages)
                 kafka_data["status"] = 'Payment failed'
@@ -191,7 +194,7 @@ class HandleFailurePayment(APIView):
                 kafka_producer = KafkaProducerService(config={}) 
                 kafka_producer.send_payment_notification_message(kafka_data)
 
-                return render(request, "payment_failed.html", {"payment_details": payment_details})
+                return render(request, "payment_failed.html", {"payment_details": payment_details, "FRONTEND_ADDRESS": FRONTEND_ADDRESS})
 
             
         except Exception as e:
@@ -202,7 +205,7 @@ class HandleFailurePayment(APIView):
             kafka_producer = KafkaProducerService(config={}) 
             kafka_producer.send_payment_notification_message(kafka_data)
             
-            return render(request, "payment_failed.html", {"payment_details": payment_details})
+            return render(request, "payment_failed.html", {"payment_details": payment_details, "FRONTEND_ADDRESS": FRONTEND_ADDRESS})
 
  
 class PaymentsByHosterView(APIView):
