@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from '@/components/ui/card';
+import { env } from "@/utils/env";
+
 
 const UserChat = () => {
     const state = store.getState()
@@ -19,9 +21,6 @@ const UserChat = () => {
 
     // }
     
-
-    
-
     const room_array = [senderId, receiverId];
     room_array.sort((a, b) => a - b);
 
@@ -34,7 +33,7 @@ const UserChat = () => {
 
     useEffect(() => {
         // Connect to WebSocket
-        socketRef.current = new WebSocket(`ws://localhost:8084/ws/chat/${roomName}/`);
+        socketRef.current = new WebSocket(`ws://${env.VITE_notification_svc}/ws/chat/${roomName}/`);
 
         // Handle incoming messages
         socketRef.current.onmessage = (event) => {

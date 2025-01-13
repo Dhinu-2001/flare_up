@@ -5,9 +5,16 @@ from datetime import datetime
 from asgiref.sync import async_to_sync
 from asgiref.sync import sync_to_async
 from channels.layers import get_channel_layer
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Initialize Redis client
-redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
+REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
+REDIS_PORT = os.getenv('REDIS_PORT', 6379)
+redis_client = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0)
 
 def store_notification_in_redis(user_id, message, type, senderId):
     # Key format: notifications:<user_id>

@@ -9,6 +9,14 @@ import EventList from "@/pages/AdminPages/Outlets/EventList";
 import EventsDataProvider from "@/ContextFiles/EventsDataProvider";
 import EventDetails from "@/pages/AdminPages/Outlets/EventDetails";
 import AnalyticsAdminProvider from "@/ContextFiles/AnalyticsAdminProvider";
+import ProfileAdmin from "@/pages/AdminPages/Outlets/Profile";
+import ProfileDataProvider from "@/ContextFiles/ProfileDataProvider";
+import HosterListing from "@/pages/AdminPages/Outlets/HosterListing";
+import HosterListDataProvider from "@/ContextFiles/HosterListDataContext";
+import UserListing from "@/pages/AdminPages/Outlets/UserListing";
+import UserListDataProvider from "@/ContextFiles/UserListDataContext";
+import UserDetailsDataProvider from "@/ContextFiles/UserDetails";
+import UserProfile from "@/pages/AdminPages/Outlets/UserProfile";
 
 function AdminRoutes() {
   return (
@@ -24,7 +32,6 @@ function AdminRoutes() {
             </AnalyticsAdminProvider>
           }
         />
-
         <Route
           path="events"
           element={
@@ -33,8 +40,34 @@ function AdminRoutes() {
             </EventsDataProvider>
           }
         />
-
         <Route path="/events/event/:event_id" element={<EventDetails />} />
+        
+        <Route
+          path="hoster_list"
+          element={
+            <HosterListDataProvider>
+              <HosterListing />
+            </HosterListDataProvider>
+          }
+        />
+
+        <Route
+          path="user_list"
+          element={
+            <UserListDataProvider>
+              <UserListing />
+            </UserListDataProvider>
+          }
+        />
+
+        <Route
+          path=":user_id"
+          element={
+            <UserDetailsDataProvider>
+              <UserProfile/>
+            </UserDetailsDataProvider>
+          }
+        />
 
         <Route
           path="catgories"
@@ -46,6 +79,15 @@ function AdminRoutes() {
         />
 
         <Route path="/catgory/:category_name" element={<CategoryDetails />} />
+
+        <Route
+          path="profile"
+          element={
+            <ProfileDataProvider>
+              <ProfileAdmin />
+            </ProfileDataProvider>
+          }
+        />
       </Route>
     </Routes>
   );

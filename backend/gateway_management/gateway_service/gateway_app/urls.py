@@ -17,5 +17,6 @@ urlpatterns = [
     path('forgot-password/', views.ForgotPasswordAPI.as_view(), name='ForgotPasswordAPI'),
     path('verify-otp-forgot-password/', views.VerifyOTPForgotPasswordAPI.as_view(), name='VerifyOTPForgotPasswordAPI'),
     path('set-new-password/', views.SetNewPasswordAPI.as_view(), name='SetNewPasswordAPI'),
-
+    path('hoster_list/', views.HosterListAPI.as_view(), name='hoster-list'),
+    path('user_list/', views.UserListAPI.as_view(), name='user-list'),
 ]

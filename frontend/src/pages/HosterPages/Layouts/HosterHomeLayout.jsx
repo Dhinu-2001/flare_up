@@ -1,14 +1,14 @@
-import AsideChatbox from '@/Page_components/Common/AsideChatbox'
-import Header from '@/Page_components/Common/Header'
-import React from 'react'
-import { Outlet, useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import AsideChatbox from "@/Page_components/Common/AsideChatbox";
+import Header from "@/Page_components/Common/Header";
+import React from "react";
+import { Outlet, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-'use client'
+("use client");
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from "react";
 // import { Line } from 'react-chartjs-2'
-// import { 
+// import {
 //   Chart as ChartJS,
 //   CategoryScale,
 //   LinearScale,
@@ -19,36 +19,33 @@ import { useState, useEffect } from 'react'
 //   Filler,
 //   Legend
 // } from 'chart.js'
-import { Bell, Home, Search, Settings } from 'lucide-react'
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import AsideBar from '@/Page_components/HosterHome/AsideBar'
-
+import { Bell, Home, Search, Settings } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import AsideBar from "@/Page_components/HosterHome/AsideBar";
+import PreLoader from "@/Page_components/PreLoader/PreLoader";
 
 function HosterHomeLayout() {
+  const navigate = useNavigate();
+  const authenticateStateValue = useSelector((store) => store.isAuthenticated);
+  const roleValue = useSelector((store) => store.role);
 
-  const navigate = useNavigate()
-  const authenticateStateValue = useSelector((store) => store.isAuthenticated)
-  const roleValue = useSelector((store) => store.role)
-
-
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768) {
-        setSidebarOpen(true)
+        setSidebarOpen(true);
       } else {
-        setSidebarOpen(false)
+        setSidebarOpen(false);
       }
-    }
+    };
 
-    window.addEventListener('resize', handleResize)
-    handleResize()
+    window.addEventListener("resize", handleResize);
+    handleResize();
 
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // useEffect(() => {
 
@@ -71,27 +68,29 @@ function HosterHomeLayout() {
     //   <AsideChatbox/>
     //   <div className="flex-1 flex flex-col overflow-hidden">
     //     <Header/>
-    //     <div className="flex-1 flex h-screen"> 
+    //     <div className="flex-1 flex h-screen">
     //       <Outlet/>
     //     </div>
     //   </div>
     // </div>
+    <>
+      <PreLoader />
+      <div className=" min-h-screen bg-gradient-to-tl from-stone-800 to-black ">
+        <Header />
+        {/* <div className='w-16 overflow-hidden'> */}
 
-    <div className=" min-h-screen bg-gradient-to-tl from-stone-800 to-black ">
+        {/* <ChatSidebar /> */}
 
-      <Header />
-      {/* <div className='w-16 overflow-hidden'> */}
-        
-          {/* <ChatSidebar /> */}
-       
-      
+        <AsideBar />
 
-      <AsideBar />
-
-      {/* Main Content */}
-      <div className={`transition-margin duration-300 ease-in-out ${sidebarOpen ? 'md:ml-64' : ''}`}>
-        {/* Header */}
-        {/* <header className=" p-4">
+        {/* Main Content */}
+        <div
+          className={`transition-margin duration-300 ease-in-out ${
+            sidebarOpen ? "md:ml-64" : ""
+          }`}
+        >
+          {/* Header */}
+          {/* <header className=" p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-black">
 
@@ -99,7 +98,7 @@ function HosterHomeLayout() {
               <span>/</span>
               <span>Dashboard</span>
             </div> */}
-        {/* <div className="flex items-center gap-4">
+          {/* <div className="flex items-center gap-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input className="pl-10" placeholder="Type here..." />
@@ -114,18 +113,16 @@ function HosterHomeLayout() {
                 <Bell className="h-4 w-4" />
               </Button>
             </div> */}
-        {/* </div>
+          {/* </div>
         </header> */}
 
-        <main className="p-4 mt-9">
-          
-          <Outlet />
-          
-        </main>
+          <main className="p-4 mt-14">
+            <Outlet />
+          </main>
+        </div>
       </div>
-    </div>
-
-  )
+    </>
+  );
 }
 
-export default HosterHomeLayout
+export default HosterHomeLayout;

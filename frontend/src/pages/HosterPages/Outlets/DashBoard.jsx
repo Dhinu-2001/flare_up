@@ -15,6 +15,7 @@ import { AnalyticsHosterDataContext } from "@/ContextFiles/AnalyticsHoster";
 import { MainGraph } from "@/Page_components/HosterHome/Dashboard/MainGraph";
 import CategoryEventPieChart from "@/Page_components/HosterHome/Dashboard/CategoryEventPieChart";
 import CategoryParticipantsPieChart from "@/Page_components/HosterHome/Dashboard/CategoryParticipantsPieChart";
+import DashboardShimmer from "@/components/Shimmer/Dashboard";
 
 function DashBoard() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -28,7 +29,8 @@ function DashBoard() {
     error: AnalyticsError,
     loading: AnalyticsLoading,
   } = useContext(AnalyticsHosterDataContext);
-  if (MapLoading || AnalyticsLoading) return <p>Loading...</p>;
+
+  if (MapLoading || AnalyticsLoading) return <DashboardShimmer/>;
   if (mapError) return <p>Error loading data</p>;
 
   console.log("Analyticsdata", Analyticsdata);

@@ -10,6 +10,7 @@ import {
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import axiosInstance from "@/axiosconfig";
+import BookingResultShimmer from "@/components/Shimmer/BookingResult";
 
 export default function SuccessBooking() {
   const [searchParams] = useSearchParams();
@@ -69,7 +70,7 @@ export default function SuccessBooking() {
     }
   }, [paymentDetails.event_id]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <BookingResultShimmer/>;
   if (error) return <p>Error: {error.message}</p>;
 
   return (

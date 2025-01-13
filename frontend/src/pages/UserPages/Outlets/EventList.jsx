@@ -11,6 +11,7 @@ import { Search } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Link, useParams } from 'react-router-dom'
 import axiosInstance from '@/axiosconfig'
+import PreLoader from '@/Page_components/PreLoader/PreLoader'
 
 
 
@@ -43,7 +44,7 @@ export default function CaseStudies() {
         fetchEventsByCategory();
     }, [category_name]);
 
-    if (!eventsData) return <p>Loading...</p>;
+    if (!eventsData) return <PreLoader/>;
 
     console.log('types of category', types);
 

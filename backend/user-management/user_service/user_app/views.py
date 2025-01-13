@@ -279,6 +279,7 @@ class GoogleAuth(APIView):
                         "username": user.fullname,
                         "email": user.email,
                         "role": user.role,
+                        "profile_picture": user.profile_picture,
                     }
                     response = Response(response_data,status=status.HTTP_200_OK)
                     print(response)
@@ -302,6 +303,7 @@ class GoogleAuth(APIView):
                     "username": user.username,
                     "email": user.email,
                     "role": user.role,
+                    "profile_picture": user.profile_picture,
                 }
                 response = Response(response_data,status=status.HTTP_200_OK)
                 print(response)
@@ -347,6 +349,7 @@ class login(APIView):
                     "username": user.username,
                     "email": user.email,
                     "role": user.role,
+                    "profile_picture": user.profile_picture,
                 }
                 response = Response(response_data)
                 print(response)
@@ -410,6 +413,7 @@ class RefreshTokenView(APIView):
                 "username": user.username,
                 "email": user.email,
                 "role": user.role,
+                "profile_picture": user.profile_picture,
             }
             response = Response(response_data, status=status.HTTP_200_OK)
             print(response.data)
@@ -628,3 +632,26 @@ class SetNewPassword(APIView):
 
         except Exception as e:
                 return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            
+
+class HosterList(APIView):
+    def get(self, request):
+        try:
+            users = CustomUser.objects.filter(role='hoster')
+            
+            serializer = UserProfileRetrieveSerializer(users, many=True)
+            print(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+class UserList(APIView):
+    def get(self, request):
+        try:
+            users = CustomUser.objects.filter(role='user')
+            serializer = UserProfileRetrieveSerializer(users, many=True)
+            print(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    

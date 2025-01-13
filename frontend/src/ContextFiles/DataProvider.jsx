@@ -8,23 +8,30 @@ function DataProvider ({ children }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null)
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axiosInstance.get('/events/event-types-and-categories/')
-                console.log('context', response)
-                setData(response.data)
-                setLoading(false)
-            } catch (err) {
-                setError(err)
-                setLoading(false)
-            }
+    const fetchData = async () => {
+        try {
+            const response = await axiosInstance.get('/events/event-types-and-categories/')
+            console.log('context', response)
+            setData(response.data)
+            setLoading(false)
+        } catch (err) {
+            setError(err)
+            setLoading(false)
         }
+    }
+
+    useEffect(() => {
+        
         fetchData();
     }, [])
 
+    const refreshData = async () => {
+        setLoading(true);
+        await fetchData();
+      };
+
     return (
-        <DataContext.Provider value={{ data, error, loading }}>
+        <DataContext.Provider value={{ data, error, refreshData, loading }}>
             {children}
         </DataContext.Provider>
     )

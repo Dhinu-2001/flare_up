@@ -3,6 +3,7 @@ from django.db import models
 class EventCategory(models.Model):
     name = models.CharField(max_length=100,unique=True)
     description = models.TextField(blank=True, null=True)
+    category_image = models.CharField(max_length=255, blank=True, null=True)
     status = models.CharField(max_length=50, choices=[('Active', 'Active'), ('Inactive', 'Inactive')], default='Active')
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -12,6 +13,7 @@ class EventCategory(models.Model):
 class EventType(models.Model):
     name = models.CharField(max_length=100,unique=True)
     description = models.TextField(blank=True, null=True)
+    type_image = models.CharField(max_length=255, blank=True, null=True)
     category = models.ForeignKey(EventCategory, on_delete=models.CASCADE, related_name="event_types", blank=True, null=True)
     status = models.CharField(max_length=50, choices=[('Active', 'Active'), ('Inactive', 'Inactive')], default='Active')
     updated_at = models.DateTimeField(auto_now=True)

@@ -1,5 +1,3 @@
-'use client'
-
 import { Settings, MessageSquare, Package, Pen, Plus, Settings2, TriangleAlert, CircleOff } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
@@ -26,6 +24,7 @@ import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 import { Link } from 'react-router-dom'
 import HosterProfileUploadCloudinary from '@/Page_components/CloudinaryComponents/HosterProfileUploadCloudinary'
+import AdminProfileShimmer from '@/components/Shimmer/AdminProfile'
 
 const schema = z.object({
   username: z.string().min(1, { message: 'Username is required' }),
@@ -116,7 +115,7 @@ function ProfileHoster() {
     }
   }, [data, setValue, updateData]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <AdminProfileShimmer/>;
   if (error) return <p>Error loading data</p>;
 
   const onSubmit = async (data) => {

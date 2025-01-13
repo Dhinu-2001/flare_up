@@ -59,7 +59,7 @@ function AsideBar() {
                     </Button>
                 </Link>
 
-                <Link to="/admin/payment_list">
+                {/* <Link to="/admin/payment_list">
                     <Button
                         variant="ghost"
                         className={`w-full justify-start ${activeNav === 'billing' ? 'bg-blue-500' : ''}`}
@@ -68,9 +68,9 @@ function AsideBar() {
                         <CreditCard className="mr-2 h-4 w-4" />
                         Billing
                     </Button>
-                </Link>
+                </Link> */}
 
-                <Link to="#">
+                <Link to="/admin/hoster_list">
                     <Button
                         variant="ghost"
                         className={`w-full justify-start ${activeNav === 'Hosters' ? 'bg-blue-500' : ''}`}
@@ -81,7 +81,7 @@ function AsideBar() {
                     </Button>
                 </Link>
 
-                <Link to="#">
+                <Link to="/admin/user_list">
                     <Button
                         variant="ghost"
                         className={`w-full justify-start ${activeNav === 'Attendees' ? 'bg-blue-500' : ''}`}

@@ -4,13 +4,13 @@ from .models import Event, EventCategory, EventType, KeyParticipant, Sponsor
 class EventCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = EventCategory
-        fields = ['id', 'name', 'description', 'status']
+        fields = ['id', 'name', 'category_image', 'description', 'status']
 
 
 class EventTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = EventType
-        fields = ['id', 'name', 'description', 'category', 'status']
+        fields = ['id', 'name', 'description', 'type_image', 'category', 'status']
 
 class KeyParticipantSerializer(serializers.ModelSerializer):
     class Meta:
@@ -68,7 +68,7 @@ class EventRetrieveSerializer(serializers.ModelSerializer):
             'payment_required', 'ticket_price', 'participant_capacity', 'banner_image', 
             'promo_video', 'start_date_time', 'end_date_time', 'registration_deadline', 
             'created_at', 'updated_at', 'status', 'status_request', 'approval_status', 'approval_comments', 
-            'approval_updated_at', 'key_participants'
+            'approval_updated_at', 'key_participants', 'current_participants_count',
         ]
         read_only_fields = [
             'id', 'created_at', 'updated_at', 'approval_updated_at'

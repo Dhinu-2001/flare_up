@@ -65,7 +65,7 @@ class PaymentDetailAPI(APIView):
         
         payment_url = f"http://{registration_svc_address}/payments/{transaction_id}/"
         event_url = f"http://{env('EVENT_SVC_ADDRESS')}/participants/ticket_details/{transaction_id}/"
-        user_url = f"http://localhost:8081/user-data/{user_id}/"
+        user_url = f"http://{env('USER_SVC_ADDRESS')}/user-data/{user_id}/"
 
         try:
             # Fetch data concurrently for better performance

@@ -1,8 +1,11 @@
+from django.http import JsonResponse
 from django.shortcuts import render
 import requests
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+
+from participant_app.models import TicketDetails, TicketRegistration
 from .serializers import (
     EventCreateSerializer,
     EventRetrieveSerializer,
@@ -13,6 +16,9 @@ from .serializers import (
 from .models import EventCategory, EventType, Event as Event_db, KeyParticipant as KeyParticipant_db
 from django.core.exceptions import ObjectDoesNotExist
 import datetime
+import environ
+env = environ.Env()
+environ.Env.read_env()
 
 # Create your views here.
 
@@ -52,7 +58,7 @@ class Event(APIView):
             # Fetching hoster details
             try:
                 response = requests.get(
-                    f"http://localhost:8081/user-data/{int(event_data['host_id'])}/"
+                    f"http://{env('USER_SVC_ADDRESS')}/user-data/{int(event_data['host_id'])}/"
                 )
                 user_data = response.json() if response.status_code == 200 else None
                 print('user request data', user_data)
@@ -313,6 +319,7 @@ class EventTypesAndCategories(APIView):
                     "description": category.description,
                     "status": category.status,
                     "updated_at": category.updated_at,
+                    "category_image": category.category_image,
                     "event_types": [
                         {
                             "id": event_type.id,
@@ -320,6 +327,7 @@ class EventTypesAndCategories(APIView):
                             "description": event_type.description,
                             "status": event_type.status,
                             "updated_at": event_type.updated_at,
+                            "type_image": event_type.type_image,
                         }
                         for event_type in category.event_types.all()
                     ],
@@ -327,4 +335,61 @@ class EventTypesAndCategories(APIView):
             )
 
         return Response(data, status=status.HTTP_200_OK)
+
+
+
+from django.db.models import Prefetch
+
+def get_user_ticket_booking_details(request, user_id):
+    # Prefetch related data: Event, EventCategory, EventType, TicketDetails
+    registrations = (
+        TicketRegistration.objects.filter(user_id=user_id)
+        .select_related(
+            "event_id",  # Event details
+            "event_id__category",  # Event category details
+            "event_id__type"  # Event type details
+        )
+        .prefetch_related(
+            Prefetch(
+                "ticket_details",  # Ticket details
+                queryset=TicketDetails.objects.all()
+            )
+        )
+    )
+
+    # Serialize the data into the desired structure
+    registration_data = []
+    for reg in registrations:
+        registration_data.append({
+            "registration_id": reg.id,
+            "user_id": reg.user_id,
+            "event": {
+                "event_id": reg.event_id.id,
+                "title": reg.event_id.title,
+                "banner_image": reg.event_id.banner_image,
+                "category": {
+                    "id": reg.event_id.category.id if reg.event_id.category else None,
+                    "name": reg.event_id.category.name if reg.event_id.category else None
+                },
+                "type": {
+                    "id": reg.event_id.type.id if reg.event_id.type else None,
+                    "name": reg.event_id.type.name if reg.event_id.type else None
+                }
+            },
+            "ticket_quantity": reg.ticket_quantity,
+            "tickets": [
+                {
+                    "ticket_id": ticket.id,
+                    "ticket_number": ticket.ticket_number,
+                    "ticket_status": ticket.ticket_status
+                }
+                for ticket in reg.ticket_details.all()
+            ],
+            "ticket_secure_url": reg.ticket_secure_url,
+            "ticket_public_id": reg.ticket_public_id,
+            "transaction_id": reg.transaction_id,
+            "registered_at": reg.registered_at
+        })
+
+    return JsonResponse({"result": registration_data}) 
 

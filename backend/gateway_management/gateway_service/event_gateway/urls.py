@@ -17,4 +17,6 @@ urlpatterns = [
     path('participants/event/<int:event_id>/',views.ParticipantsByEventAPI.as_view(), name='participants_event'),
     path('analytics_hoster/<int:hoster_id>/',views.AnalyticsHosterAPI.as_view(), name='analytics_hoster_api'),
     path('analytics_admin/<int:admin_id>/',views.AnalyticsAdminAPI.as_view(), name='analytics_admin_api'),
+    path('get_user_data_event_analytics/<int:user_id>/',views.GetUserDataEventAnalyticsAPI.as_view(), name='GetUserDataEventAnalyticsAPI'),
+    path('get_user_ticket_booking_details/<int:user_id>/',views.GetUserTicketBookingDetailsAPI.as_view(), name='get-user-ticket-booking-details'),
 ]

@@ -111,7 +111,7 @@ CORS_ALLOW_HEADERS = [
 # DRF settings
 REST_FRAMEWORK = {
   'DEFAULT_AUTHENTICATION_CLASSES': (
-      'event_app.authenticate.CustomAuthentication',
+      'event_app.authenticate.EventServiceAuthentication',
   ),
 }
 

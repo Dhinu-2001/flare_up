@@ -2,12 +2,13 @@ import { HosterEventColumns } from "../../../components/DataTable/HosterEventCol
 import { DataTable } from '../../../components/DataTable/Data-Table';
 import { useContext } from "react";
 import { EventsByHosterDataContext } from "@/ContextFiles/EventsByHosterDataProvider";
+import EventListShimmer from "@/components/Shimmer/EventList";
 
 export default function EventList() {
   
   const {data, error, loading} = useContext(EventsByHosterDataContext)
 
-  if(loading) return <p>Loading...</p>
+  if(loading) return <EventListShimmer/>
     if(error) return <p>Error loading data</p>
     console.log('actual event data',data)
 

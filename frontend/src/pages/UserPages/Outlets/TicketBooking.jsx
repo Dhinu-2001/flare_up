@@ -36,6 +36,11 @@ import axiosInstance from "@/axiosconfig";
 import exceptions from "@mapbox/mapbox-gl-geocoder/lib/exceptions";
 import { toast } from "sonner";
 import { store } from "@/redux/Store";
+import TicketBookingShimmer from "@/components/Shimmer/TicketBooking";
+import { env } from '@/utils/env'
+
+// Initialize Mapbox
+
 
 const formSchema = z.object({
   quantity: z.number().min(1).max(10),
@@ -82,9 +87,7 @@ export default function TicketBooking() {
     e.preventDefault();
     try {
       console.log("button clikced");
-      const stripe = await loadStripe(
-        "pk_test_51QOwBVEoHTcQ6zGjLjuWXuhGMGa4bKAFjM3iwkcRMaEMzq1GSBFuSx1o1Llv0sZbFFMczTlY2j5p6mLwtOqxD5aH0056InV0d3"
-      );
+      const stripe = await loadStripe(env.VITE_stripe);
       const payment_data = {
         user_id: user_id,
         username: username,
@@ -132,7 +135,7 @@ export default function TicketBooking() {
     }
   }, [data]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <TicketBookingShimmer/>;
   if (error) return <p>Error loading data</p>;
 
   console.log(data);
