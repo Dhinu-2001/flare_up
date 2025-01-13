@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
+import { env } from "@/utils/env";
 
 const formatDate = (isoDateString) => {
     const date = new Date(isoDateString);
@@ -24,7 +25,7 @@ function ChatList() {
 
     useEffect(() => {
         // Connect to WebSocket
-        socketRef.current = new WebSocket(`ws://localhost:8084/ws/chat-list/${user_id}/`);
+        socketRef.current = new WebSocket(`ws://${env.VITE_notification_svc}/ws/chat-list/${user_id}/`);
 
         // Handle incoming messages
         socketRef.current.onmessage = (event) => {

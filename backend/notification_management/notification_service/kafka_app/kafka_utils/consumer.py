@@ -1,4 +1,4 @@
-from confluent_kafka import Consumer, KafkaException
+from confluent_kafka import Consumer, KafkaError
 import json
 from django.conf import settings
 from django.utils import timezone
@@ -43,7 +43,7 @@ class KafkaConsumerService:
                 if msg is None:
                     continue
                 if msg.error():
-                    if msg.error().code() == KafkaException._PARTITION_EOF:
+                    if msg.error().code() == KafkaError._PARTITION_EOF:
                         continue
                     else:
                         print(f"consumer error: {msg.error()}")

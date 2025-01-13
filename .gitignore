@@ -152,6 +152,8 @@ backend/notification_management/notification_service/notification_service/.env
 backend/registration_management/registration_service/registration_service/.env
 backend/user-management/user_service/user_service/.env
 
+backend/infra/k8s
+
 # Spyder project settings
 .spyderproject
 .spyproject

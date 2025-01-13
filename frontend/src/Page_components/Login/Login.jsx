@@ -41,13 +41,13 @@ export default function Login() {
     try {
       dispatch(setLoading(true))
       const { data } = await axiosInstance.post('/login/', { username, password });
-
+      
       const encryptedData = {
         ...data,
         accessToken: encryptToken(data.accessToken),
         refreshToken: encryptToken(data.refreshToken)
       }
-
+      console.log("data",encryptedData)
       dispatch(setAuthData(encryptedData))
 
       toast.success('Login successfully')

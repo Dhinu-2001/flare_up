@@ -279,6 +279,7 @@ class GoogleAuth(APIView):
                         "username": user.fullname,
                         "email": user.email,
                         "role": user.role,
+                        "profile_picture": user.profile_picture,
                     }
                     response = Response(response_data,status=status.HTTP_200_OK)
                     print(response)
@@ -302,6 +303,7 @@ class GoogleAuth(APIView):
                     "username": user.username,
                     "email": user.email,
                     "role": user.role,
+                    "profile_picture": user.profile_picture,
                 }
                 response = Response(response_data,status=status.HTTP_200_OK)
                 print(response)
@@ -347,6 +349,7 @@ class login(APIView):
                     "username": user.username,
                     "email": user.email,
                     "role": user.role,
+                    "profile_picture": user.profile_picture,
                 }
                 response = Response(response_data)
                 print(response)
@@ -410,6 +413,7 @@ class RefreshTokenView(APIView):
                 "username": user.username,
                 "email": user.email,
                 "role": user.role,
+                "profile_picture": user.profile_picture,
             }
             response = Response(response_data, status=status.HTTP_200_OK)
             print(response.data)

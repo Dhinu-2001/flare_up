@@ -224,5 +224,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 APPEND_SLASH=False
 
 KAFKA_CONFIG = {
-    'bootstrap.servers': 'localhost:9092',  # Adjust as needed
+    'bootstrap.servers': env('KAFKA_SVC'),  # Adjust as needed
 }

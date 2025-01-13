@@ -16,6 +16,9 @@ from .serializers import (
 from .models import EventCategory, EventType, Event as Event_db, KeyParticipant as KeyParticipant_db
 from django.core.exceptions import ObjectDoesNotExist
 import datetime
+import environ
+env = environ.Env()
+environ.Env.read_env()
 
 # Create your views here.
 
@@ -55,7 +58,7 @@ class Event(APIView):
             # Fetching hoster details
             try:
                 response = requests.get(
-                    f"http://localhost:8081/user-data/{int(event_data['host_id'])}/"
+                    f"http://{env('USER_SVC_ADDRESS')}/user-data/{int(event_data['host_id'])}/"
                 )
                 user_data = response.json() if response.status_code == 200 else None
                 print('user request data', user_data)

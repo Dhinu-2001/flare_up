@@ -2,6 +2,8 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
+ENV PYTHONUNBUFFERED=1
+
 RUN apt-get update && apt-get install -y \
     libpq-dev gcc
 
@@ -13,4 +15,4 @@ RUN mkdir -p /app/static
 
 EXPOSE 8084
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8083"]
+CMD ["daphne", "-p", "8084", "notification_service.asgi:application"]

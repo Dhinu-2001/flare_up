@@ -1,31 +1,26 @@
-// import Image from "next/image"
-import axiosInstance from "@/axiosconfig";
-import { Button } from "@/components/ui/button"
-import { DataContext } from "@/ContextFiles/DataProvider"
+import { Button } from "@/components/ui/button";
+import { DataContext } from "@/ContextFiles/DataProvider";
 import PreLoader from "@/Page_components/PreLoader/PreLoader";
-import { useContext } from "react"
+import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
+import { AdvancedImage } from "@cloudinary/react";
+import { Cloudinary } from "@cloudinary/url-gen";
+import { env } from "@/utils/env";
 
 export default function Categories() {
-  const { data, loading, error } = useContext(DataContext)
+  const { data, loading, error } = useContext(DataContext);
+  const [cloudName] = useState(env.VITE_cloudinary_name);
 
-  if (loading) return <PreLoader/>;
+  const cld = new Cloudinary({
+    cloud: {
+      cloudName,
+    },
+  });
+
+  const myImage = (imageId) => cld.image(imageId);
+
+  if (loading) return <PreLoader />;
   if (error) return <p>Error loading data</p>;
-
-  const tech_cover = '/Images/Tech_cover.avif';
-
-  function getImageSrc(category) {
-    switch (category.name) {
-      case 'Tech':
-        return tech_cover;
-      case 'Music':
-        return '/Images/Music_cover.avif';
-      case 'Sport':
-        return '/Images/Sport_cover.avif';
-      default:
-        return '/Images/expertise-strategy-planning2.jpg';
-    }
-  }
 
   return (
     <section className="bg-gradient-to-tl from-stone-800 to-black py-20 px-4 md:px-6 lg:px-8">
@@ -35,22 +30,21 @@ export default function Categories() {
         </h2>
 
         <p className="text-white/90 text-lg md:text-xl max-w-3xl mb-16 leading-relaxed">
-          Our close-knit team of over 100 thinkers, doers, organisers and makers work in harmony with you,
-          and each other, to deliver the desired result. A unique set of skills that combine the best of
-          creative agency thinking and production company doing in one seamless process.
+          Our close-knit team of over 100 thinkers, doers, organisers and makers
+          work in harmony with you, and each other, to deliver the desired
+          result. A unique set of skills that combine the best of creative
+          agency thinking and production company doing in one seamless process.
         </p>
 
         <div className="grid md:grid-cols-2 gap-6">
           {data.map((category, index) => (
             <div key={index} className="relative group overflow-hidden">
-              <img
-                src="../../../public/Images/Sport_cover.avif" // Use the dynamic function here
+              <AdvancedImage
+                cldImg={myImage(category.category_image)}
                 alt={category.name}
-                width={800}
-                height={400}
-                className="object-cover w-full h-[200px]"
+                className="w-full h-[200px] object-cover"
               />
-              <div className={`absolute inset-0 bg-gradient-to-t ${category.gradient}`} />
+            
               <div className="absolute inset-0 p-6 flex flex-col justify-between">
                 <h3 className="text-white text-2xl md:text-3xl font-bold">
                   {category.name}
