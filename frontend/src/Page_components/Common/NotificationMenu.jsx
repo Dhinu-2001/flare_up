@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Link } from 'react-router-dom';
 import { env } from "@/utils/env";
+// import { WebSocket } from 'vite';
 
 
 export default function NotificationMenu() {
@@ -34,6 +35,9 @@ export default function NotificationMenu() {
 
         socket.onclose = () => {
             console.error('WebSocket closed unexpectedly');
+        };
+        socket.onerror = function(error) {
+            console.log("WebSocket Error: ", error);
         };
 
         return () => socket.close();
