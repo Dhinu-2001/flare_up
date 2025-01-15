@@ -9,9 +9,17 @@ import axiosInstance from "@/axiosconfig";
 import { store } from "../../redux/Store";
 import { toast } from "sonner";
 
+import { getConfig } from '../../config';
+let { VITE_cloudinary_name, VITE_cloudinary_upload_preset } = getConfig();
+
+VITE_cloudinary_name = VITE_cloudinary_name || env.VITE_cloudinary_name
+VITE_cloudinary_upload_preset = VITE_cloudinary_upload_preset || env.VITE_cloudinary_upload_preset
+
+
+
 export default function ParticipantsSponsers({ publicId, setPublicId, folder }) {
-    const [cloudName] = useState(env.VITE_cloudinary_name);
-    const [uploadPreset] = useState(env.VITE_cloudinary_upload_preset);
+    const [cloudName] = useState(VITE_cloudinary_name);
+    const [uploadPreset] = useState(VITE_cloudinary_upload_preset);
     const state = store.getState()
     const user_id = state.id
     // Upload Widget Configuration

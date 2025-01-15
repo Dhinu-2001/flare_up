@@ -6,6 +6,11 @@ import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import { env } from "@/utils/env";
 
+import { getConfig } from '../../config';
+let { VITE_notification_svc } = getConfig();
+
+VITE_notification_svc = VITE_notification_svc || env.VITE_notification_svc
+
 const formatDate = (isoDateString) => {
     const date = new Date(isoDateString);
     return format(date, "MMMM do, yyyy 'at' h:mm a");
@@ -25,7 +30,7 @@ function ChatList() {
 
     useEffect(() => {
         // Connect to WebSocket
-        socketRef.current = new WebSocket(`ws://${env.VITE_notification_svc}/ws/chat-list/${user_id}/`);
+        socketRef.current = new WebSocket(`ws://${VITE_notification_svc}/ws/chat-list/${user_id}/`);
 
         // Handle incoming messages
         socketRef.current.onmessage = (event) => {

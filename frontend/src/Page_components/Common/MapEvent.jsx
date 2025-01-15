@@ -21,9 +21,17 @@ import { AdvancedImage, responsive, placeholder } from "@cloudinary/react";
 import { ImageIcon, VideoIcon } from 'lucide-react'
 import { env } from '@/utils/env'
 
+import { getConfig } from '../../config';
+let { VITE_map_key, VITE_cloudinary_name } = getConfig();
+
+VITE_map_key = VITE_map_key || env.VITE_map_key
+VITE_cloudinary_name = VITE_cloudinary_name || env.VITE_cloudinary_name
+
+
+
 // Initialize Mapbox
-mapboxgl.accessToken = env.VITE_map_key
-console.log('map key loakded',env.VITE_map_key)
+mapboxgl.accessToken = VITE_map_key
+
 
 function MapEvent({ mapEvent }) {
   const [isMapFullscreen, setIsMapFullscreen] = useState(false)
@@ -32,7 +40,7 @@ function MapEvent({ mapEvent }) {
   const mapContainer = useRef(null)
   const map = useRef(null)
   const [ myImage, setMyImage ] = useState(null)
-  const [cloudName] = useState(env.VITE_cloudinary_name);
+  const [cloudName] = useState(VITE_cloudinary_name);
  
   const concerts = [
     { id: 1, title: 'Neon Nights', artist: 'The Glowing Stones', date: 'July 15, 2023', venue: 'Stellar Arena', genre: 'Rock', image: '/placeholder.svg?height=200&width=300', coordinates: [-74.006, 40.7128] },

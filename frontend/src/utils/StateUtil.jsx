@@ -7,6 +7,7 @@ export const handleLogout = async () => {
     
     try {
         const response = await axiosInstance.post('/logout/')
+        console.log('HANDLE LOGOUT')
         console.log(response)
         if (response.status == 200) {
             store.dispatch(clearAuthData());

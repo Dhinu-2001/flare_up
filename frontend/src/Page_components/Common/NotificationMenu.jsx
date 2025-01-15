@@ -1,100 +1,118 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { store } from "../../redux/Store";
-import { Bell } from 'lucide-react'
-import { Button } from "@/components/ui/button"
+import { Bell } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Link } from 'react-router-dom';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Link } from "react-router-dom";
 import { env } from "@/utils/env";
-// import { WebSocket } from 'vite';
 
+import { getConfig } from "../../config";
+let { VITE_notification_svc } = getConfig();
+
+VITE_notification_svc = VITE_notification_svc || env.VITE_notification_svc;
 
 export default function NotificationMenu() {
-    const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
 
-    const [messages, setMessages] = useState([]);
-    const state = store.getState()
-    const user_id = state.id
+  const [messages, setMessages] = useState([]);
+  const state = store.getState();
+  const user_id = state.id;
 
-    // const handleMarkAsRead = (id) => {
-    //     setNotifications(messages.filter(notif => notif.id !== id))
-    // }
+  // const handleMarkAsRead = (id) => {
+  //     setNotifications(messages.filter(notif => notif.id !== id))
+  // }
 
-    useEffect(() => {
-        // Open WebSocket connection
-        const socket = new WebSocket(`ws://${env.VITE_notification_svc}/ws/notifications/${user_id}/`);
+  const connectChatRoomsWebSocket = async () => {
+    // Open WebSocket connection
+    const socket = new WebSocket(
+      `ws://${VITE_notification_svc}/ws/notifications/${user_id}/`
+    );
 
-        socket.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            setMessages((prevMessages) => [ data, ...prevMessages,]);
-        };
+    socket.onopen = () => {
+      console.log("Notification WebSocket connected");
+    };
 
-        socket.onclose = () => {
-            console.error('WebSocket closed unexpectedly');
-        };
-        socket.onerror = function(error) {
-            console.log("WebSocket Error: ", error);
-        };
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      setMessages((prevMessages) => [data, ...prevMessages]);
+    };
 
-        return () => socket.close();
-    }, []);
+    socket.onclose = () => {
+      console.error("WebSocket closed unexpectedly");
+      setTimeout(connectChatRoomsWebSocket, 3000);
+    };
+    socket.onerror = function (error) {
+      console.log("WebSocket Error: ", error);
+    };
 
-    
+    return () => socket.close();
+  };
 
-    return (
-        <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-            <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon" className="relative  bg-sky-500 border-white hover:bg-sky-300  h-8 w-8 rounded-full">
-                    <Bell className="h-5 w-5" />
-                    {messages.length > 0 && (
-                        <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500" />
-                    )}
+  useEffect(() => {
+    connectChatRoomsWebSocket();
+  }, []);
+
+  return (
+    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="outline"
+          size="icon"
+          className="relative  bg-sky-500 border-white hover:bg-sky-300  h-8 w-8 rounded-full"
+        >
+          <Bell className="h-5 w-5" />
+          {messages.length > 0 && (
+            <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500" />
+          )}
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-80 h-96 overflow-y-scroll ">
+        <h3 className="text-xl font-medium text-white ">Notification</h3>
+        {messages.length === 0 ? (
+          <DropdownMenuItem>No new notifications</DropdownMenuItem>
+        ) : (
+          messages.map((msg, index) => (
+            <DropdownMenuItem
+              key={index}
+              className="flex flex-col items-start p-2 border-2"
+            >
+              <div className="flex justify-between w-full">
+                <span className="font-medium">{msg.notification_type}</span>
+                <span className="text-xs text-muted-foreground">
+                  {new Date(msg.timestamp).toLocaleString()}
+                </span>
+              </div>
+              <p className="text-sm text-muted-foreground">{msg.message}</p>
+              {msg.notification_type === "New Message" ? (
+                <Link to={`/chat/${msg?.senderId}/`}>
+                  <Button
+                    variant="link"
+                    size="sm"
+                    onClick={() => handleMarkAsRead(index)}
+                    className="mt-1 p-0 h-auto"
+                  >
+                    Open Chat
+                  </Button>
+                </Link>
+              ) : (
+                <Button
+                  variant="link"
+                  size="sm"
+                  onClick={() => handleMarkAsRead(index)}
+                  className="mt-1 p-0 h-auto"
+                >
+                  {/* Mark as read */}
                 </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-80 h-96 overflow-y-scroll ">
-                <h3 className='text-xl font-medium text-white ' >Notification</h3>
-                {messages.length === 0 ? (
-                    <DropdownMenuItem>No new notifications</DropdownMenuItem>
-                ) : (
-                    messages.map((msg, index) => (
-                        <DropdownMenuItem key={index} className="flex flex-col items-start p-2 border-2">
-                            <div className="flex justify-between w-full">
-                                <span className="font-medium">{msg.notification_type}</span>
-                                <span className="text-xs text-muted-foreground">{new Date(msg.timestamp).toLocaleString()}</span>
-                            </div>
-                            <p className="text-sm text-muted-foreground">{msg.message}</p>
-                            {msg.notification_type === 'New Message'?
-                            (<Link to={`/chat/${msg?.senderId}/`}>
-                            <Button
-                                variant="link"
-                                size="sm"
-                                onClick={() => handleMarkAsRead(index)}
-                                className="mt-1 p-0 h-auto"
-                            >
-                                Open Chat
-                            </Button>
-                            </Link>
-                            ):
-                             (
-                             <Button
-                                variant="link"
-                                size="sm"
-                                onClick={() => handleMarkAsRead(index)}
-                                className="mt-1 p-0 h-auto"
-                            >
-                                {/* Mark as read */}
-                            </Button>
-                        )}
-                            
-                        </DropdownMenuItem>
-                    ))
-                )}
-            </DropdownMenuContent>
-        </DropdownMenu>
-    )
+              )}
+            </DropdownMenuItem>
+          ))
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
 }
-

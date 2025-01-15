@@ -7,6 +7,12 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent } from '@/components/ui/card';
 import { env } from "@/utils/env";
 
+import { getConfig } from '../../../config';
+let { VITE_notification_svc } = getConfig();
+
+VITE_notification_svc = VITE_notification_svc || env.VITE_notification_svc
+
+
 
 const UserChat = () => {
     const state = store.getState()
@@ -33,7 +39,7 @@ const UserChat = () => {
 
     useEffect(() => {
         // Connect to WebSocket
-        socketRef.current = new WebSocket(`ws://${env.VITE_notification_svc}/ws/chat/${roomName}/`);
+        socketRef.current = new WebSocket(`ws://${VITE_notification_svc}/ws/chat/${roomName}/`);
 
         // Handle incoming messages
         socketRef.current.onmessage = (event) => {

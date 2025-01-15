@@ -63,15 +63,23 @@ MIDDLEWARE = [
     'gateway_service.middleware.JWTAuthenticationMiddleware'
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # Frontend
-    'http://localhost:8081', # auth service 
-]
+CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=['http://localhost:5173'])
 
-CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:5173',  # Frontend
-    'http://localhost:8081',  # Auth service
-]
+CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=['http://localhost:5173'])
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOW_CREDENTIALS = True
+
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:5173",  # Frontend
+#     'http://localhost:8081', # auth service 
+# ]
+
+# CSRF_TRUSTED_ORIGINS = [
+#     'http://localhost:5173',  # Frontend
+#     'http://localhost:8081',  # Auth service
+# ]
 
 ############# DOCKER 
 

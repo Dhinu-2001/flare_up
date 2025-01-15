@@ -5,9 +5,15 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { env } from '@/utils/env'
 
+import { getConfig } from '../../config';
+let { VITE_map_key } = getConfig();
+
+VITE_map_key = VITE_map_key || env.VITE_map_key
+
+
+
 // Initialize Mapbox
-mapboxgl.accessToken = env.VITE_map_key
-console.log('map key loakded', env.VITE_map_key)
+mapboxgl.accessToken = VITE_map_key
 
 export default function LocationPicker({ lng, setLng, lat, setLat, address, setAddress, city, setCity, state, setState, country, setCountry }) {
   const mapContainer = useRef(null);

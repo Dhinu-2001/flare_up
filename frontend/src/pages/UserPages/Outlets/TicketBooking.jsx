@@ -39,6 +39,12 @@ import { store } from "@/redux/Store";
 import TicketBookingShimmer from "@/components/Shimmer/TicketBooking";
 import { env } from '@/utils/env'
 
+import { getConfig } from '../../../config';
+let { VITE_stripe } = getConfig();
+
+VITE_stripe = VITE_stripe || env.VITE_stripe
+
+
 // Initialize Mapbox
 
 
@@ -87,7 +93,7 @@ export default function TicketBooking() {
     e.preventDefault();
     try {
       console.log("button clikced");
-      const stripe = await loadStripe(env.VITE_stripe);
+      const stripe = await loadStripe(VITE_stripe);
       const payment_data = {
         user_id: user_id,
         username: username,

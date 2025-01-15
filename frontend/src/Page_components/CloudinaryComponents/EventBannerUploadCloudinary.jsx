@@ -6,9 +6,15 @@ import { ImageIcon, VideoIcon } from 'lucide-react'
 import { Card, CardContent } from "@/components/ui/card";
 import { env } from "@/utils/env";
 
+import { getConfig } from '../../config';
+let { VITE_cloudinary_name, VITE_cloudinary_upload_preset } = getConfig();
+
+VITE_cloudinary_name = VITE_cloudinary_name || env.VITE_cloudinary_name
+VITE_cloudinary_upload_preset = VITE_cloudinary_upload_preset || env.VITE_cloudinary_upload_preset
+
 export default function EventBannerUploadCloudinary({ publicId, setPublicId }) {
-  const [cloudName] = useState(env.VITE_cloudinary_name);
-  const [uploadPreset] = useState(env.VITE_cloudinary_upload_preset);
+  const [cloudName] = useState(VITE_cloudinary_name);
+  const [uploadPreset] = useState(VITE_cloudinary_upload_preset);
   // Upload Widget Configuration
   // Remove the comments from the code below to add
   // additional functionality.

@@ -7,6 +7,12 @@ import { AdvancedImage } from '@cloudinary/react'
 import { Cloudinary } from "@cloudinary/url-gen";
 import {env} from "@/utils/env"
 
+import { getConfig } from '../../config';
+let { VITE_cloudinary_name } = getConfig();
+
+VITE_cloudinary_name = VITE_cloudinary_name || env.VITE_cloudinary_name
+
+
 function CardComponent({EventsData}) {
     
   const upComingEvents = EventsData.filter((event)=>{
@@ -16,7 +22,7 @@ function CardComponent({EventsData}) {
   })
   console.log('upComingEvents',upComingEvents)
   
-  const [cloudName] = useState(env.VITE_cloudinary_name);
+  const [cloudName] = useState(VITE_cloudinary_name);
 
   const cld = new Cloudinary({
     cloud: {

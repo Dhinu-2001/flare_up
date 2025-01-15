@@ -15,8 +15,6 @@ import PreLoader from '@/Page_components/PreLoader/PreLoader'
 
 
 
-
-
 export default function CaseStudies() {
     const [selectedType, setSelectedType] = useState("All");
     const [sortOrder, setSortOrder] = useState("A to Z");

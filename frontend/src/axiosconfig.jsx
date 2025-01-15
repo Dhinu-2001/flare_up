@@ -5,10 +5,15 @@ import { handleLogout } from "./utils/StateUtil";
 import { store } from "./redux/Store";
 import { env } from "@/utils/env";
 
+import { getConfig } from './config';
+let { VITE_gateway_svc } = getConfig();
+
+VITE_gateway_svc = VITE_gateway_svc || env.VITE_gateway_svc
+
 // baseURL: 'http://meetmingle.com/', FOR DOCKER
 
 const axiosInstance = axios.create({
-  baseURL: `http://${env.VITE_gateway_svc}/`,
+  baseURL: `http://${VITE_gateway_svc}/api/`,
   withCredentials: true,
 });
 

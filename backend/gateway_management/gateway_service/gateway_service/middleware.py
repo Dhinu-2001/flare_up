@@ -10,8 +10,8 @@ class JWTAuthenticationMiddleware(JWTAuthentication):
 
     def __call__(self, request):
         public_paths = [
-            '/login/', '/register/', '/token_refresh/', '/admin-register/', '/otp_verification/', 
-            '/resend_otp/', '/GoogleAuth/', '/GoogleAuthLogin/', '/logout/', '/events/','/forgot-password/', '/verify-otp-forgot-password/', '/set-new-password/'
+            '/api/login/', '/api/register/', '/api/token_refresh/', '/api/admin-register/', '/api/otp_verification/', 
+            '/api/resend_otp/', '/api/GoogleAuth/', '/api/GoogleAuthLogin/', '/api/logout/', '/api/events/','/api/forgot-password/', '/api/verify-otp-forgot-password/', '/api/set-new-password/'
         ]
         print('request path', request.path)
         # Skip authentication for public paths

@@ -12,6 +12,12 @@ import { format } from 'date-fns';
 import ChatShimmer from '@/components/Shimmer/Chat';
 import { env } from "@/utils/env";
 
+import { getConfig } from '../../config';
+let { VITE_notification_svc } = getConfig();
+
+VITE_notification_svc = VITE_notification_svc || env.VITE_notification_svc
+
+
 const formatDate = (isoDateString) => {
     const date = new Date(isoDateString);
     return format(date, "MMMM do, yyyy 'at' h:mm a");
@@ -62,7 +68,7 @@ const Chat = () => {
 
             if (roomName) {
                 // Connect to WebSocket
-                socketRef.current = new WebSocket(`ws://${env.VITE_notification_svc}/ws/chat/${roomName}/`);
+                socketRef.current = new WebSocket(`ws://${VITE_notification_svc}/ws/chat/${roomName}/`);
                 
 
                 // Handle incoming messages

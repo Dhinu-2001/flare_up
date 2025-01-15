@@ -33,6 +33,12 @@ import EventDetailShimmer from "@/components/Shimmer/TicketBooking";
 import { AdvancedImage } from "@cloudinary/react";
 import { env } from "@/utils/env";
 
+import { getConfig } from '../../../config';
+let { VITE_cloudinary_name } = getConfig();
+
+VITE_cloudinary_name = VITE_cloudinary_name || env.VITE_cloudinary_name
+
+
 export default function EventDetails() {
   const { event_id } = useParams();
   const numericEventId = Number(event_id);
@@ -49,7 +55,7 @@ export default function EventDetails() {
 
   if (!event_id) return <p>Error no category.</p>;
 
-  const [cloudName] = useState(env.VITE_cloudinary_name);
+  const [cloudName] = useState(VITE_cloudinary_name);
 
   const cld = new Cloudinary({
     cloud: {
