@@ -20,6 +20,8 @@ COPY index.html ./
 COPY src ./src
 COPY public ./public
 
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+
 # Set production environment
 ENV NODE_ENV=production
 
@@ -44,7 +46,7 @@ RUN chmod +x /docker-entrypoint.sh
 COPY --from=build --chown=appuser:appgroup /app/dist ./dist
 
 # Ensure correct permissions
-RUN chown -R appuser:appgroup /app
+RUN chown -R appuser:appgroup /app 
 
 # Switch to non-root user
 USER appuser
