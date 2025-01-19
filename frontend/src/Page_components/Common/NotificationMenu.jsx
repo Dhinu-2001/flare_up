@@ -30,7 +30,7 @@ export default function NotificationMenu() {
   const connectChatRoomsWebSocket = async () => {
     // Open WebSocket connection
     const socket = new WebSocket(
-      `ws://${VITE_notification_svc}/ws/notifications/${user_id}/`
+      `wss://${VITE_notification_svc}/ws/notifications/${user_id}/`
     );
 
     socket.onopen = () => {

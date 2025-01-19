@@ -101,7 +101,7 @@ export default function EventDetails() {
 
     await toast.promise(
       axiosInstance.post(
-        `http://localhost:8000/events/event/${eventId}/update_event_status/`,
+        `/events/event/${eventId}/update_event_status/`,
         { event_status: status }
       ),
       {

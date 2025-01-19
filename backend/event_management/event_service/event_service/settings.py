@@ -71,13 +71,10 @@ CORS_ALLOW_ALL_ORIGINS = True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8000",  # Gateway service (backend)
-]
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:8000",  # Gateway service (backend)
-]
+CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=['http://localhost:5173'])
+
+CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=['http://localhost:5173'])
 
 # CORS_ALLOWED_ORIGINS = [
 #     "http://gateway:8081",  # Gateway service (backend)

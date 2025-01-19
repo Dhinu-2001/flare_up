@@ -8,7 +8,7 @@ COPY package.json package-lock.json ./
 # Install all dependencies (including dev dependencies)
 RUN npm ci
 
-COPY .env ./
+# COPY .env ./
 
 # Copy configuration files
 COPY tailwind.config.js ./ 
@@ -20,7 +20,7 @@ COPY index.html ./
 COPY src ./src
 COPY public ./public
 
-COPY docker-entrypoint.sh /docker-entrypoint.sh
+# COPY docker-entrypoint.sh /docker-entrypoint.sh
 
 # Set production environment
 ENV NODE_ENV=production

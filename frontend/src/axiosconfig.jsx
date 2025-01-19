@@ -13,7 +13,7 @@ VITE_gateway_svc = VITE_gateway_svc || env.VITE_gateway_svc
 // baseURL: 'http://meetmingle.com/', FOR DOCKER
 
 const axiosInstance = axios.create({
-  baseURL: `http://${VITE_gateway_svc}/api/`,
+  baseURL: `https://${VITE_gateway_svc}/api/`,
   withCredentials: true,
 });
 

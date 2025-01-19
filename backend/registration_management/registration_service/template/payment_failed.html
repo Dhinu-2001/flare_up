@@ -44,7 +44,7 @@
                 quantity: "{{ payment_details.ticket_quantity }}",
             })
             const frontendAddress = "{{ FRONTEND_ADDRESS }}";
-            window.location.href = `http://${frontendAddress}/payment-success?${queryParams.toString()}`;
+            window.location.href = `https://${frontendAddress}/payment-success?${queryParams.toString()}`;
         }
     </script>
 </body>

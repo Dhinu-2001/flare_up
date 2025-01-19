@@ -44,7 +44,7 @@ export default function AddParticipantsSponsors() {
 
     await toast.promise(
       axiosInstance.post(
-        `http://localhost:8000/events/event/${data?.event_data?.id}/key_participants/`,
+        `/events/event/${data?.event_data?.id}/key_participants/`,
         { key_participants: participants }
       ),
       {

@@ -44,8 +44,8 @@ def create_checkout_session(request):
                     }
                 ],
                 mode="payment",
-                success_url=f"http://{env('INGRESS_ADDRESS')}/payment/success-payment/"+str(data["user_id"])+"/?session_id={CHECKOUT_SESSION_ID}",
-                cancel_url=f"http://{env('INGRESS_ADDRESS')}/payment/failure-payment/"+str(data["user_id"])+"/?session_id={CHECKOUT_SESSION_ID}",
+                success_url=f"https://{env('INGRESS_ADDRESS')}/payment/success-payment/"+str(data["user_id"])+"/?session_id={CHECKOUT_SESSION_ID}",
+                cancel_url=f"https://{env('INGRESS_ADDRESS')}/payment/failure-payment/"+str(data["user_id"])+"/?session_id={CHECKOUT_SESSION_ID}",
                 metadata={
                     "user_id": data["user_id"],
                     "username": data["username"],

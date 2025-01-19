@@ -41,8 +41,7 @@ class PaymentsByHosterViewAPI(APIView):
         try:
             print('reached api gateway', user_id)
             response = requests.get(
-                f"http://{env('REGISTRATION_SVC_ADDRESS')}/payments/{user_id}/",
-                
+                f"http://{env('REGISTRATION_SVC_ADDRESS')}/payments/{user_id}/",      
             )
             if response.status_code == 201:
                 return Response(response.json(), status=status.HTTP_200_OK)

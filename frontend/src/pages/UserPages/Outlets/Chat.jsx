@@ -39,7 +39,7 @@ const UserChat = () => {
 
     useEffect(() => {
         // Connect to WebSocket
-        socketRef.current = new WebSocket(`ws://${VITE_notification_svc}/ws/chat/${roomName}/`);
+        socketRef.current = new WebSocket(`wss://${VITE_notification_svc}/ws/chat/${roomName}/`);
 
         // Handle incoming messages
         socketRef.current.onmessage = (event) => {
